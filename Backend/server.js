@@ -113,6 +113,25 @@ app.post('/login', async (req, res) => {
     }
 });
 
+
+// Join queue for equipment
+app.post('/join', async (req, res) => {
+    const {jwt, equipmentName} = req.body;
+    // verify that this is a valid user
+    // verify that this piece of equipment exists
+    // ensure User is not already waiting in queue for equipment
+    // add user to equipment queue
+});
+
+// Leave queue for equipment
+app.post('/renege', async (req, res) => {
+    const {jwt, equipmentName} = req.body;
+    // verify that this is a valid user
+    // verify that this piece of equipment exists
+    // ensure User is already waiting in queue for equipment
+    // remove user from equipment queue
+});
+
 // Protection
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
