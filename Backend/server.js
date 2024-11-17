@@ -5,7 +5,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const User = require('./models/User');
+const User = require('./Models/User');
 
 
 const app = express();
@@ -29,6 +29,7 @@ const users = [];
 const saltRounds = 10;
 
 const mongoose = require('mongoose');
+const Equipment = require('./Models/Equipment');
 
 const uri = process.env.MONGO_URI || "mongodb+srv:/puturlhere"; //add mongodb url
 
@@ -113,25 +114,6 @@ app.post('/login', async (req, res) => {
     }
 });
 
-
-// Join queue for equipment
-app.post('/join', async (req, res) => {
-    const {jwt, equipmentName} = req.body;
-    // verify that this is a valid user
-    // verify that this piece of equipment exists
-    // ensure User is not already waiting in queue for equipment
-    // add user to equipment queue
-});
-
-// Leave queue for equipment
-app.post('/renege', async (req, res) => {
-    const {jwt, equipmentName} = req.body;
-    // verify that this is a valid user
-    // verify that this piece of equipment exists
-    // ensure User is already waiting in queue for equipment
-    // remove user from equipment queue
-});
-
 // Protection
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -146,3 +128,27 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
+
+// Middleware: does a given piece of equipment exist?
+function doesEquipmentExist(req, res, next) {
+    const equipmentName = req.headers['equipmentName'];
+    const equipmentExists = Equipment.findOne({equipmentName});
+    if (!equipmentExists) return res.sendStatus(400);
+
+    next();
+}
+
+// Join queue for equipment
+app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
+    
+
+    // ensure User is not already waiting in queue for equipment
+    // add user to equipment queue
+});
+
+// Leave queue for equipment
+app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
+
+    // ensure User is already waiting in queue for equipment
+    // remove user from equipment queue
+});
