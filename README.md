@@ -5,6 +5,10 @@ BruinWait-Lifting is an application to manage reservations and use of gym equipm
 This is a Fall 2024 CS35L project by Nico Franz, Ria Kundu, Alexander Shen, Keshiv Tandon, and Kevin Wong.
 
 # Building
+Clone this Git repo, change your working directory into it, then run
+> npm install
+Run the server with
+> node ./Backend/server.js
 ## Client
 TODO
 ## Server
