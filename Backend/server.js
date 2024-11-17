@@ -6,7 +6,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('./Models/User');
-
+const mongoose = require('mongoose');
+const Equipment = require('./Models/Equipment');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -28,8 +29,7 @@ app.use((req, res, next) => {
 const users = [];
 const saltRounds = 10;
 
-const mongoose = require('mongoose');
-const Equipment = require('./Models/Equipment');
+
 
 const uri = process.env.MONGO_URI || "mongodb+srv:/puturlhere"; //add mongodb url
 
