@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "express": "4.21.1",
+    "mongoose": "8.8.1",
+    "cors": "2.8.5",
+    "bcryptjs": "2.4.3",
+    "jsonwebtoken": "9.0.2",
+    "express-validator": "7.2.0"
+  },
+  "name": "bruin_wait-lifting",
+  "version": "1.0.0",
+  "description": "BruinWait-Lifting # About BruinWait-Lifting is an application to manage reservations and use of gym equipment. It involves a database of users and equipment, a client-side React application, and a server to orchestrate operations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kwong05/f24cs35l.git"
+  },
+  "author": "Nico Franz, Ria Kundu, Alexander Shen, Keshiv Tandon, Kevin Wong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kwong05/f24cs35l/issues"
+  },
+  "homepage": "https://github.com/kwong05/f24cs35l#readme",
+  "devDependencies": {}
+}
