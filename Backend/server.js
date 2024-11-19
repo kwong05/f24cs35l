@@ -151,11 +151,11 @@ function doesEquipmentExist(req, res, next) {
 app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     const desiredEquipmentName = req.headers['equipmentName'].split(" ")[1]; // TODO check
     
-    // get the current username TODO
-    const currentUser = "blah";
+    // get the current username
+    const currentUser = req.user.id;
 
     // ensure User is not already waiting in queue for equipment
-    isQueued = Equipment.findOne({"name": desiredEquipmentName, "userQueue.username": currentUser});
+    isQueued = Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
     if (isQueued) return res.status(403).json({message: 'User already queued'});
 
     // add user to equipment queue
@@ -169,11 +169,11 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
 app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
     const undesiredEquipmentName = req.headers['equipmentName'].split(" ")[1]; // TODO check
 
-    // get the current username TODO
-    const currentUser = "blah";
+    // get the current user
+    const currentUser = req.user.id;
 
     // ensure User is already waiting in queue for equipment
-    const undesiredEquipment = Equipment.findOne({"name": undesiredEquipmentName, "userQueue.username": currentUser});
+    const undesiredEquipment = Equipment.findOne({"name": undesiredEquipmentName, "userQueue.userID": currentUser});
     if (!undesiredEquipment) return res.status(403).json({message: 'User does not exist in queue'});
 
     // remove user to equipment queue
