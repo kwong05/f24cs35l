@@ -168,16 +168,9 @@ app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
-app.post('/removeEquipment', authenticateToken, isAdmin, async (req, res) => {
+app.post('/removeEquipment', authenticateToken, isAdmin, doesEquipmentExist, async (req, res) => {
     try {
         const equipmentName = req.body;
-
-        console.log('Checking if equipment exists:', equipmentName);
-        const equipmentExists = Equipment.findOne({name: equipmentName});
-        if (!equipmentExists) {
-            console.error('Equipment does not exist:', equipmentName);
-            return res.status(400).json({message: 'Equipment name does not exist'});
-        }
         
         console.log('Removing equipment from database:', equipmentName);
         await Equipment.deleteOne({name: equipmentName});
@@ -193,6 +186,7 @@ app.post('/removeEquipment', authenticateToken, isAdmin, async (req, res) => {
 // Middleware: does a given piece of equipment exist?
 function doesEquipmentExist(req, res, next) {
     const equipmentName = req.body;
+    console.log("doesEquipmentExist called on " + equipmentName);
     const equipmentExists = Equipment.findOne({name: equipmentName});
     if (!equipmentExists) return res.sendStatus(400).json({message: "doesEquipmentExist: requested equipment " + equipmentName + " does not exist"});
 
