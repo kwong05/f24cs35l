@@ -55,7 +55,7 @@ app.post('/signup',
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { username, password, email, notification } = req.body;
+        const { username, password, email} = req.body;
 
         try {
             // Check if the username is already taken
@@ -76,10 +76,20 @@ app.post('/signup',
             // Create a new user instance
             console.log('Hashing password for user:', username);
             const hashedPassword = await bcrypt.hash(password, saltRounds);
-            const newUser = new User({ username, password: hashedPassword, email, notification });
+            
+
+            // Check if admin acct
+            console.log('Checking if user is admin');
+            if ((username == 'gymadmin') && (email == 'gymadmin@gmail.com') {
+                console.log('User is admin');
+                const admin = true;
+            } else {
+                const admin = false;
+            }
 
             // Save the user to the database
             console.log('Saving new user to database:', username);
+            const newUser = new User({ username, password: hashedPassword, email, admin });
             await newUser.save();
 
             res.status(201).json({ message: 'User created successfully' });
