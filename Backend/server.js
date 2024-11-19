@@ -204,7 +204,7 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
     const undesiredEquipment = Equipment.findOne({"name": undesiredEquipmentName, "userQueue.userID": currentUser});
     if (!undesiredEquipment) return res.status(403).json({message: 'User does not exist in queue'});
 
-    // remove user to equipment queue
+    // remove user from equipment queue
     userIdx = undesiredEquipment.userQueue.indexOf(currentUser);
     undesiredEquipment.userQueue.splice(userIdx, 1);
     undesiredEquipment.save();
