@@ -5,11 +5,17 @@ BruinWait-Lifting is an application to manage reservations and use of gym equipm
 This is a Fall 2024 CS35L project by Nico Franz, Ria Kundu, Alexander Shen, Keshiv Tandon, and Kevin Wong.
 
 # Building
-Clone this Git repo, change your working directory into it, then run
-> npm install
-Run the server with
-> node ./Backend/server.js
+Before you start with this repo, ensure that you have a [MongoDB cluster](https://www.mongodb.com/) available.
+
+
+
 ## Client
 TODO
 ## Server
-TODO
+Clone this Git repo. Replace the MongoDB URL, JWT secret key, and port number with options appropriate for you.
+
+In the repo directory, run
+> npm install
+
+Start the server by running
+> node ./Backend/server.js
