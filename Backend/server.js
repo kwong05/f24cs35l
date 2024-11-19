@@ -165,9 +165,10 @@ app.post('/addEquipment', authenticateToken, async (req, res) => {
     }
 });
 
-// Middleware: does a given piece of equipment exist? TODO test, verify
+// TODO for doesEquipmentExist, /join, /renege: test functions
+// Middleware: does a given piece of equipment exist?
 function doesEquipmentExist(req, res, next) {
-    const equipmentName = req.headers['equipmentName'];
+    const equipmentName = req.body;
     const equipmentExists = Equipment.findOne({name: equipmentName});
     if (!equipmentExists) return res.sendStatus(400);
 
@@ -176,7 +177,7 @@ function doesEquipmentExist(req, res, next) {
 
 // Join queue for equipment
 app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
-    const desiredEquipmentName = req.headers['equipmentName'].split(" ")[1]; // TODO check
+    const desiredEquipmentName = req.body;
     
     // get the current username
     const currentUser = req.user.id;
@@ -194,7 +195,7 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
 
 // Leave queue for equipment
 app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
-    const undesiredEquipmentName = req.headers['equipmentName'].split(" ")[1]; // TODO check
+    const undesiredEquipmentName = req.body;
 
     // get the current user
     const currentUser = req.user.id;
