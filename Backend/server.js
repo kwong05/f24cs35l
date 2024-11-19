@@ -81,7 +81,7 @@ app.post('/signup',
             // Check if admin acct
             console.log('Checking if user is admin');
             const isAdmin = false;
-            if ((username == 'gymadmin') && (email == 'gymadmin@gmail.com') {
+            if ((username == 'gymadmin') && (email == 'gymadmin@gmail.com')) {
                 console.log('User is admin');
                 isAdmin = true;
             }
@@ -136,7 +136,7 @@ function authenticateToken(req, res, next) {
         req.user = { id: user.id, username: user.username };
         next();
     });
-}
+};
 
 app.post('/addEquipment', authenticateToken, async (req, res) => {
     try {
@@ -163,7 +163,7 @@ app.post('/addEquipment', authenticateToken, async (req, res) => {
         console.error('Equipment Add Error:', error);  // Log the exact error
         res.status(500).json({ message: 'Error creating equipment' });
     }
-}
+});
 
 // Middleware: does a given piece of equipment exist? TODO test, verify
 function doesEquipmentExist(req, res, next) {
@@ -172,7 +172,7 @@ function doesEquipmentExist(req, res, next) {
     if (!equipmentExists) return res.sendStatus(400);
 
     next();
-}
+};
 
 // Join queue for equipment
 app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
