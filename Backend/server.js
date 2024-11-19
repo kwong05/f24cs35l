@@ -80,16 +80,15 @@ app.post('/signup',
 
             // Check if admin acct
             console.log('Checking if user is admin');
+            const isAdmin = false;
             if ((username == 'gymadmin') && (email == 'gymadmin@gmail.com') {
                 console.log('User is admin');
-                const admin = true;
-            } else {
-                const admin = false;
+                isAdmin = true;
             }
 
             // Save the user to the database
             console.log('Saving new user to database:', username);
-            const newUser = new User({ username, password: hashedPassword, email, admin });
+            const newUser = new User({ username, password: hashedPassword, email, isAdmin });
             await newUser.save();
 
             res.status(201).json({ message: 'User created successfully' });
