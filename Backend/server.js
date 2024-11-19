@@ -138,6 +138,33 @@ function authenticateToken(req, res, next) {
     });
 }
 
+app.post('/addEquipment', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const equipmentName = req.body;
+
+        console.log('Checking admin credentials');
+        if (userId != 'ADMIN_ID') // TODO: put admin's Id (not created yet)
+            return res.status(400).json({message: 'User not admin'});
+
+        console.log('Checking if equipment exists:', equipmentName);
+        const equipmentExists = await Equipment.findOne({name});
+        if (equipmentExists) {
+            console.error('Equipment already exists:', equipmentName);
+            return res.status(400).json({message: 'Equipment name already taken'});
+        }
+        
+        console.log('Saving new user to database:', username);
+        const newEquipment = new Equipment({name: equipmentName});
+        await newEquipment.save();
+
+        res.status(201).json({ message: 'Equipment created successfully' });
+    } catch (error) {
+        console.error('Equipment Add Error:', error);  // Log the exact error
+        res.status(500).json({ message: 'Error creating equipment' });
+    }
+}
+
 // Middleware: does a given piece of equipment exist? TODO test, verify
 function doesEquipmentExist(req, res, next) {
     const equipmentName = req.headers['equipmentName'];
