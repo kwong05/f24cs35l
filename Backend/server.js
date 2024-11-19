@@ -31,7 +31,7 @@ const saltRounds = 10;
 
 
 
-const uri = process.env.MONGO_URI || "mongodb+srv:/puturlhere"; //add mongodb url
+const uri = process.env.MONGO_URI || "mongodb+srv://gymadmin:adminpass@main.6rs8v.mongodb.net/?"; //add mongodb url
 
 // Set up default mongoose connection with increased timeout and logging
 mongoose.connect(uri, {
