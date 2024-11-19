@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
-const User = require('./User');
+import userSchema from './User.js'
 
 // TODO maybe add equipment reservation list to User?
 const equipmentSchema = new mongoose.Schema({
     name: {type: String, required: true, unique: true},    // name of the equipment - may or may not be unique
-    currentUser: {type: User, required: false},                     // which user is currently using the machine?
-    userQueue: {type: [User], required: true},                       // which users are currently waiting for the machine?
+    currentUser: {type: userSchema, required: false},                     // which user is currently using the machine?
+    userQueue: {type: [userSchema], required: true},                       // which users are currently waiting for the machine?
     unlockTime: {type: Date, required: true, default: Date.now()}   // when the equipment will next be available
 });
 
-module.exports = mongoose.model('Equipment', equipmentSchema)
+module.exports = mongoose.model('Equipment', equipmentSchema);
