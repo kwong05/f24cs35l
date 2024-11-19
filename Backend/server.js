@@ -180,7 +180,7 @@ app.post('/removeEquipment', authenticateToken, isAdmin, async (req, res) => {
         }
         
         console.log('Removing equipment from database:', equipmentName);
-        const newEquipment = Equipment.deleteOne({name: equipmentName});
+        await Equipment.deleteOne({name: equipmentName});
 
         res.status(201).json({ message: 'Equipment removed successfully' });
     } catch (error) {
@@ -194,7 +194,7 @@ app.post('/removeEquipment', authenticateToken, isAdmin, async (req, res) => {
 function doesEquipmentExist(req, res, next) {
     const equipmentName = req.body;
     const equipmentExists = Equipment.findOne({name: equipmentName});
-    if (!equipmentExists) return res.sendStatus(400);
+    if (!equipmentExists) return res.sendStatus(400).json({message: "doesEquipmentExist: requested equipment " + equipmentName + " does not exist"});
 
     next();
 };
