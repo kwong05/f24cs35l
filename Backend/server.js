@@ -184,10 +184,10 @@ app.post('/removeEquipment', authenticateToken, isAdmin, doesEquipmentExist, asy
 
 // TODO for doesEquipmentExist, /join, /renege: test functions
 // Middleware: does a given piece of equipment exist?
-function doesEquipmentExist(req, res, next) {
+async function doesEquipmentExist(req, res, next) {
     const equipmentName = req.body;
     console.log("doesEquipmentExist called on " + equipmentName);
-    const equipmentExists = Equipment.findOne({name: equipmentName});
+    const equipmentExists = await Equipment.findOne({name: equipmentName});
     if (!equipmentExists) return res.sendStatus(400).json({message: "doesEquipmentExist: requested equipment " + equipmentName + " does not exist"});
 
     next();
