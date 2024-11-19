@@ -148,7 +148,7 @@ app.post('/addEquipment', authenticateToken, async (req, res) => {
             return res.status(400).json({message: 'User not admin'});
 
         console.log('Checking if equipment exists:', equipmentName);
-        const equipmentExists = await Equipment.findOne({name});
+        const equipmentExists = await Equipment.findOne({name: equipmentName});
         if (equipmentExists) {
             console.error('Equipment already exists:', equipmentName);
             return res.status(400).json({message: 'Equipment name already taken'});
@@ -183,11 +183,11 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     const currentUser = req.user.id;
 
     // ensure User is not already waiting in queue for equipment
-    isQueued = Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
+    isQueued = await Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
     if (isQueued) return res.status(403).json({message: 'User already queued'});
 
     // add user to equipment queue
-    const desiredEquipment = Equipment.findOne({"name": desiredEquipmentName});
+    const desiredEquipment = await Equipment.findOne({"name": desiredEquipmentName});
     desiredEquipment.userQueue.push(currentUser);
     desiredEquipment.save();
     return res.status(200);
@@ -201,7 +201,7 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
     const currentUser = req.user.id;
 
     // ensure User is already waiting in queue for equipment
-    const undesiredEquipment = Equipment.findOne({"name": undesiredEquipmentName, "userQueue.userID": currentUser});
+    const undesiredEquipment = await Equipment.findOne({"name": undesiredEquipmentName, "userQueue.userID": currentUser});
     if (!undesiredEquipment) return res.status(403).json({message: 'User does not exist in queue'});
 
     // remove user from equipment queue
