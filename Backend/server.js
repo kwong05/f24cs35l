@@ -1,12 +1,12 @@
 // backend/server.js
 
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const User = require('./Models/User');
-const mongoose = require('mongoose');
+const User = require('./Models/User'); // TODO ERR_REQUIRE_ESM
 const Equipment = require('./Models/Equipment');
 
 const app = express();
@@ -129,10 +129,10 @@ function authenticateToken(req, res, next) {
     });
 }
 
-// Middleware: does a given piece of equipment exist?
+// Middleware: does a given piece of equipment exist? TODO test, verify
 function doesEquipmentExist(req, res, next) {
     const equipmentName = req.headers['equipmentName'];
-    const equipmentExists = Equipment.findOne({equipmentName});
+    const equipmentExists = Equipment.findOne({name: equipmentName});
     if (!equipmentExists) return res.sendStatus(400);
 
     next();
@@ -140,15 +140,36 @@ function doesEquipmentExist(req, res, next) {
 
 // Join queue for equipment
 app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
+    const desiredEquipmentName = req.headers['equipmentName'].split(" ")[1]; // TODO check
     
+    // get the current username TODO
+    const currentUser = "blah";
 
     // ensure User is not already waiting in queue for equipment
+    isQueued = Equipment.findOne({"name": desiredEquipmentName, "userQueue.username": currentUser});
+    if (isQueued) return res.status(403).json({message: 'User already queued'});
+
     // add user to equipment queue
+    const desiredEquipment = Equipment.findOne({"name": desiredEquipmentName});
+    desiredEquipment.userQueue.push(currentUser);
+    desiredEquipment.save();
+    return res.status(200);
 });
 
 // Leave queue for equipment
 app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
+    const undesiredEquipmentName = req.headers['equipmentName'].split(" ")[1]; // TODO check
+
+    // get the current username TODO
+    const currentUser = "blah";
 
     // ensure User is already waiting in queue for equipment
-    // remove user from equipment queue
+    const undesiredEquipment = Equipment.findOne({"name": undesiredEquipmentName, "userQueue.username": currentUser});
+    if (!undesiredEquipment) return res.status(403).json({message: 'User does not exist in queue'});
+
+    // remove user to equipment queue
+    userIdx = undesiredEquipment.userQueue.indexOf(currentUser);
+    undesiredEquipment.userQueue.splice(userIdx, 1);
+    undesiredEquipment.save();
+    return res.status(200);
 });
