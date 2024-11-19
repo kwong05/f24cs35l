@@ -138,17 +138,21 @@ function authenticateToken(req, res, next) {
     });
 };
 
-app.post('/addEquipment', authenticateToken, async (req, res) => {
+function isAdmin(req, res, next) {
+    const userId = req.user.id;
+    console.log('Checking admin credentials');
+    if (userId != 'ADMIN_ID') // TODO: put admin's Id (not created yet)
+        return res.status(400).json({message: 'User not admin'});
+    next();
+}
+
+app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
     try {
         const userId = req.user.id;
         const equipmentName = req.body;
 
-        console.log('Checking admin credentials');
-        if (userId != 'ADMIN_ID') // TODO: put admin's Id (not created yet)
-            return res.status(400).json({message: 'User not admin'});
-
         console.log('Checking if equipment exists:', equipmentName);
-        const equipmentExists = await Equipment.findOne({name: equipmentName});
+        const equipmentExists = Equipment.findOne({name: equipmentName});
         if (equipmentExists) {
             console.error('Equipment already exists:', equipmentName);
             return res.status(400).json({message: 'Equipment name already taken'});
@@ -163,6 +167,10 @@ app.post('/addEquipment', authenticateToken, async (req, res) => {
         console.error('Equipment Add Error:', error);  // Log the exact error
         res.status(500).json({ message: 'Error creating equipment' });
     }
+});
+
+app.post('/removeEquipment', authenticateToken, async (req, res) => {
+    
 });
 
 // TODO for doesEquipmentExist, /join, /renege: test functions
