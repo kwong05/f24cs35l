@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-import userSchema from './User.js'
 
 // TODO maybe add equipment reservation list to User?
 const equipmentSchema = new mongoose.Schema({
     name: {type: String, required: true, unique: true},    // name of the equipment - may or may not be unique
-    currentUser: {type: userSchema, required: false},                     // which user is currently using the machine?
-    userQueue: {type: [userSchema], required: true},                       // which users are currently waiting for the machine?
+    currentUser: {type: String, required: false},                     // which user is currently using the machine?
+    userQueue: {type: [String], required: true},                       // which users are currently waiting for the machine?
     unlockTime: {type: Date, required: true, default: Date.now()}   // when the equipment will next be available
 });
 
