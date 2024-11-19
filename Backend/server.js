@@ -148,7 +148,6 @@ function isAdmin(req, res, next) {
 
 app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
     try {
-        const userId = req.user.id;
         const equipmentName = req.body;
 
         console.log('Checking if equipment exists:', equipmentName);
@@ -158,7 +157,7 @@ app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
             return res.status(400).json({message: 'Equipment name already taken'});
         }
         
-        console.log('Saving new user to database:', username);
+        console.log('Saving new equipment to database:', equipmentName);
         const newEquipment = new Equipment({name: equipmentName});
         await newEquipment.save();
 
@@ -169,8 +168,25 @@ app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
-app.post('/removeEquipment', authenticateToken, async (req, res) => {
-    
+app.post('/removeEquipment', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const equipmentName = req.body;
+
+        console.log('Checking if equipment exists:', equipmentName);
+        const equipmentExists = Equipment.findOne({name: equipmentName});
+        if (!equipmentExists) {
+            console.error('Equipment does not exist:', equipmentName);
+            return res.status(400).json({message: 'Equipment name does not exist'});
+        }
+        
+        console.log('Removing equipment from database:', equipmentName);
+        const newEquipment = Equipment.deleteOne({name: equipmentName});
+
+        res.status(201).json({ message: 'Equipment removed successfully' });
+    } catch (error) {
+        console.error('Equipment Remove Error:', error);  // Log the exact error
+        res.status(500).json({ message: 'Error removing equipment' });
+    }
 });
 
 // TODO for doesEquipmentExist, /join, /renege: test functions
@@ -197,7 +213,7 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     // add user to equipment queue
     const desiredEquipment = await Equipment.findOne({"name": desiredEquipmentName});
     desiredEquipment.userQueue.push(currentUser);
-    desiredEquipment.save();
+    await desiredEquipment.save();
     return res.status(200);
 });
 
@@ -215,6 +231,6 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
     // remove user from equipment queue
     userIdx = undesiredEquipment.userQueue.indexOf(currentUser);
     undesiredEquipment.userQueue.splice(userIdx, 1);
-    undesiredEquipment.save();
+    await undesiredEquipment.save();
     return res.status(200);
 });
