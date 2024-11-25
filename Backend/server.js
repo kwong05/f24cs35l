@@ -235,6 +235,10 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
 cron.schedule('* * * * *', async () => { // activates every minute
     const readyEquipment = await Equipment.find((Date.now() - unlockTime) <= 0);
     for (const readyE of readyEquipment) {
-        
+        readyE.currentUser = readyE.userQueue.shift(); // new currentUser is first index of userQueue array
+        const now = new Date();
+        now.setMinutes(now.getMinutes() + 10);
+        readyE.unlockTime = now; // set new unlockTime for 10 minutes from now
+        await readyE.save();
     }
 });
