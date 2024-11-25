@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     email: {type: String, required: false, unique: true},
     isAdmin: {type: Boolean, required: true, default: false},
     currentEquipment: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false},
-    queuedEquipment: {type: [mongoose.Schema.Types.ObjectId], ref: 'Equpipment', required: false}
+    queuedEquipment: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false}
 });
 
 module.exports = mongoose.model('User', userSchema);
