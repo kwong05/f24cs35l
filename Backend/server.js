@@ -203,13 +203,16 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     const currentUser = req.user.id;
 
     // ensure User is not already waiting in queue for equipment
-    isQueued = await Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
+    isQueued = false;
+    if (currentUser.queuedEquipment != null)
+        isQueued = true;
+    //isQueued = await Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
     if (isQueued) return res.status(403).json({message: 'User already queued'});
 
     // add user to equipment queue
     const desiredEquipment = await Equipment.findOne({"name": desiredEquipmentName});
     desiredEquipment.userQueue.push(currentUser);
-    currentUser.equipmentQueue.push(desiredEquipment);
+    currentUser.equipmentQueue = desiredEquipment;
     await desiredEquipment.save();
     await currentUser.save();
     return res.status(200);
@@ -233,7 +236,7 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
 
     // remove equipment from user queue
     equipmentIdx = currentUser.queuedEquipment.indexOf(undesiredEquipment);
-    currentUser.queuedEquipment.splice(equipmentIdx, 1);
+    currentUser.queuedEquipment = null;
     await currentUser.save();
     return res.status(200);
 });
