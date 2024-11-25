@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('./Models/User'); // TODO ERR_REQUIRE_ESM
 const Equipment = require('./Models/Equipment');
+const cron = require('node-cron');
+
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -227,4 +229,12 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
     undesiredEquipment.userQueue.splice(userIdx, 1);
     await undesiredEquipment.save();
     return res.status(200);
+});
+
+// Check for lapsed equipment and transfer to next user
+cron.schedule('* * * * *', async () => { // activates every minute
+    const readyEquipment = await Equipment.find((Date.now() - unlockTime) <= 0);
+    for (const readyE of readyEquipment) {
+        
+    }
 });
