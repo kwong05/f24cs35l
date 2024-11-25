@@ -209,7 +209,9 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     // add user to equipment queue
     const desiredEquipment = await Equipment.findOne({"name": desiredEquipmentName});
     desiredEquipment.userQueue.push(currentUser);
+    currentUser.equipmentQueue.push(desiredEquipment);
     await desiredEquipment.save();
+    await currentUser.save();
     return res.status(200);
 });
 
@@ -228,6 +230,11 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
     userIdx = undesiredEquipment.userQueue.indexOf(currentUser);
     undesiredEquipment.userQueue.splice(userIdx, 1);
     await undesiredEquipment.save();
+
+    // remove equipment from user queue
+    equipmentIdx = currentUser.queuedEquipment.indexOf(undesiredEquipment);
+    currentUser.queuedEquipment.splice(equipmentIdx, 1);
+    await currentUser.save();
     return res.status(200);
 });
 
