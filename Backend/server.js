@@ -212,7 +212,7 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     //check that the user's current equipment will run out of time before new equiupment is ready
     const desiredEquipment = await Equipment.findOne({"name": desiredEquipmentName});
     const currentEquipment = currentUser.currentEquipment;
-    if (currentEquipment.unlockTime > desiredEquipment.unlockTime)
+    if ((currentEquipment.unlockTime > desiredEquipment.unlockTime) && (desiredEquipment.userQueue == []))
         return res.status(403).json({message: "User's current equipment will unlock after desired equipment"});
 
     // add user to equipment queue
