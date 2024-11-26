@@ -250,16 +250,36 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
 cron.schedule('* * * * *', async () => { // activates every minute
     const readyEquipment = await Equipment.find((Date.now() - unlockTime) <= 0);
     for (const readyE of readyEquipment) {
-        user = readyE.currentUser;
-        user.currentEquipment = null;
-        await user.save();
-        readyE.currentUser = readyE.userQueue.shift(); // new currentUser is first index of userQueue array
-        newUser = readyE.currentUser;
-        newUser.currentEquipment = newUser.queuedEquipment; // newUser's current equipment set to first in queue
-        const now = new Date();
-        now.setMinutes(now.getMinutes() + 15);
-        readyE.unlockTime = now; // set new unlockTime for 15 minutes from now
-        await readyE.save();
-        await newUser.save();
+        if ((readyE.currentUser != null) && (readyE.userQueue != [])) {
+            user = readyE.currentUser;
+            user.currentEquipment = null;
+            await user.save();
+            readyE.currentUser = readyE.userQueue.shift(); // new currentUser is first index of userQueue array
+            newUser = readyE.currentUser;
+            newUser.currentEquipment = newUser.queuedEquipment; // newUser's current equipment set to first in queue
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 15);
+            readyE.unlockTime = now; // set new unlockTime for 15 minutes from now
+            await readyE.save();
+            await newUser.save();
+        } else if ((readyE.currentUser == null) && (readyE.userQueue != [])) {
+            readyE.currentUser = readyE.userQueue.shift(); // new currentUser is first index of userQueue array
+            newUser = readyE.currentUser;
+            newUser.currentEquipment = newUser.queuedEquipment; // newUser's current equipment set to first in queue
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 15);
+            readyE.unlockTime = now; // set new unlockTime for 15 minutes from now
+            await readyE.save();
+            await newUser.save();
+        } else if ((readyE.userQueue == []) && (readyE.currentUser != null)) {
+            user = readyE.currentUser;
+            user.currentEquipment = null;
+            await user.save();
+            readyE.unlockTime = Date.now();
+            await readyE.save();
+        } else {
+            readyE.unlockTime = Date.now();
+            await readyE.save();
+        }
     }
 });
