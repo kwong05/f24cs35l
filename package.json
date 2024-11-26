@@ -5,7 +5,8 @@
     "cors": "2.8.5",
     "bcryptjs": "2.4.3",
     "jsonwebtoken": "9.0.2",
-    "express-validator": "7.2.0"
+    "express-validator": "7.2.0",
+    "node-cron": "3.0.3"
   },
   "name": "bruin_wait-lifting",
   "version": "1.0.0",
