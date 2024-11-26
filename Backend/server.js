@@ -252,8 +252,8 @@ cron.schedule('* * * * *', async () => { // activates every minute
         newUser = readyE.currentUser;
         newUser.currentEquipment = newUser.queuedEquipment; // newUser's current equipment set to first in queue
         const now = new Date();
-        now.setMinutes(now.getMinutes() + 10);
-        readyE.unlockTime = now; // set new unlockTime for 10 minutes from now
+        now.setMinutes(now.getMinutes() + 15);
+        readyE.unlockTime = now; // set new unlockTime for 15 minutes from now
         await readyE.save();
         await newUser.save();
     }
