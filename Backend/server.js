@@ -209,8 +209,13 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     //isQueued = await Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
     if (isQueued) return res.status(403).json({message: 'User already queued'});
 
-    // add user to equipment queue
+    //check that the user's current equipment will run out of time before new equiupment is ready
     const desiredEquipment = await Equipment.findOne({"name": desiredEquipmentName});
+    const currentEquipment = currentUser.currentEquipment;
+    if (currentEquipment.unlockTime > desiredEquipment.unlockTime)
+        return res.status(403).json({message: "User's current equipment will unlock after desired equipment"});
+
+    // add user to equipment queue
     desiredEquipment.userQueue.push(currentUser);
     currentUser.equipmentQueue = desiredEquipment;
     await desiredEquipment.save();
