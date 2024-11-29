@@ -7,15 +7,17 @@ This is a Fall 2024 CS35L project by Nico Franz, Ria Kundu, Alexander Shen, Kesh
 # Building
 Before you start with this repo, ensure that you have a [MongoDB cluster](https://www.mongodb.com/) available.
 
+In the repo directory, run
+> npm install
 
 
 ## Client
-TODO
-## Server
-Clone this Git repo. Replace the MongoDB URL, JWT secret key, and port number with options appropriate for you.
+Start the client by running
+> npm start
 
-In the repo directory, run
-> npm install
+## Server
+Replace the MongoDB URL, JWT secret key, and port number with options appropriate for you.
+
 
 Start the server by running
 > node ./Backend/server.js
