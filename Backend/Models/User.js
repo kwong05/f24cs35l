@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     email: {type: String, required: false, unique: true},
     isAdmin: {type: Boolean, required: true, default: false},
     currentEquipment: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false},
-    queuedEquipment: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false}
+    queuedEquipment: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false},
     favoritesList: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false}
 });
 
