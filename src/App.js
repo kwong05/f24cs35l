@@ -164,7 +164,36 @@ function JoinWaitlist(props) {
   function handleJoinWaitlist(e) {
       e.preventDefault()
       //handle joining waitlist
+       try {
+      // Validate user input
+      if (!userId || !desiredEquipmentName) {
+        setMessage('Please provide a valid user ID and equipment name');
+        return;
+      }
+
+      // Send the POST request to the backend
+      const response = await fetch('/join', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: desiredEquipmentName }), // Send the desired equipment name
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage('Successfully joined the waitlist');
+      } else {
+        setMessage(data.message || 'Something went wrong');
+      }
+    } catch (error) {
+      console.error('Error joining waitlist:', error);
+      setMessage('An error occurred. Please try again later.');
+    }
+    
       props.toggle()
+    
   }
 
   const maxNumberOfSets = 5; //arbitrary number for now
