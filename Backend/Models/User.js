@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     isAdmin: {type: Boolean, required: true, default: false},
     currentEquipment: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false},
     queuedEquipment: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false}
+    favoritesList: {type: mongoose.Schema.Types.ObjectId, ref: 'Equipment', required: false}
 });
 
 module.exports = mongoose.model('User', userSchema);
