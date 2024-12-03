@@ -289,6 +289,22 @@ function JoinWaitlist({toggle, id}) {
   )
 }
 
+async function getEquipmentNames() {
+  try {
+    // this gets all equipment objects from the mongo equpiment database
+    const equipmentList = await Equipment.find();
+
+    // get only the name of each equipment
+    const eqipNames = equipmentList.map(equipment => equipment.name);
+
+    
+    return eqipNames; 
+  } catch (err) {
+    console.error("Error retrieving equipment names:", err);
+    return []; // Return an empty array in case of error
+  }
+}
+
 export default function App() {
   const [joinSeen, setJoinSeen] = useState(false)
   const [loginSeen, setLoginSeen] = useState(false)
@@ -335,8 +351,9 @@ export default function App() {
 }
 
 //fake data
-const MACHINES = [
+const MACHINES = getEquipmentNames();
+  /*[
   {name: "Treadmill 1", id: "treadmill_1", waitlist: ["username1", "username2", "username3"]},
   {name: "Treadmill 2", id: "treadmill_2", waitlist: []},
   {name: "Smith Machine", id: "smith", waitlist: ["username1", "username2"]},
-];
+]; */
