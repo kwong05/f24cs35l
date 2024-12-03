@@ -11,11 +11,11 @@ In the repo directory, run
 > npm install
 
 
-## Client
-Start the client by running
+## Client Server
+Start the client-facing server by running
 > npm start
 
-## Server
+## Backend Server
 Replace the MongoDB URL, JWT secret key, and port number with options appropriate for you.
 
 
