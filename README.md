@@ -26,20 +26,20 @@ This is a Fall 2024 CS35L project by Nico Franz, Ria Kundu, Alexander Shen, Kesh
 **Favorites List:** 
 - Users can create a list of favorite machines for easy access, sorted by waitlist times.
 
-# Building
+# Building and Starting
 Before you start with this repo, ensure that you have a [MongoDB cluster](https://www.mongodb.com/) available.
 
 In the repo directory, run
 > npm install
 
+to install the Node dependencies. This may take some time.
 
 ## Client Server
 Start the client-facing server by running
 > npm start
 
 ## Backend Server
-Replace the MongoDB URL, JWT secret key, and port number with options appropriate for you.
-
+Replace the MongoDB URL and JWT secret key with values applicable to you and a random new one, respectively.
 
 Start the server by running
-> node ./Backend/server.js
+> node Backend/server.js
