@@ -8,7 +8,7 @@ import App from "./App";
 const root = createRoot(document.getElementById("root"));
 root.render(
   <StrictMode>
-    BrowserRouter>
+    <BrowserRouter>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <App />
     </BrowserRouter>
