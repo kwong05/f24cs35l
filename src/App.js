@@ -3,12 +3,13 @@ import { BrowserRouter as Router, useParams, Link } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom'; 
 
 //handles all machines
-function MachineCards({machines, joinSeen, toggleJoinPopup, currentPopupId})
+function MachineCards({machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage})
 {
+
   const cards = []
   machines.forEach((machine) => {
     cards.push(
-      <Card key={machine.id} machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId}/>
+      <Card key={machine.id} machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage}/>
     )
   })
 
@@ -25,14 +26,15 @@ function MachineCards({machines, joinSeen, toggleJoinPopup, currentPopupId})
 
   return (
     <div class="machine-cards">
-      <Card key={machineId} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId}/>
+      <Card key={machineId} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage}/>
     </div>
   )
 }
 
 //one machine card (machine name, join button, list of users waiting)
-function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId})
+function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, machines, setMessage})
 {
+
   let collapsible_text = machine.waitlist.length + " people waiting..."
   let estimated_time = machine.waitlist.length * 15 + " minutes"; 
   if(machine.waitlist.length == 0)
@@ -48,7 +50,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId})
             <button type="button" class="join-waitlist-button" onClick={() => toggleJoinPopup(machine.id)} >
               Join Waitlist
             </button>
-            {joinSeen ? <JoinWaitlist toggle={toggleJoinPopup} id={currentPopupId}/> : null}
+            {joinSeen ? <JoinWaitlist toggle={toggleJoinPopup} id={currentPopupId} machines={machines} setMessage={setMessage}/> : null}
         </div>
         <div class="collapsible"> {/* todo: implement collapsible button, right now does nothing */}
           <button type="button" class="collapsible-button">
@@ -106,7 +108,7 @@ function SignUp(props)
       e.preventDefault()
       //handle signup
       if(password !== confirmPassword)
-        console.error("The two passwords do not match. Try again.");
+        props.setMessage("The two passwords do not match. Try again.");
             
       const userData = { username, password, email };
       try {
@@ -122,10 +124,10 @@ function SignUp(props)
         if (response.ok) {
           console.log('Signup successful', data); 
         } else {
-          console.error('Error during signup:', data.message); 
+          props.setMessage('Error during signup:', data.message); 
         }
       } catch (error) {
-        console.error('Network or server error:', error); 
+        props.setMessage('Network or server error:', error); 
       }
       props.toggle()
   }
@@ -140,20 +142,16 @@ function SignUp(props)
               </button>
               <form onSubmit={handleSignUp}>
                   <label>
-                      Username:
-                      <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
+                      <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
                   </label>
                   <label>
-                      Email:
-                      <input type="text" value={email} onChange={e => setEmail(e.target.value)} />
+                      <input type="text" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
                   </label>
                   <label>
-                      Password:
-                      <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
                   </label>
                   <label>
-                      Confirm password:
-                      <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                      <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
                   </label>
                   <button type="submit">Sign Up</button>
               </form>
@@ -185,10 +183,10 @@ function Login(props) {
         if (response.ok) {
           console.log('Login successful', data); 
         } else {
-          console.error('Error during login:', data.message); 
+          props.setMessage('Error during login:', data.message); 
         }
       } catch (error) {
-        console.error('Network or server error:', error); 
+        props.setMessage('Network or server error:', error); 
       }
     
       props.toggle()  
@@ -203,12 +201,11 @@ function Login(props) {
               </button>
               <form onSubmit={handleLogin}>
                   <label>
-                      Username:
-                      <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
+                      <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+                      
                   </label>
                   <label>
-                      Password:
-                      <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
                   </label>
                   <button type="submit">Login</button>
               </form>
@@ -218,9 +215,13 @@ function Login(props) {
 }
 
 //join waitlist popup 
-function JoinWaitlist({toggle, id}) {
-  //number of sets + total estimated time 
-  const [numberOfSets, setNumberOfSets] = useState(1)
+function JoinWaitlist({toggle, id, machines, setMessage}) {
+
+  const foundMachine = machines.find(m => m.id === id);
+  let machine_name = "";
+  if(foundMachine) {
+    machine_name = foundMachine.name;
+  }
 
   async function handleJoinWaitlist(e) {
       e.preventDefault();
@@ -229,9 +230,9 @@ function JoinWaitlist({toggle, id}) {
 
       //handle joining waitlist
        try {
-      // Validate user input
+      // Validate user input <- I don't think we need this 
         if (!userId || !selectedEquipment) {
-          setMessage('Please provide a valid user ID and equipment name');
+          setMessage("Please provide a valid user ID and equipment name");
           return;
         }
 
@@ -259,58 +260,45 @@ function JoinWaitlist({toggle, id}) {
     toggle()
     }
 
-    const maxNumberOfSets = 5; //arbitrary number for now
-    const setElements = [];
-    for (let i = 1; i < maxNumberOfSets+1; i++)
-    {
-      setElements.push(
-        <option value={i}>{i}</option>
-      )
-    }
-
     return (
       <div className="popup">
           <div className="popup-inner">
-              <h2>Join Waitlist</h2>
+              <h2>Join the Waitlist
+              {foundMachine ? <div> of {machine_name}</div> : null}
+              </h2>
+              <label>When it is your turn on the waitlist, you will have 15 minutes.</label>
               <button className="close-button-top-right" onClick={toggle}>
               <span class="material-symbols-outlined">close</span>
               </button>
               <form onSubmit={handleJoinWaitlist}>
-                  <label>
-                      Number of Sets:
-                      <select value={numberOfSets} onChange={e => setNumberOfSets(parseInt(e.target.value))}>
-                        {setElements}
-                      </select>
-                  </label>
-                  <button type="submit">Join Waitlist</button>
+                  <button type="submit">Join</button>
               </form>
           </div>
       </div>
   )
 }
 
-async function getEquipmentNames() {
-  try {
-    // this gets all equipment objects from the mongo equpiment database
-    const equipmentList = await Equipment.find();
+function Error(props) {
 
-    // get only the name of each equipment
-    const eqipNames = equipmentList.map(equipment => equipment.name);
-
-    
-    return eqipNames; 
-  } catch (err) {
-    console.error("Error retrieving equipment names:", err);
-    return []; // Return an empty array in case of error
-  }
+  return (
+      <div className="popup">
+          <div className="popup-inner">
+              <h3>{props.message}</h3>
+              <button className="close-button-top-right" onClick={props.toggle}>
+              <span class="material-symbols-outlined">close</span>
+              </button>
+          </div>
+      </div>
+  )
 }
 
 export default function App() {
   const [joinSeen, setJoinSeen] = useState(false)
   const [loginSeen, setLoginSeen] = useState(false)
+  const [errorSeen, setErrorSeen] = useState(false)
   const [signUpSeen, setSignUpSeen] = useState(false)
   const [currentPopupId, setCurrentPopupId] = useState(null)
-  const [selected, setSelected] = useState(null)
+  const [currentErrorMessage, setCurrentErrorMessage] = useState(null)
 
   const toggleJoinPopup = (id) => {
     setCurrentPopupId(id);
@@ -325,6 +313,11 @@ export default function App() {
     setSignUpSeen(!signUpSeen);
   };
 
+  function toggleErrorPopup (message) {
+    setCurrentErrorMessage(message)
+    setErrorSeen(!errorSeen);
+  }
+
   return(
   <div>
     <div class="header">
@@ -335,25 +328,40 @@ export default function App() {
         <div class="topnav-buttons" onClick={toggleLoginPopup}>
           Login
         </div>
-        {loginSeen ? <Login toggle={toggleLoginPopup} /> : null}
+        {loginSeen ? <Login toggle={toggleLoginPopup} setMessage={toggleErrorPopup}/> : null}
         <div class="topnav-buttons" onClick={toggleSignUpPopup}>
           Sign up
         </div>
-        {signUpSeen ? <SignUp toggle={toggleSignUpPopup} /> : null}
+        {signUpSeen ? <SignUp toggle={toggleSignUpPopup} setMessage={toggleErrorPopup}/> : null}
       </div>
+      {errorSeen ? <Error toggle={toggleErrorPopup} message={currentErrorMessage} /> : null}
     </div>
     <Routes>
-        <Route path="/kwong05/f24cs35l/" element={<MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} />} />
-        <Route path="/kwong05/f24cs35l/:machineId" element={<MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} />} />
+        <Route path="/kwong05/f24cs35l/" element={<MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup}/>} />
+        <Route path="/kwong05/f24cs35l/:machineId" element={<MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup}/>} />
     </Routes>
   </div>
   );
 }
 
+async function getEquipmentNames() {
+  try {
+    // this gets all equipment objects from the mongo equpiment database
+    const equipmentList = await Equipment.find();
+    // get only the name of each equipment
+    const eqipNames = equipmentList.map(equipment => equipment.name);
+    
+    return eqipNames; 
+  } catch (err) {
+    console.error("Error retrieving equipment names:", err);
+    return []; // Return an empty array in case of error
+  }
+}
+
 //fake data
-const MACHINES = getEquipmentNames();
-  /*[
+const MACHINES = [
   {name: "Treadmill 1", id: "treadmill_1", waitlist: ["username1", "username2", "username3"]},
   {name: "Treadmill 2", id: "treadmill_2", waitlist: []},
   {name: "Smith Machine", id: "smith", waitlist: ["username1", "username2"]},
-]; */
+];
+//const MACHINES = getEquipmentNames();
