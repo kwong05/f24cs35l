@@ -2,7 +2,7 @@ BruinWait-Lifting
 # About
 BruinWait allows users to manage their gym equipment usage through a waitlist system based on NFC tags or QR codes. We aim to optimize gym equipment availability and create a good user experience both in the app and in the gym.
 
-It involves a database of users and equipment, a client-side React application, and a server to orchestrate operations.
+It involves a MongoDB database of users and equipment, a client-side React application, and an Express server to orchestrate operations.
 
 This is a Fall 2024 CS35L project by Nico Franz, Ria Kundu, Alexander Shen, Keshiv Tandon, and Kevin Wong.
 
