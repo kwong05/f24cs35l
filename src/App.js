@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 //handles all machines
-function MachineCards({machines, joinSeen, toggleJoinPopup})
+function MachineCards({machines, joinSeen, toggleJoinPopup, currentPopupId})
 {
   const cards = []
   machines.forEach((machine) => {
     cards.push(
-      <Card machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup}/>
+      <Card key={machine.id} machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId}/>
     )
   })
   return (
@@ -17,7 +17,7 @@ function MachineCards({machines, joinSeen, toggleJoinPopup})
 }
 
 //one machine card (machine name, join button, list of users waiting)
-function Card({ machine, joinSeen, toggleJoinPopup})
+function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId})
 {
   let collapsible_text = machine.waitlist.length + " people waiting..."
   let estimated_time = machine.waitlist.length * 15 + " minutes"; 
@@ -31,10 +31,10 @@ function Card({ machine, joinSeen, toggleJoinPopup})
     <div class="card">
         <div class="card-title">
           {machine.name}
-            <button type="button" class="join-waitlist-button" onClick = {toggleJoinPopup}>
+            <button type="button" class="join-waitlist-button" onClick={() => toggleJoinPopup(machine.id)} >
               Join Waitlist
             </button>
-            {joinSeen ? <JoinWaitlist toggle={toggleJoinPopup} /> : null}
+            {joinSeen ? <JoinWaitlist toggle={toggleJoinPopup} id={currentPopupId}/> : null}
         </div>
         <div class="collapsible"> {/* todo: implement collapsible button, right now does nothing */}
           <button type="button" class="collapsible-button">
@@ -204,22 +204,22 @@ function Login(props) {
 }
 
 //join waitlist popup 
-function JoinWaitlist(props) {
+function JoinWaitlist({toggle, id}) {
   //number of sets + total estimated time 
   const [numberOfSets, setNumberOfSets] = useState(1)
-  const [estTime, setEstTime] = useState(0)
 
   async function handleJoinWaitlist(e) {
       e.preventDefault();
-      const desiredEquipmentName = 'Example Equipment';  // will update this once we handle the equipment name when you signup
+      const selectedEquipment = id; //the id of the machine that the user is trying to join
       //const token = localStorage.getItem('token'); // if JWT token in localStorage
+
       //handle joining waitlist
        try {
       // Validate user input
-      if (!userId || !desiredEquipmentName) {
-        setMessage('Please provide a valid user ID and equipment name');
-        return;
-      }
+        if (!userId || !selectedEquipment) {
+          setMessage('Please provide a valid user ID and equipment name');
+          return;
+        }
 
       // Send the POST request to the backend
       const response = await fetch('/join', {
@@ -228,7 +228,7 @@ function JoinWaitlist(props) {
           'Content-Type': 'application/json', // Tell the backend you're sending JSON data
           //'Authorization': `Bearer ${token}`, // Send the JWT token in the Authorization header
         },
-        body: JSON.stringify({ name: desiredEquipmentName }), // Send the desired equipment name
+        body: JSON.stringify({ name: selectedEquipment }), // Send the desired equipment name
       });
 
       const data = await response.json();
@@ -242,25 +242,23 @@ function JoinWaitlist(props) {
       console.error('Error joining waitlist:', error);
       setMessage('An error occurred. Please try again later.');
     }
-    
-    props.toggle()
-    
-  }
+    toggle()
+    }
 
-  const maxNumberOfSets = 5; //arbitrary number for now
-  const setElements = [];
-  for (let i = 1; i < maxNumberOfSets+1; i++)
-  {
-    setElements.push(
-      <option value={i}>{i}</option>
-    )
-  }
+    const maxNumberOfSets = 5; //arbitrary number for now
+    const setElements = [];
+    for (let i = 1; i < maxNumberOfSets+1; i++)
+    {
+      setElements.push(
+        <option value={i}>{i}</option>
+      )
+    }
 
-  return (
+    return (
       <div className="popup">
           <div className="popup-inner">
               <h2>Join Waitlist</h2>
-              <button className="close-button-top-right" onClick={props.toggle}>
+              <button className="close-button-top-right" onClick={toggle}>
               <span class="material-symbols-outlined">close</span>
               </button>
               <form onSubmit={handleJoinWaitlist}>
@@ -281,8 +279,10 @@ export default function App() {
   const [joinSeen, setJoinSeen] = useState(false)
   const [loginSeen, setLoginSeen] = useState(false)
   const [signUpSeen, setSignUpSeen] = useState(false)
+  const [currentPopupId, setCurrentPopupId] = useState(null)
 
-  function toggleJoinPopup () {
+  const toggleJoinPopup = (id) => {
+    setCurrentPopupId(id);
     setJoinSeen(!joinSeen);
   };
 
@@ -295,7 +295,7 @@ export default function App() {
   };
 
   return(
-  <body>
+  <div>
     <div class="header">
       <div class="topnav">
         {/*<topnav-icon><img src="" alt="logo" width="30" height="30"></img></topnav-icon> <-- placeholder for logo, if we want*/} 
@@ -312,8 +312,8 @@ export default function App() {
         {signUpSeen ? <SignUp toggle={toggleSignUpPopup} /> : null}
       </div>
     </div>
-    <MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup}/>
-  </body>
+    <MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId}/>
+  </div>
   );
 
 
@@ -321,7 +321,7 @@ export default function App() {
 
 //fake data
 const MACHINES = [
-  {name: "Treadmill 1", waitlist: ["username1", "username2", "username3"]},
-  {name: "Treadmill 2", waitlist: []},
-  {name: "Smith Machine", waitlist: ["username1", "username2"]},
+  {name: "Treadmill 1", id: "treadmill_1", waitlist: ["username1", "username2", "username3"]},
+  {name: "Treadmill 2", id: "treadmill_2", waitlist: []},
+  {name: "Smith Machine", id: "smith", waitlist: ["username1", "username2"]},
 ];
