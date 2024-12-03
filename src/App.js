@@ -124,7 +124,7 @@ function SignUp(props)
               <button className="close-button-top-right" onClick={props.toggle}>
                 <span class="material-symbols-outlined">close</span>
               </button>
-              <form onSubmit={handleLogin}>
+              <form onSubmit={handleSignUp}>
                   <label>
                       Username:
                       <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
@@ -141,7 +141,7 @@ function SignUp(props)
                       Confirm password:
                       <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
                   </label>
-                  <button type="submit">Login</button>
+                  <button type="submit">Sign Up</button>
               </form>
           </div>
       </div>
