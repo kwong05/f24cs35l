@@ -162,7 +162,9 @@ function JoinWaitlist(props) {
   const [estTime, setEstTime] = useState(0)
 
   async function handleJoinWaitlist(e) {
-      e.preventDefault()
+      e.preventDefault();
+      const desiredEquipmentName = 'Example Equipment';  // will update this once we handle the equipment name when you signup
+      //const token = localStorage.getItem('token'); // if JWT token in localStorage
       //handle joining waitlist
        try {
       // Validate user input
