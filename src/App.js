@@ -87,7 +87,7 @@ function SignUp(props)
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  function handleLogin(e) {
+  function handleSignUp(e) {
       e.preventDefault()
       //handle signup
       props.toggle()
