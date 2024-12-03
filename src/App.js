@@ -315,7 +315,7 @@ export default function App() {
       <div class="topnav">
         {/*<topnav-icon><img src="" alt="logo" width="30" height="30"></img></topnav-icon> <-- placeholder for logo, if we want*/} 
         <div class="topnav-icon"><span class="material-symbols-outlined">fitness_center</span></div>
-        <Link class="topnav-appname" to="/">Bruin Wait-Lifting</Link>
+        <Link class="topnav-appname" to="/kwong05/f24cs35l/">Bruin Wait-Lifting</Link>
         <div class="topnav-buttons" onClick={toggleLoginPopup}>
           Login
         </div>
