@@ -293,12 +293,13 @@ function Error(props) {
 }
 
 export default function App() {
-  const [joinSeen, setJoinSeen] = useState(false)
-  const [loginSeen, setLoginSeen] = useState(false)
-  const [errorSeen, setErrorSeen] = useState(false)
-  const [signUpSeen, setSignUpSeen] = useState(false)
-  const [currentPopupId, setCurrentPopupId] = useState(null)
-  const [currentErrorMessage, setCurrentErrorMessage] = useState(null)
+  const [joinSeen, setJoinSeen] = useState(false);
+  const [loginSeen, setLoginSeen] = useState(false);
+  const [errorSeen, setErrorSeen] = useState(false);
+  const [signUpSeen, setSignUpSeen] = useState(false);
+  const [currentPopupId, setCurrentPopupId] = useState(null);
+  const [currentErrorMessage, setCurrentErrorMessage] = useState(null);
+  const [MACHINES, setMACHINES] = useState([]);
 
   const toggleJoinPopup = (id) => {
     setCurrentPopupId(id);
@@ -316,7 +317,25 @@ export default function App() {
   function toggleErrorPopup (message) {
     setCurrentErrorMessage(message)
     setErrorSeen(!errorSeen);
-  }
+  };
+
+  const fetchEquipNames = async () => {
+    try {
+      // Make a GET request to the backend API to fetch the equipment names
+      const response = await fetch('/api/equipment'); 
+      const data = await response.json(); 
+
+      // Set the equipment names in the state
+      setMACHINES(data); // can change this to be objects depending on how we display it
+    } catch (error) {
+      console.error('Error fetching equipment names:', error);
+    }
+  };
+
+  // Fetch the equipment names once when the component mounts
+  useEffect(() => {
+    fetchEquipNames();
+  }, []);
 
   return(
   <div>
@@ -344,24 +363,11 @@ export default function App() {
   );
 }
 
-async function getEquipmentNames() {
-  try {
-    // this gets all equipment objects from the mongo equpiment database
-    const equipmentList = await equipment.find();
-    // get only the name of each equipment
-    const eqipNames = equipmentList.map(equipment => equipment.name);
-    
-    return eqipNames; 
-  } catch (err) {
-    console.error("Error retrieving equipment names:", err);
-    return []; // Return an empty array in case of error
-  }
-}
 
-//fake data
-const MACHINES = [
+// i don't think we need this anymore, defined in App()
+/*const MACHINES = [
   {name: "Treadmill 1", id: "treadmill_1", waitlist: ["username1", "username2", "username3"]},
   {name: "Treadmill 2", id: "treadmill_2", waitlist: []},
   {name: "Smith Machine", id: "smith", waitlist: ["username1", "username2"]},
-];
+];*/
 //const MACHINES = getEquipmentNames();
