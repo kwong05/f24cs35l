@@ -88,7 +88,7 @@ function SignUp(props)
   const [confirmPassword, setConfirmPassword] = useState('')
   const [username, setUsername] = useState('')
 
-  function handleSignUp(e) {
+  async function handleSignUp(e) {
       e.preventDefault()
       //handle signup
       if(password !== confirmPassword)
@@ -153,7 +153,7 @@ function Login(props) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
       e.preventDefault()
       // handle login
       const userData = { username, password };
