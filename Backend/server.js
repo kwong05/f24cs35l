@@ -46,6 +46,18 @@ mongoose.connect(uri, {
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
+// get the equipment from the database
+app.get('/api/equipment', async (req, res) => {
+  try {
+    const equipmentList = await equipment.find({}, 'name'); // Only fetch 'name' field
+
+    // send names as a json
+    res.json(equipmentList);
+  } catch (err) {
+    res.status(500).json({ message: 'Error retrieving equipment data' });
+  }
+});
+
 app.post('/signup',
     body('username').trim().isLength({ min: 3 }).escape(),
     body('password').isLength({ min: 6 }).escape(),
