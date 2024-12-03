@@ -175,7 +175,8 @@ function JoinWaitlist(props) {
       const response = await fetch('/join', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', // Tell the backend you're sending JSON data
+          //'Authorization': `Bearer ${token}`, // Send the JWT token in the Authorization header
         },
         body: JSON.stringify({ name: desiredEquipmentName }), // Send the desired equipment name
       });
