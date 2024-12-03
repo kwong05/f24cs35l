@@ -6,8 +6,8 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const User = require('./Models/User'); // TODO ERR_REQUIRE_ESM
-const Equipment = require('./Models/Equipment');
+const User = require('./models/User'); // TODO ERR_REQUIRE_ESM
+const Equipment = require('./models/Equipment');
 const cron = require('node-cron');
 
 
@@ -48,14 +48,14 @@ mongoose.connect(uri, {
 
 // get the equipment from the database
 app.get('/api/equipment', async (req, res) => {
-  try {
-    const equipmentList = await Equipment.find({}, 'name'); // Only fetch 'name' field
+    try {
+        const equipmentList = await Equipment.find({}, 'name'); // Only fetch 'name' field
 
-    // send names as a json
-    res.json(equipmentList);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving equipment data' });
-  }
+        // send names as a json
+        res.json(equipmentList);
+    } catch (err) {
+        res.status(500).json({ message: 'Error retrieving equipment data' });
+    }
 });
 
 app.post('/signup',
@@ -69,7 +69,7 @@ app.post('/signup',
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { username, password, email} = req.body;
+        const { username, password, email } = req.body;
 
         try {
             // Check if the username is already taken
@@ -90,7 +90,7 @@ app.post('/signup',
             // Create a new user instance
             console.log('Hashing password for user:', username);
             const hashedPassword = await bcrypt.hash(password, saltRounds);
-            
+
 
             // Check if admin acct
             console.log('Checking if user is admin');
@@ -132,8 +132,8 @@ app.post('/login', async (req, res) => {
         //const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '1h' });
         const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
         res.json({ token });
-    } catch(error) {
-        res.status(500).json({message: 'Error during login', error});
+    } catch (error) {
+        res.status(500).json({ message: 'Error during login', error });
     }
 });
 
@@ -156,7 +156,7 @@ function isAdmin(req, res, next) {
     const userId = req.user.id;
     console.log('Checking admin credentials');
     if (userId != 'ADMIN_ID') // TODO: put admin's Id (not created yet)
-        return res.status(400).json({message: 'User not admin'});
+        return res.status(400).json({ message: 'User not admin' });
     next();
 }
 
@@ -165,14 +165,14 @@ app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
         const equipmentName = req.body;
 
         console.log('Checking if equipment exists:', equipmentName);
-        const equipmentExists = Equipment.findOne({name: equipmentName});
+        const equipmentExists = Equipment.findOne({ name: equipmentName });
         if (equipmentExists) {
             console.error('Equipment already exists:', equipmentName);
-            return res.status(400).json({message: 'Equipment name already taken'});
+            return res.status(400).json({ message: 'Equipment name already taken' });
         }
-        
+
         console.log('Saving new equipment to database:', equipmentName);
-        const newEquipment = new Equipment({name: equipmentName});
+        const newEquipment = new Equipment({ name: equipmentName });
         await newEquipment.save();
 
         res.status(201).json({ message: 'Equipment created successfully' });
@@ -185,9 +185,9 @@ app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
 app.post('/removeEquipment', authenticateToken, isAdmin, doesEquipmentExist, async (req, res) => {
     try {
         const equipmentName = req.body;
-        
+
         console.log('Removing equipment from database:', equipmentName);
-        await Equipment.deleteOne({name: equipmentName});
+        await Equipment.deleteOne({ name: equipmentName });
 
         res.status(201).json({ message: 'Equipment removed successfully' });
     } catch (error) {
@@ -201,8 +201,8 @@ app.post('/removeEquipment', authenticateToken, isAdmin, doesEquipmentExist, asy
 async function doesEquipmentExist(req, res, next) {
     const equipmentName = req.body;
     console.log("doesEquipmentExist called on " + equipmentName);
-    const equipmentExists = await Equipment.findOne({name: equipmentName});
-    if (!equipmentExists) return res.sendStatus(400).json({message: "doesEquipmentExist: requested equipment " + equipmentName + " does not exist"});
+    const equipmentExists = await Equipment.findOne({ name: equipmentName });
+    if (!equipmentExists) return res.sendStatus(400).json({ message: "doesEquipmentExist: requested equipment " + equipmentName + " does not exist" });
 
     next();
 };
@@ -210,7 +210,7 @@ async function doesEquipmentExist(req, res, next) {
 // Join queue for equipment
 app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     const desiredEquipmentName = req.body;
-    
+
     // get the current username
     const currentUser = req.user.id;
 
@@ -219,13 +219,13 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     if (currentUser.queuedEquipment != null)
         isQueued = true;
     //isQueued = await Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
-    if (isQueued) return res.status(403).json({message: 'User already queued'});
+    if (isQueued) return res.status(403).json({ message: 'User already queued' });
 
     //check that the user's current equipment will run out of time before new equiupment is ready
-    const desiredEquipment = await Equipment.findOne({"name": desiredEquipmentName});
+    const desiredEquipment = await Equipment.findOne({ "name": desiredEquipmentName });
     const currentEquipment = currentUser.currentEquipment;
     if ((currentEquipment.unlockTime > desiredEquipment.unlockTime) && (desiredEquipment.userQueue == []))
-        return res.status(403).json({message: "User's current equipment will unlock after desired equipment"});
+        return res.status(403).json({ message: "User's current equipment will unlock after desired equipment" });
 
     // add user to equipment queue
     desiredEquipment.userQueue.push(currentUser);
@@ -243,8 +243,8 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
     const currentUser = req.user.id;
 
     // ensure User is already waiting in queue for equipment
-    const undesiredEquipment = await Equipment.findOne({"name": undesiredEquipmentName, "userQueue.userID": currentUser});
-    if (!undesiredEquipment) return res.status(403).json({message: 'User does not exist in queue'});
+    const undesiredEquipment = await Equipment.findOne({ "name": undesiredEquipmentName, "userQueue.userID": currentUser });
+    if (!undesiredEquipment) return res.status(403).json({ message: 'User does not exist in queue' });
 
     // remove user from equipment queue
     userIdx = undesiredEquipment.userQueue.indexOf(currentUser);
