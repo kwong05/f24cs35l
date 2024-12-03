@@ -161,7 +161,7 @@ function JoinWaitlist(props) {
   const [numberOfSets, setNumberOfSets] = useState(1)
   const [estTime, setEstTime] = useState(0)
 
-  function handleJoinWaitlist(e) {
+  async function handleJoinWaitlist(e) {
       e.preventDefault()
       //handle joining waitlist
        try {
