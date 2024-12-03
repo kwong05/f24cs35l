@@ -83,7 +83,7 @@ app.post('/signup',
             // Check if admin acct
             console.log('Checking if user is admin');
             const isAdmin = false;
-            if ((username == 'gymadmin') && (email == 'gymadmin@gmail.com')) {
+            if ((username == 'gymadmin') && (email == 'bruinwaitlift@gmail.com')) {
                 console.log('User is admin');
                 isAdmin = true;
             }
