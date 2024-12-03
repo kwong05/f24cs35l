@@ -113,7 +113,7 @@ function SignUp(props)
       } catch (error) {
         console.error('Network or server error:', error); 
       }
-      //props.toggle()
+      props.toggle()
   }
 
   //todo: test that passwords match, add display/hide password functionality 
@@ -156,7 +156,28 @@ function Login(props) {
   function handleLogin(e) {
       e.preventDefault()
       // handle login
-      props.toggle()
+      const userData = { username, password };
+      
+      try {
+        // make the post request to /signup 
+        const response = await fetch('/signup', {
+          method: 'POST', // HTTP method
+          headers: {
+            'Content-Type': 'application/json', 
+          },
+          body: JSON.stringify(userData), 
+        });
+        const data = await response.json(); 
+        if (response.ok) {
+          console.log('Login successful', data); 
+        } else {
+          console.error('Error during login:', data.message); 
+        }
+      } catch (error) {
+        console.error('Network or server error:', error); 
+      }
+    
+      props.toggle()  
   }
 
   return (
@@ -222,7 +243,7 @@ function JoinWaitlist(props) {
       setMessage('An error occurred. Please try again later.');
     }
     
-      props.toggle()
+    props.toggle()
     
   }
 
