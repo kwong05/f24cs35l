@@ -217,7 +217,7 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
 
     // add user to equipment queue
     desiredEquipment.userQueue.push(currentUser);
-    currentUser.equipmentQueue = desiredEquipment;
+    currentUser.equipmentQueue.push(desiredEquipment);
     await desiredEquipment.save();
     await currentUser.save();
     return res.status(200);
