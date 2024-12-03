@@ -86,6 +86,7 @@ function SignUp(props)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [username, setUsername] = useState('')
 
   function handleSignUp(e) {
       e.preventDefault()
@@ -102,6 +103,10 @@ function SignUp(props)
                 <span class="material-symbols-outlined">close</span>
               </button>
               <form onSubmit={handleLogin}>
+                  <label>
+                      Username:
+                      <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
+                  </label>
                   <label>
                       Email:
                       <input type="text" value={email} onChange={e => setEmail(e.target.value)} />
@@ -256,6 +261,7 @@ export default function App() {
         <div class="topnav-buttons" onClick={toggleLoginPopup}>
           Login
         </div>
+  
         {loginSeen ? <Login toggle={toggleLoginPopup} /> : null}
         <div class="topnav-buttons" onClick={toggleSignUpPopup}>
           Sign up
