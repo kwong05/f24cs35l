@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { BrowserRouter as Router, useParams, Link } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom'; 
 
 //handles all machines
 function MachineCards({machines, joinSeen, toggleJoinPopup, currentPopupId})
@@ -9,9 +11,21 @@ function MachineCards({machines, joinSeen, toggleJoinPopup, currentPopupId})
       <Card key={machine.id} machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId}/>
     )
   })
+
+  const { machineId } = useParams(); 
+  const tryToFindMachine = machines.find(m => m.id === machineId);
+
+  if(!tryToFindMachine) {
+    return (
+      <div class="machine-cards">
+        {cards}
+      </div>
+    )
+  }
+
   return (
     <div class="machine-cards">
-      {cards}
+      <Card key={machineId} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId}/>
     </div>
   )
 }
@@ -280,6 +294,7 @@ export default function App() {
   const [loginSeen, setLoginSeen] = useState(false)
   const [signUpSeen, setSignUpSeen] = useState(false)
   const [currentPopupId, setCurrentPopupId] = useState(null)
+  const [selected, setSelected] = useState(null)
 
   const toggleJoinPopup = (id) => {
     setCurrentPopupId(id);
@@ -300,11 +315,10 @@ export default function App() {
       <div class="topnav">
         {/*<topnav-icon><img src="" alt="logo" width="30" height="30"></img></topnav-icon> <-- placeholder for logo, if we want*/} 
         <div class="topnav-icon"><span class="material-symbols-outlined">fitness_center</span></div>
-        <div class="topnav-appname">Bruin Wait-Lifting</div>
+        <Link class="topnav-appname" to="/">Bruin Wait-Lifting</Link>
         <div class="topnav-buttons" onClick={toggleLoginPopup}>
           Login
         </div>
-  
         {loginSeen ? <Login toggle={toggleLoginPopup} /> : null}
         <div class="topnav-buttons" onClick={toggleSignUpPopup}>
           Sign up
@@ -312,11 +326,12 @@ export default function App() {
         {signUpSeen ? <SignUp toggle={toggleSignUpPopup} /> : null}
       </div>
     </div>
-    <MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId}/>
+    <Routes>
+        <Route path="/kwong05/f24cs35l/" element={<MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} />} />
+        <Route path="/kwong05/f24cs35l/:machineId" element={<MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} />} />
+    </Routes>
   </div>
   );
-
-
 }
 
 //fake data
