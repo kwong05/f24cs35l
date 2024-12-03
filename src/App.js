@@ -91,7 +91,29 @@ function SignUp(props)
   function handleSignUp(e) {
       e.preventDefault()
       //handle signup
-      props.toggle()
+      if(password !== confirmPassword)
+        console.error("The two passwords do not match. Try again.");
+            
+      const userData = { username, password, email };
+      try {
+        // make the post request to /signup 
+        const response = await fetch('/signup', {
+          method: 'POST', // HTTP method
+          headers: {
+            'Content-Type': 'application/json', // we are sending JSON
+          },
+          body: JSON.stringify(userData), // converts the data to a JSON string
+        });
+        const data = await response.json(); 
+        if (response.ok) {
+          console.log('Signup successful', data); 
+        } else {
+          console.error('Error during signup:', data.message); 
+        }
+      } catch (error) {
+        console.error('Network or server error:', error); 
+      }
+      //props.toggle()
   }
 
   //todo: test that passwords match, add display/hide password functionality 
