@@ -49,7 +49,7 @@ mongoose.connect(uri, {
 // get the equipment from the database
 app.get('/api/equipment', async (req, res) => {
   try {
-    const equipmentList = await equipment.find({}, 'name'); // Only fetch 'name' field
+    const equipmentList = await Equipment.find({}, 'name'); // Only fetch 'name' field
 
     // send names as a json
     res.json(equipmentList);
