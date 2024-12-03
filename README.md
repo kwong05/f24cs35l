@@ -4,7 +4,7 @@ BruinWait allows users to manage their gym equipment usage through a waitlist sy
 
 It involves a MongoDB database of users and equipment, a client-side React application, and an Express server to orchestrate operations.
 
-This is a Fall 2024 CS35L project by Nico Franz ([n-franz](https://github.com/n-franz)), Ria Kundu ([ria-kundu](https://github.com/ria-kundu)), Alexander Shen, Keshiv Tandon ([KeshivT](https://github.com/KeshivT)), and Kevin Wong ([kwong05](https://github.com/kwong05)), members of [group 31](https://docs.google.com/spreadsheets/d/197j2UxHFPtvOMseaxZuWUV0CE0oJPkdMcMjlUsVwgwI/edit?gid=1172905667#gid=1172905667&range=B176:B181).
+This is a Fall 2024 CS35L project by Nico Franz ([n-franz](https://github.com/n-franz)), Ria Kundu ([ria-kundu](https://github.com/ria-kundu)), Alexander Shen ([alexandershen27](https://github.com/alexandershen27)), Keshiv Tandon ([KeshivT](https://github.com/KeshivT)), and Kevin Wong ([kwong05](https://github.com/kwong05)), members of [group 31](https://docs.google.com/spreadsheets/d/197j2UxHFPtvOMseaxZuWUV0CE0oJPkdMcMjlUsVwgwI/edit?gid=1172905667#gid=1172905667&range=B176:B181).
 
 ## Features
 **Waitlist Management:**
