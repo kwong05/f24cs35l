@@ -347,7 +347,7 @@ export default function App() {
 async function getEquipmentNames() {
   try {
     // this gets all equipment objects from the mongo equpiment database
-    const equipmentList = await Equipment.find();
+    const equipmentList = await equipment.find();
     // get only the name of each equipment
     const eqipNames = equipmentList.map(equipment => equipment.name);
     
