@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Equipment = require('../models/Equipment');
+const User = require('../models/User');
 
 // get all the inputted equipment from the database to display it in frontend
 router.get('/fetchEquipment', async (req, res) => {
@@ -55,8 +56,13 @@ router.post('/removeEquipment', async (req, res) => {
 // Join queue for equipment
 router.post('/join', async (req, res) => {
 
+    // parse from req JSON
     const desiredEquipmentName = req.body.equipmentName;
-    const currentUser = req.body.username;
+    const currentUsername = req.body.username;
+
+    // verify user exists
+    const currentUser = User.findOne({"username": currentUsername});
+    if (!currentUser) return res.status(404).json({message: 'User does not exist' });
 
     // ensure User is not already waiting in queue for equipment
     isQueued = false;
@@ -74,6 +80,7 @@ router.post('/join', async (req, res) => {
     // add user to equipment queue
     desiredEquipment.userQueue.push(currentUser);
     currentUser.equipmentQueue.push(desiredEquipment);
+
     await desiredEquipment.save();
     await currentUser.save();
     return res.status(200);
@@ -82,8 +89,13 @@ router.post('/join', async (req, res) => {
 // Leave queue for equipment
 router.post('/renege', async (req, res) => {
 
-    const undesiredEquipmentName = req.body.equipmentName;
-    const currentUser = req.body.username;
+    // parse from req JSON
+    const desiredEquipmentName = req.body.equipmentName;
+    const currentUsername = req.body.username;
+
+    // verify user exists
+    const currentUser = User.findOne({"username": currentUsername});
+    if (!currentUser) return res.status(404).json({message: 'User does not exist' });
 
     // ensure User is already waiting in queue for equipment
     const undesiredEquipment = await Equipment.findOne({ "name": undesiredEquipmentName, "userQueue.userID": currentUser });
