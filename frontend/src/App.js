@@ -103,6 +103,8 @@ function App() {
         isLoggedIn={isLoggedIn}
         username={username}
         handleLogout={handleLogout}
+        addMachineSeen={addMachineSeen}
+        toggleMachinePopup={toggleMachinePopup}
       />
       {loginSeen && (
         <Login
