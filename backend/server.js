@@ -44,18 +44,6 @@ mongoose.connect(uri, {
 // Use userRoutes
 app.use('/api/users', userRoutes);
 
-// get the equipment from the database
-app.get('/api/equipment', async (req, res) => {
-    try {
-        const equipmentList = await Equipment.find({}, 'name'); // Only fetch 'name' field
-        console.log(equipmentList);
-        // send names as a json
-        res.json(equipmentList);
-    } catch (err) {
-        res.status(500).json({ message: 'Error retrieving equipment data' });
-    }
-});
-
 // Protection
 function authenticateToken(req, res, next) {
     // const authHeader = req.headers['authorization'];
