@@ -2,17 +2,17 @@ import React from 'react';
 import Card from './Card';
 import { BrowserRouter as Router, useParams } from 'react-router-dom';
 
-function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, loggedIn, toggleFavorite }) {
+function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite }) {
   const cards = []
   let favorites = [];
-  if (loggedIn) {
+  if (isLoggedIn) {
     //get current user's favorites
     //favorites = getFavorites();
     favorites.forEach((favorite) => {
       const tryToFindMachine = machines.find(m => m._id === favorite);
       if (tryToFindMachine) {
         cards.push(
-          <Card key={tryToFindMachine._id} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={true} toggleFavorite={toggleFavorite} />
+          <Card key={tryToFindMachine._id} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} isLoggedIn={isLoggedIn} favorite={true} toggleFavorite={toggleFavorite} />
         )
       }
     })
@@ -20,12 +20,12 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
   //add rest of machines to the array
   let addCardToArray = true;
   machines.forEach((machine) => {
-    if (loggedIn) {
+    if (isLoggedIn) {
       addCardToArray = !(favorites.includes(machine._id))
     }
     if (addCardToArray) {
       cards.push(
-        <Card key={machine._id} machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={false} toggleFavorite={toggleFavorite} />
+        <Card key={machine._id} machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} isLoggedIn={isLoggedIn} favorite={false} toggleFavorite={toggleFavorite} />
       )
     }
   })
@@ -44,7 +44,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
 
   return (
     <div className="machine-cards">
-      <Card key={machineId} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={loggedIn && favorites.includes(tryToFindMachine._id)} toggleFavorite={toggleFavorite} />
+      <Card key={machineId} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} isLoggedIn={isLoggedIn} favorite={isLoggedIn && favorites.includes(tryToFindMachine._id)} toggleFavorite={toggleFavorite} />
     </div>
   )
 }
