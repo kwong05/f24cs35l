@@ -1,16 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { addEquipment, getEquipment } = require('../controllers/equipmentController');
-const authenticateToken = require('../middlewares/authenticateToken');
-const isAdmin = require('../middlewares/isAdmin');
-
-router.post('/addEquipment', authenticateToken, isAdmin, addEquipment);
-router.get('/equipment', getEquipment);
-
-module.exports = router;
 
 // get all the inputted equipment from the database to display it in frontend
-app.get('/fetchEquipment', async (req, res) => {
+router.get('/fetchEquipment', async (req, res) => {
     try {
         //console.log("DEBUG");
         const equipmentList = await Equipment.find({}, 'name'); // only get the names
@@ -22,7 +14,7 @@ app.get('/fetchEquipment', async (req, res) => {
     }
 });
 
-app.post('/addEquipment', async (req, res) => {
+router.post('/addEquipment', async (req, res) => {
     try {
         const { name: equipmentName } = req.body;
 
@@ -45,7 +37,7 @@ app.post('/addEquipment', async (req, res) => {
     }
 });
 
-app.post('/removeEquipment', async (req, res) => {
+router.post('/removeEquipment', async (req, res) => {
     try {
         const { name: equipmentName } = req.body;
 
@@ -60,7 +52,7 @@ app.post('/removeEquipment', async (req, res) => {
 });
 
 // Join queue for equipment
-app.post('/join', async (req, res) => {
+router.post('/join', async (req, res) => {
 
     const desiredEquipmentName = req.body.equipmentName;
     const currentUser = req.body.username;
@@ -87,7 +79,7 @@ app.post('/join', async (req, res) => {
 });
 
 // Leave queue for equipment
-app.post('/renege', async (req, res) => {
+router.post('/renege', async (req, res) => {
 
     const undesiredEquipmentName = req.body.equipmentName;
     const currentUser = req.body.username;
@@ -107,3 +99,5 @@ app.post('/renege', async (req, res) => {
     await currentUser.save();
     return res.status(200);
 });
+
+module.exports = router;
