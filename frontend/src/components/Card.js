@@ -7,10 +7,10 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
     setListOpen(!listOpen);
   }
 
-  let collapsible_text = machine.waitlist.length + " people waiting..."
-  let estimated_time = machine.waitlist.length * 15 + " minutes"; 
+  let collapsible_text = machine.userQueue.length + " people waiting..."
+  let estimated_time = machine.unlockTime + " minutes"; 
     
-  if(machine.waitlist.length == 0) {
+  if(machine.userQueue && machine.userQueue.length == 0) {
     collapsible_text = "Waitlist is empty"
     estimated_time = "";
   }
@@ -41,7 +41,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
             <div class="collapsible"> 
           <button type="button" class="collapsible-button" onClick={() => toggleListOpen()}>
               <div class="collapsible-description">
-                {machine.waitlist.length != 0 ? (
+                {machine.userQueue && machine.userQueue.length != 0 ? (
                   listOpen ? <span class="material-symbols-outlined arrow">keyboard_arrow_down</span> : <span class="material-symbols-outlined arrow">chevron_right</span>
                 ) : null
                 }
@@ -52,7 +52,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
               </div>
           </button>
           <div>
-            {listOpen ? <CardList waitlist={machine.waitlist}/> : null}
+            {listOpen ? <CardList waitlist={machine.userQueue}/> : null}
           </div>
         </div>
         </div>
