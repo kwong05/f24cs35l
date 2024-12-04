@@ -115,6 +115,35 @@ button {
 	border-radius: 10px;
 }
 
+.inactive-favorite {
+	padding:10px 10px;
+	float: right;
+	color: #aaaaaa;
+	font-variation-settings:
+		'FILL' 0;
+}
+
+.inactive-favorite:hover {
+	color: #aaaaaa;
+	font-variation-settings:
+		'FILL' 1;
+}
+
+.active-favorite {
+	padding:10px 10px;
+	float: right;
+	color: #2f89db;
+	font-variation-settings:
+		'FILL' 1;
+}
+
+.favorites-button {
+	padding: 0 0 0 0;
+	border: none;
+	background-color: inherit;
+	float: right;
+}
+
 .card:hover {
 	box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.2);
 }
