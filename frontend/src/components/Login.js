@@ -23,6 +23,7 @@ function Login({ toggle, setMessage, setIsLoggedIn, setUsername }) {
             setIsLoggedIn(true);
             toggle();
         } catch (error) {
+            toggle();
             setMessage(error.message);
         }
     };
