@@ -1,12 +1,12 @@
 import React from 'react';
 import CardList from './CardList';
 
-function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage }) {
+function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, loggedIn, favorite, toggleFavorite }) {
     return (
         <div className="card">
             <div className="card-title">
                 {machine.name}
-                <button onClick={() => toggleJoinPopup(machine.id)}>
+                <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine.id)}>
                     Join
                 </button>
                 {joinSeen && currentPopupId === machine.id && (
