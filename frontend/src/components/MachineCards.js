@@ -2,7 +2,7 @@ import React from 'react';
 import Card from './Card';
 import { BrowserRouter as Router, useParams } from 'react-router-dom';
 
-function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite }) {
+async function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite }) {
   const cards = []
   let favorites = [];
   try {
@@ -20,7 +20,6 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
     } catch (error) {
         console.error('Error fetching favorites list:', error);
       }
-    };
   
   if (isLoggedIn) {
     //get current user's favorites
