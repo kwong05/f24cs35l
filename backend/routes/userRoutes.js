@@ -7,6 +7,20 @@ const User = require('../models/User');
 
 const secretKey = process.env.JWT_SECRET || 'secretkey';  // Replace with a secure key
 
+// get user's favorite list
+router.get('/fetchFavorites', [body('username').notEmpty().withMessage('Username is required')], 
+    async (req, res) => {
+    try {
+        const { username } = req.body;  
+        const user = await User.findOne({ username }); //get the user object from their name
+       
+        // get the users favorite list
+        res.json(user.favoritesList);
+    } catch (err) {
+        res.status(500).json({ message: 'Error retrieving favorites list data' });
+    }
+});
+
 // User registration route
 router.post('/signup', [
     body('username').notEmpty().withMessage('Username is required'),

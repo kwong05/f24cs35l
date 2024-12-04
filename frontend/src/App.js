@@ -19,6 +19,7 @@ function App() {
   const [currentPopupId, setCurrentPopupId] = useState(null);
   const [machines, setMachines] = useState([]); // State to hold machines data
   const [addMachineSeen, setAddMachineSeen] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     // Fetch equipment data from the backend
@@ -38,16 +39,31 @@ function App() {
     fetchEquipment();
   }, []); // Empty dependency array means this effect runs once when the component mounts
 
+  const fetchFavorites = async () => {
+      try {
+        const response = await fetch('http://localhost:10000/api/user/fetchFavorites');
+        if (!response.ok) {
+          throw new Error('Error retrieving favorites list data');
+        }
+        const data = await response.json();
+        setFavorites(data);
+      } catch (error) {
+        console.error('Error fetching favorites list:', error);
+      }
+    };
+  
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
   };
 
   const toggleFavorite = (machineId) => {
-    favorites = getFavorites()
-    if (getFavorites().includes(machineId)) {
-      setFavorites(favorites.filter(id => id !== machineId));
+    //todo get favorites
+    //favorites = getFavorites()
+    //favorites = [];
+    if (favorites.includes(machineId)) {
+      //setFavorites(favorites.filter(id => id !== machineId));
     } else {
-      setFavorites([...favorites, machineId]);
+      //setFavorites([...favorites, machineId]);
     }
   };
 
@@ -87,6 +103,8 @@ function App() {
         isLoggedIn={isLoggedIn}
         username={username}
         handleLogout={handleLogout}
+        addMachineSeen={addMachineSeen}
+        toggleMachinePopup={toggleMachinePopup}
       />
       {loginSeen && (
         <Login
@@ -112,7 +130,7 @@ function App() {
           currentPopupId={currentPopupId}
           setMessage={toggleErrorPopup}
           isLoggedIn={isLoggedIn}
-        // toggleFavorite={toggleFavorite}
+          toggleFavorite={toggleFavorite}
         />} />
       </Routes>
     </div>

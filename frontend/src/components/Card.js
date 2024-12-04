@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import CardList from './CardList';
+import JoinWaitlist from './JoinWaitlist'
 
-function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, loggedIn, favorite, toggleFavorite }) {
+function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite }) {
   const [listOpen, setListOpen] = useState(false);
   function toggleListOpen() {
     setListOpen(!listOpen);
@@ -23,12 +24,8 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
         <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine.id)}>
           Join
         </button>
-        {joinSeen && currentPopupId === machine.id && (
-          <div className="collapsible-est-time">
-            {machine.estimated_time}
-          </div>
-        )}
-        {loggedIn ?
+        {joinSeen ? <JoinWaitlist toggle={toggleJoinPopup} id={currentPopupId} setMessage={setMessage}/> : null}
+        {isLoggedIn ?
           (favorite ? (
             <button className="favorites-button" onClick={() => toggleFavorite(machine.id)}>
               <span className="material-symbols-outlined active-favorite">favorite</span>
