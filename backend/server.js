@@ -3,13 +3,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
-const User = require('./models/User'); // TODO ERR_REQUIRE_ESM
 const Equipment = require('./models/Equipment');
 const cron = require('node-cron');
-
+const userRoutes = require('./routes/userRoutes'); // Import userRoutes
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -26,12 +23,10 @@ app.use(express.json());
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     next();
-})
+});
 
 const users = [];
 const saltRounds = 10;
-
-
 
 const uri = process.env.MONGO_URI || "mongodb+srv://gymadmin:adminpass@main.6rs8v.mongodb.net/?"; //add mongodb url
 
@@ -46,18 +41,20 @@ mongoose.connect(uri, {
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
+// Use userRoutes
+app.use('/api/users', userRoutes);
+
 // get the equipment from the database
 app.get('/api/equipment', async (req, res) => {
     try {
         const equipmentList = await Equipment.find({}, 'name'); // Only fetch 'name' field
-        console.log(equimentList);
+        console.log(equipmentList);
         // send names as a json
         res.json(equipmentList);
     } catch (err) {
         res.status(500).json({ message: 'Error retrieving equipment data' });
     }
 });
-
 
 // Protection
 function authenticateToken(req, res, next) {
@@ -68,7 +65,6 @@ function authenticateToken(req, res, next) {
 
     jwt.verify(token, secretKey, (err, user) => {
         if (err) return res.sendStatus(403);
-        //req.user = user;
         req.user = { id: user.id, username: user.username };
         next();
     });

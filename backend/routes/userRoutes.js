@@ -4,12 +4,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
-const authenticateToken = require('../middlewares/authenticateToken');
 
 const secretKey = process.env.JWT_SECRET || 'secretkey';  // Replace with a secure key
 
 // User registration route
-router.post('/register', [
+router.post('/signup', [
     body('username').notEmpty().withMessage('Username is required'),
     body('password').notEmpty().withMessage('Password is required')
 ], async (req, res) => {
@@ -65,17 +64,6 @@ router.post('/login', [
     } catch (error) {
         console.error('Error logging in user:', error);
         res.status(500).json({ message: 'Error logging in user' });
-    }
-});
-
-// Protected route example
-router.get('/profile', authenticateToken, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select('-password');
-        res.json(user);
-    } catch (error) {
-        console.error('Error fetching user profile:', error);
-        res.status(500).json({ message: 'Error fetching user profile' });
     }
 });
 

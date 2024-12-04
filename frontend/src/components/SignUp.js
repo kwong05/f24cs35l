@@ -3,17 +3,16 @@ import React, { useState } from 'react';
 function SignUp({ toggle, setMessage }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:10000/signup', {
+            const response = await fetch('http://localhost:10000/api/users/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password, email }),
+                body: JSON.stringify({ username, password }),
             });
             if (!response.ok) {
                 throw new Error('Signup failed');
@@ -42,12 +41,6 @@ function SignUp({ toggle, setMessage }) {
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <button type="submit">Sign Up</button>
                 </form>
