@@ -58,32 +58,33 @@ app.get('/api/equipment', async (req, res) => {
 
 // Protection
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    // const authHeader = req.headers['authorization'];
+    // const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) return res.sendStatus(401);
+    // if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, secretKey, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = { id: user.id, username: user.username };
-        next();
-    });
+    // jwt.verify(token, secretKey, (err, user) => {
+    //     if (err) return res.sendStatus(403);
+    //     req.user = { id: user.id, username: user.username };
+    //     next();
+    // });
 };
 
 function isAdmin(req, res, next) {
-    const userId = req.user.id;
-    console.log('Checking admin credentials');
-    if (userId != 'ADMIN_ID') // TODO: put admin's Id (not created yet)
-        return res.status(400).json({ message: 'User not admin' });
-    next();
+    // const userId = req.user.id;
+    // console.log('Checking admin credentials');
+    // if (userId != 'ADMIN_ID') // TODO: put admin's Id (not created yet)
+    //     return res.status(400).json({ message: 'User not admin' });
+    // next();
 }
 
-app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
+app.post('/addEquipment', async (req, res) => {
     try {
-        const equipmentName = req.body;
+        const { name: equipmentName } = req.body;
 
         console.log('Checking if equipment exists:', equipmentName);
-        const equipmentExists = Equipment.findOne({ name: equipmentName });
+        const equipmentExists = await Equipment.findOne({ name: equipmentName });
+
         if (equipmentExists) {
             console.error('Equipment already exists:', equipmentName);
             return res.status(400).json({ message: 'Equipment name already taken' });
@@ -100,7 +101,7 @@ app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
-app.post('/removeEquipment', authenticateToken, isAdmin, doesEquipmentExist, async (req, res) => {
+app.post('/removeEquipment', async (req, res) => {
     try {
         const { name: equipmentName } = req.body;
 
