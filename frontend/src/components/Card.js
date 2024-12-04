@@ -7,12 +7,13 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
     setListOpen(!listOpen);
   }
 
-  let collapsible_text = machine.userQueue.length + " people waiting..."
-  let estimated_time = machine.unlockTime + " minutes";
-
-  if (machine.userQueue && machine.userQueue.length == 0) {
-    collapsible_text = "Waitlist is empty"
-    estimated_time = "";
+  let collapsible_text = "Waitlist is empty";
+  let estimated_time = "";
+  
+  if (machine.userQueue && machine.userQueue.length == 0)
+  {
+    collapsible_text = machine.userQueue.length + " people waiting..."
+    estimated_time = machine.unlockTime + " minutes";
   }
 
   return (
