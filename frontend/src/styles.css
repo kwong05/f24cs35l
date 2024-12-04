@@ -182,16 +182,22 @@ button {
 	font-size: 15px;
 }
 
-
-/* todo: symbol to show collapsed vs not collapsed?
-.collapsible-button:before {
-	content: "+";
+.collapsible {
+	font-family: inherit;
+  	color: #686868;
+	border: none;
+	text-align: left;
+	float: center;
+	outline: none;
+	border-radius: 5px;
+    padding: 0px 0px 10px 0px;
+	margin: 10px 10px 10px 10px;
+	font-size: 15px;
 }
-.active:before {
-  content: "\2212";
-}*/
 
 .collapsible-description {
+	display: flex;
+	align-items: center;
 	float: left;
 	text-align: left;
 	width: 50%;
@@ -206,14 +212,14 @@ button {
 
 .collapsible-button {
 	border: 2px solid #F0F0F0;
-	text-align: left;
-	width: 100%;
-	background-color: #FCFCFC;
-	color: inherit;
+    text-align: left;
+    width: 100%;
+    background-color: #FCFCFC;
+    color: inherit;
 	cursor: pointer;
 	font-size: inherit;
-	padding: 10px 0px 10px 10px;
-	border-radius: inherit;
+    padding: 10px 0px 10px 10px;
+    border-radius: inherit;
 	display: table;
 }
 
