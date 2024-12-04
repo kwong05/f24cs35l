@@ -24,7 +24,7 @@ This is a Fall 2024 CS35L project by Nico Franz ([n-franz](https://github.com/n-
 - Displays the current machine in use, time remaining, available machines, and the waitlisted machine status.
 
 **Favorites List:** 
-- Users can create a list of favorite machines for easy access, sorted by waitlist times.
+- Users can create a list of favorite machines that is displayed at the top of the avaliable machines page for them, allowing for easy acces and a personalized experience
 
 # Building and Starting
 Before you start with this repo, ensure that you have a [MongoDB cluster](https://www.mongodb.com/) available.
