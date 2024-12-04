@@ -43,11 +43,13 @@ function App() {
   };
 
   const toggleFavorite = (machineId) => {
-    favorites = getFavorites()
-    if (getFavorites().includes(machineId)) {
-      setFavorites(favorites.filter(id => id !== machineId));
+    //todo get favorites
+    //favorites = getFavorites()
+    favorites = [];
+    if (favorites.includes(machineId)) {
+      //setFavorites(favorites.filter(id => id !== machineId));
     } else {
-      setFavorites([...favorites, machineId]);
+      //setFavorites([...favorites, machineId]);
     }
   };
 
@@ -112,7 +114,7 @@ function App() {
           currentPopupId={currentPopupId}
           setMessage={toggleErrorPopup}
           isLoggedIn={isLoggedIn}
-        // toggleFavorite={toggleFavorite}
+          toggleFavorite={toggleFavorite}
         />} />
       </Routes>
     </div>
