@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const Equipment = require('./models/Equipment');
 
 // get all the inputted equipment from the database to display it in frontend
 router.get('/fetchEquipment', async (req, res) => {
