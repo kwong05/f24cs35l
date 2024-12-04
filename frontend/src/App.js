@@ -15,6 +15,7 @@ function App() {
   const [currentErrorMessage, setCurrentErrorMessage] = useState('');
   const [joinSeen, setJoinSeen] = useState(false);
   const [currentPopupId, setCurrentPopupId] = useState(null);
+  const [addMachineSeen, setAddMachineSeen] = useState(false);
   const MACHINES = []; // Replace with actual machines data
 
   const toggleFavorite = (machineId) => {
@@ -34,6 +35,10 @@ function App() {
 
   const toggleSignUpPopup = () => {
     setSignUpSeen(!signUpSeen);
+  };
+
+  const toggleMachinePopup = () => {
+    setAddMachineSeen(!addMachineSeen);
   };
 
   const toggleErrorPopup = (message) => {
@@ -64,6 +69,8 @@ function App() {
         isLoggedIn={isLoggedIn}
         username={username} // Pass username state to Header
         handleLogout={handleLogout} // Pass handleLogout to Header
+        addMachineSeen={addMachineSeen} //if Add Machine popup has been seen
+        toggleMachinePopup={toggleMachinePopup} //toggle Add Machine popup
       />
       {loginSeen && (
         <Login
@@ -82,7 +89,15 @@ function App() {
         />
       )}
       <Routes>
-        <Route path="/kwong05/f24cs35l/:machineId?" element={<MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup} isLoggedIn={isLoggedIn} toggleFavorite={toggleFavorite} />} />
+        <Route path="/kwong05/f24cs35l/:machineId?" element={<MachineCards
+            machines = {MACHINES}
+            joinSeen={joinSeen}
+            toggleJoinPopup={toggleJoinPopup}
+            currentPopupId={currentPopupId}
+            setMessage={toggleErrorPopup}
+            isLoggedIn={isLoggedIn}
+            toggleFavorite={toggleFavorite}
+          />} />
       </Routes>
     </div>
   );
