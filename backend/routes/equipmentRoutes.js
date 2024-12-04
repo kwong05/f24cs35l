@@ -90,29 +90,34 @@ router.post('/join', async (req, res) => {
 
 // Leave queue for equipment
 router.post('/renege', async (req, res) => {
+    try {
+        // Parse from req JSON
+        const { equipmentName: undesiredEquipmentName, username: currentUsername } = req.body;
 
-    // parse from req JSON
-    const undesiredEquipmentName = req.body.equipmentName;
-    const currentUsername = req.body.username;
+        // Verify user exists
+        const currentUser = await User.findOne({ username: currentUsername });
+        if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
 
-    // verify user exists
-    const currentUser = User.findOne({ "username": currentUsername });
-    if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
+        // Ensure User is already waiting in queue for equipment
+        const undesiredEquipment = await Equipment.findOne({ name: undesiredEquipmentName, userQueue: currentUser._id });
+        if (!undesiredEquipment) return res.status(403).json({ message: 'User does not exist in queue' });
 
-    // ensure User is already waiting in queue for equipment
-    const undesiredEquipment = await Equipment.findOne({ "name": undesiredEquipmentName, "userQueue.userID": currentUser });
-    if (!undesiredEquipment) return res.status(403).json({ message: 'User does not exist in queue' });
+        // Remove user from equipment queue
+        const userIdx = undesiredEquipment.userQueue.indexOf(currentUser._id);
+        if (userIdx > -1) {
+            undesiredEquipment.userQueue.splice(userIdx, 1);
+        }
+        await undesiredEquipment.save();
 
-    // remove user from equipment queue
-    userIdx = undesiredEquipment.userQueue.indexOf(currentUser);
-    undesiredEquipment.userQueue.splice(userIdx, 1);
-    await undesiredEquipment.save();
+        // Remove equipment from user queue
+        currentUser.queuedEquipment = null;
+        await currentUser.save();
 
-    // remove equipment from user queue
-    equipmentIdx = currentUser.queuedEquipment.indexOf(undesiredEquipment);
-    currentUser.queuedEquipment = null;
-    await currentUser.save();
-    return res.status(200);
+        return res.status(200).json({ message: 'User removed from queue successfully' });
+    } catch (error) {
+        console.error('Renege Queue Error:', error);  // Log the exact error
+        res.status(500).json({ message: 'Error leaving queue' });
+    }
 });
 
 module.exports = router;
