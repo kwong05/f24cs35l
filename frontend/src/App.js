@@ -142,6 +142,7 @@ function App() {
           setMessage={toggleErrorPopup}
           isLoggedIn={isLoggedIn}
           toggleFavorite={toggleFavorite}
+          username={username}
         />} />
       </Routes>
     </div>
