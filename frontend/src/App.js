@@ -42,6 +42,15 @@ function App() {
     setLoginSeen(!loginSeen);
   };
 
+  const toggleFavorite = (machineId) => {
+    favorites = getFavorites()
+    if (getFavorites().includes(machineId)) {
+      setFavorites(favorites.filter(id => id !== machineId));
+    } else {
+      setFavorites([...favorites, machineId]);
+    }
+  };
+
   const toggleMachinePopup = () => {
     setAddMachineSeen(!addMachineSeen);
   };
