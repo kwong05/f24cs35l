@@ -29,16 +29,16 @@ This is a Fall 2024 CS35L project by Nico Franz ([n-franz](https://github.com/n-
 # Building and Starting
 Before you start with this repo, ensure that you have a [MongoDB cluster](https://www.mongodb.com/) available.
 
-In the repo directory, run
-```npm install```
-to install the Node dependencies. This may take some time.
-
 ## Client Server
+Change into the ```frontend``` directory and run ```npm install```.
+
 Start the client-facing server by running
 ```npm start```.
 
 ## Backend Server
 Replace the MongoDB URL and JWT secret key with values applicable to you and a random new one, respectively.
+
+Change into the ```backend``` directory and run ```npm install```.
 
 Start the server by running
 ```node Backend/server.js```.
