@@ -4,7 +4,8 @@ function Login({ toggle, setMessage, setIsLoggedIn, setUsername }) {
     const [localUsername, setLocalUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = async (e) => {
+
+    const handleLogin = async (e) => {
         e.preventDefault();
         try {
             const response = await fetch('http://localhost:10000/api/users/login', {
