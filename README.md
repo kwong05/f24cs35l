@@ -42,4 +42,4 @@ Replace the MongoDB URL and JWT secret key with values applicable to you and a r
 Change into the ```backend``` directory and run ```npm install```.
 
 Start the server by running
-```node Backend/server.js```.
+```npm start```.
