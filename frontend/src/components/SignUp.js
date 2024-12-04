@@ -22,6 +22,7 @@ function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
             // Automatically log in the user after successful registration
             handleLogin();
         } catch (error) {
+            toggle();
             setMessage(error.message);
         }
     };
@@ -43,9 +44,11 @@ function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
                 alert('Registration and login successful!');
             } else {
                 const errorData = await response.json();
+                toggle();
                 setMessage(errorData.message || 'Login failed. Please check your username and password.');
             }
         } catch (error) {
+            toggle();
             setMessage(error.message);
         }
     };
