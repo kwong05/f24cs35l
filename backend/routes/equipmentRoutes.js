@@ -10,7 +10,7 @@ router.get('/equipment', getEquipment);
 module.exports = router;
 
 // get all the inputted equipment from the database to display it in frontend
-app.get('/api/fetchEquipment', async (req, res) => {
+app.get('/fetchEquipment', async (req, res) => {
     try {
         //console.log("DEBUG");
         const equipmentList = await Equipment.find({}, 'name'); // only get the names
