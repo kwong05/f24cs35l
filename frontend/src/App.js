@@ -40,18 +40,18 @@ function App() {
   }, []); // Empty dependency array means this effect runs once when the component mounts
 
   const fetchFavorites = async () => {
-      try {
-        const response = await fetch('http://localhost:10000/api/user/fetchFavorites');
-        if (!response.ok) {
-          throw new Error('Error retrieving favorites list data');
-        }
-        const data = await response.json();
-        setFavorites(data);
-      } catch (error) {
-        console.error('Error fetching favorites list:', error);
+    try {
+      const response = await fetch('http://localhost:10000/api/user/fetchFavorites');
+      if (!response.ok) {
+        throw new Error('Error retrieving favorites list data');
       }
-    };
-  
+      const data = await response.json();
+      setFavorites(data);
+    } catch (error) {
+      console.error('Error fetching favorites list:', error);
+    }
+  };
+
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
   };

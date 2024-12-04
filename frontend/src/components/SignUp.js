@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { handleLogin } from './Login';
 
 function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
     const [localUsername, setLocalUsername] = useState('');
@@ -20,9 +21,8 @@ function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
             const data = await response.json();
             console.log('Signup successful:', data);
             // Automatically log in the user after successful registration
-            handleLogin();
+            handleLogin({ username: localUsername, password, setUsername, setIsLoggedIn, toggle, setMessage });
         } catch (error) {
-            toggle();
             setMessage(error.message);
         }
     };

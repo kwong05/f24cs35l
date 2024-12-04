@@ -1,39 +1,41 @@
 import React, { useState } from 'react';
 
+const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, toggle, setMessage }) => {
+    try {
+        const response = await fetch('http://localhost:10000/api/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+        if (!response.ok) {
+            throw new Error('Login failed');
+        }
+        const data = await response.json();
+        console.log('Login successful:', data);
+        setUsername(username);
+        setIsLoggedIn(true);
+        toggle();
+    } catch (error) {
+        setMessage(error.message);
+    }
+};
+
 function Login({ toggle, setMessage, setIsLoggedIn, setUsername }) {
     const [localUsername, setLocalUsername] = useState('');
     const [password, setPassword] = useState('');
 
-
-    const handleLogin = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch('http://localhost:10000/api/users/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username: localUsername, password }),
-            });
-            if (!response.ok) {
-                throw new Error('Login failed');
-            }
-            const data = await response.json();
-            console.log('Login successful:', data);
-            setUsername(localUsername);
-            setIsLoggedIn(true);
-            toggle();
-        } catch (error) {
-            toggle();
-            setMessage(error.message);
-        }
+        handleLogin({ username: localUsername, password, setUsername, setIsLoggedIn, toggle, setMessage });
     };
 
     return (
         <div className="popup">
             <div className="popup-inner">
                 <h3>Login</h3>
-                <form onSubmit={handleLogin}>
+                <form onSubmit={handleSubmit}>
                     <input
                         type="text"
                         placeholder="Username"
@@ -56,4 +58,5 @@ function Login({ toggle, setMessage, setIsLoggedIn, setUsername }) {
     );
 }
 
+export { handleLogin };
 export default Login;
