@@ -6,6 +6,8 @@ import SignUp from './components/SignUp';
 import Error from './components/Error';
 import MachineCards from './components/MachineCards';
 
+const PORT = 3001;
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
@@ -101,7 +103,7 @@ function App() {
           currentPopupId={currentPopupId}
           setMessage={toggleErrorPopup}
           isLoggedIn={isLoggedIn}
-          toggleFavorite={toggleFavorite}
+        // toggleFavorite={toggleFavorite}
         />} />
       </Routes>
     </div>

@@ -6,9 +6,7 @@ const User = require('../models/User');
 // get all the inputted equipment from the database to display it in frontend
 router.get('/fetchEquipment', async (req, res) => {
     try {
-        //console.log("DEBUG");
         const equipmentList = await Equipment.find({}, 'name'); // only get the names
-        //console.log(equimentList);
         // send names as a json
         res.json(equipmentList);
     } catch (err) {
@@ -55,35 +53,39 @@ router.post('/removeEquipment', async (req, res) => {
 
 // Join queue for equipment
 router.post('/join', async (req, res) => {
+    try {
+        // Parse from req JSON
+        const { equipmentName: desiredEquipmentName, username: currentUsername } = req.body;
 
-    // parse from req JSON
-    const desiredEquipmentName = req.body.equipmentName;
-    const currentUsername = req.body.username;
+        // Verify user exists
+        const currentUser = await User.findOne({ username: currentUsername });
+        if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
 
-    // verify user exists
-    const currentUser = User.findOne({"username": currentUsername});
-    if (!currentUser) return res.status(404).json({message: 'User does not exist' });
+        // Ensure User is not already waiting in queue for equipment
+        let isQueued = false;
+        if (currentUser.queuedEquipment != null) isQueued = true;
+        // isQueued = await Equipment.findOne({ name: desiredEquipmentName, "userQueue.userID": currentUser });
+        if (isQueued) return res.status(403).json({ message: 'User already queued' });
 
-    // ensure User is not already waiting in queue for equipment
-    isQueued = false;
-    if (currentUser.queuedEquipment != null)
-        isQueued = true;
-    //isQueued = await Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
-    if (isQueued) return res.status(403).json({ message: 'User already queued' });
+        // Check that the user's current equipment will run out of time before new equipment is ready
+        const desiredEquipment = await Equipment.findOne({ name: desiredEquipmentName });
+        const currentEquipment = currentUser.currentEquipment;
+        if (currentEquipment && currentEquipment.unlockTime > desiredEquipment.unlockTime && desiredEquipment.userQueue.length === 0) {
+            return res.status(403).json({ message: "User's current equipment will unlock after desired equipment" });
+        }
 
-    //check that the user's current equipment will run out of time before new equiupment is ready
-    const desiredEquipment = await Equipment.findOne({ "name": desiredEquipmentName });
-    const currentEquipment = currentUser.currentEquipment;
-    if ((currentEquipment.unlockTime > desiredEquipment.unlockTime) && (desiredEquipment.userQueue == []))
-        return res.status(403).json({ message: "User's current equipment will unlock after desired equipment" });
+        // Add user to equipment queue
+        desiredEquipment.userQueue.push(currentUser);
+        currentUser.queuedEquipment = desiredEquipment;
 
-    // add user to equipment queue
-    desiredEquipment.userQueue.push(currentUser);
-    currentUser.equipmentQueue.push(desiredEquipment);
+        await desiredEquipment.save();
+        await currentUser.save();
 
-    await desiredEquipment.save();
-    await currentUser.save();
-    return res.status(200);
+        return res.status(200).json({ message: 'User added to queue successfully' });
+    } catch (error) {
+        console.error('Join Queue Error:', error);  // Log the exact error
+        res.status(500).json({ message: 'Error joining queue' });
+    }
 });
 
 // Leave queue for equipment
@@ -94,8 +96,8 @@ router.post('/renege', async (req, res) => {
     const currentUsername = req.body.username;
 
     // verify user exists
-    const currentUser = User.findOne({"username": currentUsername});
-    if (!currentUser) return res.status(404).json({message: 'User does not exist' });
+    const currentUser = User.findOne({ "username": currentUsername });
+    if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
 
     // ensure User is already waiting in queue for equipment
     const undesiredEquipment = await Equipment.findOne({ "name": undesiredEquipmentName, "userQueue.userID": currentUser });
