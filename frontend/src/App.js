@@ -1,38 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import MachineCards from './components/MachineCards';
+import Login from './components/Login';
+import SignUp from './components/SignUp';
 import Error from './components/Error';
+import MachineCards from './components/MachineCards';
 
-export default function App() {
-  const [joinSeen, setJoinSeen] = useState(false);
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState(''); // Define username state
   const [loginSeen, setLoginSeen] = useState(false);
-  const [errorSeen, setErrorSeen] = useState(false);
   const [signUpSeen, setSignUpSeen] = useState(false);
+  const [errorSeen, setErrorSeen] = useState(false);
+  const [currentErrorMessage, setCurrentErrorMessage] = useState('');
+  const [joinSeen, setJoinSeen] = useState(false);
   const [currentPopupId, setCurrentPopupId] = useState(null);
-  const [currentErrorMessage, setCurrentErrorMessage] = useState(null);
-  const [MACHINES, setMACHINES] = useState([]);
-
-  useEffect(() => {
-    const fetchEquipNames = async () => {
-      try {
-        const response = await fetch('http://localhost:10000/api/equipment');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setMACHINES(data);
-      } catch (error) {
-        console.error('Error fetching equipment names:', error);
-      }
-    };
-    fetchEquipNames();
-  }, []);
-
-  const toggleJoinPopup = (id) => {
-    setCurrentPopupId(id);
-    setJoinSeen(!joinSeen);
-  };
+  const MACHINES = []; // Replace with actual machines data
 
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
@@ -47,6 +30,16 @@ export default function App() {
     setErrorSeen(!errorSeen);
   };
 
+  const toggleJoinPopup = (id) => {
+    setCurrentPopupId(id);
+    setJoinSeen(!joinSeen);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUsername('');
+  };
+
   return (
     <div className="App">
       <Header
@@ -57,7 +50,26 @@ export default function App() {
         toggleErrorPopup={toggleErrorPopup}
         errorSeen={errorSeen}
         currentErrorMessage={currentErrorMessage}
+        isLoggedIn={isLoggedIn}
+        username={username} // Pass username state to Header
+        handleLogout={handleLogout} // Pass handleLogout to Header
       />
+      {loginSeen && (
+        <Login
+          toggle={toggleLoginPopup}
+          setMessage={toggleErrorPopup}
+          setIsLoggedIn={setIsLoggedIn}
+          setUsername={setUsername} // Pass setUsername to Login
+        />
+      )}
+      {signUpSeen && (
+        <SignUp
+          toggle={toggleSignUpPopup}
+          setMessage={toggleErrorPopup}
+          setIsLoggedIn={setIsLoggedIn}
+          setUsername={setUsername} // Pass setUsername to SignUp
+        />
+      )}
       <Routes>
         <Route path="/kwong05/f24cs35l/" element={<MachineCards machines={MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup} />} />
         <Route path="/kwong05/f24cs35l/:machineId" element={<MachineCards machines={MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup} />} />
@@ -65,3 +77,5 @@ export default function App() {
     </div>
   );
 }
+
+export default App;

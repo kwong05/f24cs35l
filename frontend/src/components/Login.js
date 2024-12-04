@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-function Login({ toggle, setMessage }) {
-    const [username, setUsername] = useState('');
+function Login({ toggle, setMessage, setIsLoggedIn, setUsername }) {
+    const [localUsername, setLocalUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = async (e) => {
@@ -12,13 +12,15 @@ function Login({ toggle, setMessage }) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ username: localUsername, password }),
             });
             if (!response.ok) {
                 throw new Error('Login failed');
             }
             const data = await response.json();
             console.log('Login successful:', data);
+            setUsername(localUsername);
+            setIsLoggedIn(true);
             toggle();
         } catch (error) {
             setMessage(error.message);
@@ -33,8 +35,8 @@ function Login({ toggle, setMessage }) {
                     <input
                         type="text"
                         placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={localUsername}
+                        onChange={(e) => setLocalUsername(e.target.value)}
                     />
                     <input
                         type="password"

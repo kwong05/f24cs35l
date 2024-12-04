@@ -4,7 +4,7 @@ import Login from './Login';
 import SignUp from './SignUp';
 import Error from './Error';
 
-function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, toggleErrorPopup, errorSeen, currentErrorMessage }) {
+function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, toggleErrorPopup, errorSeen, currentErrorMessage, isLoggedIn, username, handleLogout }) {
     return (
         <div className="header">
             <div className="topnav">
@@ -12,17 +12,30 @@ function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, to
                     <span className="material-symbols-outlined">fitness_center</span>
                 </div>
                 <Link className="topnav-appname" to="/kwong05/f24cs35l/">Bruin Wait-Lifting</Link>
-                <div className="topnav-buttons" onClick={toggleLoginPopup}>
-                    Login
-                </div>
-                {loginSeen ? <Login toggle={toggleLoginPopup} setMessage={toggleErrorPopup} /> : null}
-                <div className="topnav-buttons" onClick={toggleSignUpPopup}>
-                    Sign up
-                </div>
-                {signUpSeen ? <SignUp toggle={toggleSignUpPopup} setMessage={toggleErrorPopup} /> : null}
+                {isLoggedIn ? (
+                    <>
+                        <div className="topnav-user">
+                            <span className="topnav-username">{username}</span>
+                        </div>
+                        <div className="topnav-buttons" onClick={handleLogout}>
+                            Log out
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="topnav-buttons" onClick={toggleLoginPopup}>
+                            Login
+                        </div>
+                        {loginSeen ? <Login toggle={toggleLoginPopup} setMessage={toggleErrorPopup} /> : null}
+                        <div className="topnav-buttons" onClick={toggleSignUpPopup}>
+                            Sign up
+                        </div>
+                        {signUpSeen ? <SignUp toggle={toggleSignUpPopup} setMessage={toggleErrorPopup} /> : null}
+                    </>
+                )}
             </div>
             {errorSeen ? <Error toggle={toggleErrorPopup} message={currentErrorMessage} /> : null}
-        </div>
+        </div >
     );
 }
 

@@ -6,7 +6,7 @@ body {
 }
 
 img {
-  border-radius: 3px;
+	border-radius: 3px;
 }
 
 button {
@@ -15,12 +15,12 @@ button {
 
 .header {
 	background-color: #f9f9f9;
-  	position: sticky;
-  	top: 0;
-  	padding: 0px 16px;
-  	color: #4f4f4f;
-    font-weight: bold;
-  	border-bottom: 2px solid #F0F0F0;
+	position: sticky;
+	top: 0;
+	padding: 0px 16px;
+	color: #4f4f4f;
+	font-weight: bold;
+	border-bottom: 2px solid #F0F0F0;
 }
 
 .topnav {
@@ -35,38 +35,59 @@ button {
 	float: left;
 	font-size: 20px;
 	padding-left: 5px;
-    	color: inherit;
-	text-decoration:none;
+	color: inherit;
+	text-decoration: none;
 }
 
 .topnav-icon {
-    text-align: center;
-  	padding: 15px 5px 10px 0px;
+	text-align: center;
+	padding: 15px 5px 10px 0px;
 	float: left;
 }
 
 .topnav-buttons {
+	display: flex;
+	align-items: center;
 	float: right;
 	text-align: center;
 	padding: 14px 16px;
-	margin: 5px 0px 5px 0px;
+	margin: 5px 0px;
 	text-decoration: none;
 	font-size: 17px;
 	color: inherit;
 	border-radius: 5px;
+	cursor: pointer;
+	background: none;
+	border: none;
 }
 
 .topnav-buttons:hover {
-  background-color: #F0F0F0;
+	background-color: #ddd;
+}
+
+.topnav-user {
+	display: flex;
+	align-items: center;
+	float: right;
+	text-align: center;
+	padding: 14px 16px;
+	margin: 5px 0px;
+	text-decoration: none;
+	font-size: 17px;
+	color: inherit;
+	border-radius: 5px;
+	cursor: pointer;
+	background: none;
+	border: none;
 }
 
 .machine-cards {
-    margin: auto;
-    width: 70%;
+	margin: auto;
+	width: 70%;
 }
 
 .card {
-	box-shadow: 0px 0px 2px 2px rgba(0,0,0,0.08);
+	box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.08);
 	transition: 0.3s;
 	padding: 10px 30px 10px 30px;
 	margin: 20px 20px 20px 20px;
@@ -75,8 +96,8 @@ button {
 
 .card-title {
 	font-size: 30px;
-    font-weight: bold;
-    padding-bottom:10px;
+	font-weight: bold;
+	padding-bottom: 10px;
 	margin-right: 10px;
 	margin-bottom: 10px;
 }
@@ -88,25 +109,25 @@ button {
 	text-decoration: none;
 	font-size: 17px;
 	border: 3px solid #F0F0F0;
-    color:white;
-    background-color: #2f89db;
+	color: white;
+	background-color: #2f89db;
 	cursor: pointer;
-    border-radius: 10px;
+	border-radius: 10px;
 }
 
 .card:hover {
-  box-shadow: 0 6px 8px 0 rgba(0,0,0,0.2);
+	box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .collapsible {
 	font-family: inherit;
-  	color: #686868;
+	color: #686868;
 	border: none;
 	text-align: left;
 	float: center;
 	outline: none;
 	border-radius: 5px;
-    padding: 0px 0px 10px 0px;
+	padding: 0px 0px 10px 0px;
 	margin: 10px 10px 10px 10px;
 	font-size: 15px;
 }
@@ -135,29 +156,29 @@ button {
 
 .collapsible-button {
 	border: 2px solid #F0F0F0;
-    text-align: left;
-    width: 100%;
-    background-color: #FCFCFC;
-    color: inherit;
+	text-align: left;
+	width: 100%;
+	background-color: #FCFCFC;
+	color: inherit;
 	cursor: pointer;
 	font-size: inherit;
-    padding: 10px 0px 10px 10px;
-    border-radius: inherit;
+	padding: 10px 0px 10px 10px;
+	border-radius: inherit;
 	display: table;
 }
 
 table {
 	background-color: #FCFCFC;
-    color:inherit;
+	color: inherit;
 	border-top: 0px;
 	border-bottom: 2px solid #F5F5F5;
 	border-left: 2px solid #F5F5F5;
 	border-right: 2px solid #F5F5F5;
-   	border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-  	width: 100%;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	width: 100%;
 	padding: 0px 0px 0px 10px;
 	line-height: 30px;
 	font-family: inherit;
@@ -171,9 +192,9 @@ table {
 	width: 100%;
 	height: 100%;
 	overflow: auto;
-	background-color: rgba(0,0,0,0.1);
+	background-color: rgba(0, 0, 0, 0.1);
 }
-	
+
 .popup-inner {
 	max-width: 300px;
 	background-color: white;
@@ -183,7 +204,7 @@ table {
 	transform: translate(-50%, -50%);
 	padding: 20px;
 	border-radius: 5px;
-	box-shadow: 0 6px 8px 0 rgba(0,0,0,0.2);
+	box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.2);
 	width: 50%;
 }
 
@@ -223,7 +244,7 @@ table {
 .popup-inner button[type="submit"],
 .popup-inner button[type="button"] {
 	background-color: #2f89db;
-	font-weight:bold;
+	font-weight: bold;
 	color: white;
 	border: none;
 	padding: 10px 20px;
@@ -261,5 +282,3 @@ table {
 	border-radius: inherit;
 	color: #555555;
 }
-
-  
