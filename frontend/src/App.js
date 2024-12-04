@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Header from './components/Header';
 import MachineCards from './components/MachineCards';
-import Login from './components/Login';
-import SignUp from './components/SignUp';
 import Error from './components/Error';
 
 export default function App() {

@@ -7,7 +7,7 @@ function Login({ toggle, setMessage }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:10000/api/login', {
+            const response = await fetch('http://localhost:10000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

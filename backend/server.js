@@ -49,7 +49,6 @@ mongoose.connect(uri, {
 // get the equipment from the database
 app.get('/api/equipment', async (req, res) => {
     try {
-        console.log("DEBUG");
         const equipmentList = await Equipment.find({}, 'name'); // Only fetch 'name' field
         console.log(equimentList);
         // send names as a json
@@ -59,84 +58,6 @@ app.get('/api/equipment', async (req, res) => {
     }
 });
 
-app.post('/signup',
-    body('username').trim().isLength({ min: 3 }).escape(),
-    body('password').isLength({ min: 6 }).escape(),
-    body('email').isLength({ min: 4 }).escape(),
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            console.error('Validation Error:', errors.array());  // Log validation errors
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        const { username, password, email } = req.body;
-
-        try {
-            // Check if the username is already taken
-            console.log('Checking if user exists:', username);
-            const userExists = await User.findOne({ username });
-            if (userExists) {
-                console.error('User already exists:', username);
-                return res.status(400).json({ message: 'Username already taken' });
-            }
-
-            console.log('Checking if user exists:', email);
-            const emailExists = await User.findOne({ email });
-            if (emailExists) {
-                console.error('User already exists:', email);
-                return res.status(400).json({ message: 'Email already used' });
-            }
-
-            // Create a new user instance
-            console.log('Hashing password for user:', username);
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-
-            // Check if admin acct
-            console.log('Checking if user is admin');
-            const isAdmin = false;
-            if ((username == 'gymadmin') && (email == 'bruinwaitlift@gmail.com')) {
-                console.log('User is admin');
-                isAdmin = true;
-            }
-
-            // Save the user to the database
-            console.log('Saving new user to database:', username);
-            const newUser = new User({ username, password: hashedPassword, email, isAdmin });
-            await newUser.save();
-
-            res.status(201).json({ message: 'User created successfully' });
-        } catch (error) {
-            console.error('Signup Error:', error);  // Log the exact error
-            res.status(500).json({ message: 'Error creating user' });
-        }
-    }
-);
-
-
-// Login route
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        //const user = users.find(user => user.username === username);
-        const user = await User.findOne({ username })
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid username or password' });
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Invalid username or password' });
-        }
-
-        //const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '1h' });
-        const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
-        res.json({ token });
-    } catch (error) {
-        res.status(500).json({ message: 'Error during login', error });
-    }
-});
 
 // Protection
 function authenticateToken(req, res, next) {
