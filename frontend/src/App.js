@@ -95,7 +95,7 @@ function App() {
       )}
       <Routes>
         <Route path="/kwong05/f24cs35l/:machineId?" element={<MachineCards
-            machines = {MACHINES}
+            machines = {machines}
             joinSeen={joinSeen}
             toggleJoinPopup={toggleJoinPopup}
             currentPopupId={currentPopupId}
