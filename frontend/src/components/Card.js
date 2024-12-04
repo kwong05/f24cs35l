@@ -13,6 +13,16 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage }
                     {machine.estimated_time}
                 </div>
             )}
+            {loggedIn ? 
+              (favorite ? (
+                <button class="favorites-button" onClick={() => toggleFavorite(machine.id)}>
+                  <span class="material-symbols-outlined active-favorite">favorite</span>
+              </button>
+              ) : (
+                <button class="favorites-button" onClick={() => toggleFavorite(machine.id)}>
+                <span class="material-symbols-outlined inactive-favorite">favorite</span>
+            </button>
+              )) : null}
             <div>
                 <CardList waitlist={machine.waitlist} />
             </div>
