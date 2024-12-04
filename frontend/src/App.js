@@ -19,6 +19,7 @@ function App() {
   const [currentPopupId, setCurrentPopupId] = useState(null);
   const [machines, setMachines] = useState([]); // State to hold machines data
   const [addMachineSeen, setAddMachineSeen] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     // Fetch equipment data from the backend
@@ -38,6 +39,19 @@ function App() {
     fetchEquipment();
   }, []); // Empty dependency array means this effect runs once when the component mounts
 
+  const fetchFavorites = async () => {
+      try {
+        const response = await fetch('http://localhost:10000/api/user/fetchFavorites');
+        if (!response.ok) {
+          throw new Error('Error retrieving favorites list data');
+        }
+        const data = await response.json();
+        setFavorites(data);
+      } catch (error) {
+        console.error('Error fetching favorites list:', error);
+      }
+    };
+  
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
   };
@@ -45,7 +59,7 @@ function App() {
   const toggleFavorite = (machineId) => {
     //todo get favorites
     //favorites = getFavorites()
-    favorites = [];
+    //favorites = [];
     if (favorites.includes(machineId)) {
       //setFavorites(favorites.filter(id => id !== machineId));
     } else {
