@@ -10,9 +10,9 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
 
   let collapsible_text = "Waitlist is empty";
   let estimated_time = "";
-  
-  if (machine.userQueue && machine.userQueue.length == 0)
-  {
+  console.log(machine);
+  if (machine.userQueue && machine.userQueue.length != 0) {
+    console.log("DEBUG");
     collapsible_text = machine.userQueue.length + " people waiting..."
     estimated_time = machine.unlockTime + " minutes";
   }
@@ -24,7 +24,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
         <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine.id)}>
           Join
         </button>
-        {joinSeen ? <JoinWaitlist toggle={toggleJoinPopup} id={currentPopupId} setMessage={setMessage}/> : null}
+        {joinSeen ? <JoinWaitlist toggle={toggleJoinPopup} id={currentPopupId} setMessage={setMessage} /> : null}
         {isLoggedIn ?
           (favorite ? (
             <button className="favorites-button" onClick={() => toggleFavorite(machine.id)}>

@@ -57,7 +57,6 @@ cron.schedule('* * * * *', async () => { // activates every minute
 
         for (const readyE of readyEquipment) {
             const equipmentId = readyE._id;
-            const equipmentName = readyE.name;
 
             // Case 1: Equipment has a current user and a non-empty queue
             if (readyE.currentUser && readyE.userQueue.length > 0) {
@@ -68,6 +67,7 @@ cron.schedule('* * * * *', async () => { // activates every minute
                 readyE.currentUser = readyE.userQueue.shift();
                 const newUser = await User.findById(readyE.currentUser);
                 newUser.currentEquipment = equipmentId;
+                newUser.queuedEquipment = null;
 
                 const now = new Date();
                 now.setMinutes(now.getMinutes() + 15);
@@ -82,6 +82,7 @@ cron.schedule('* * * * *', async () => { // activates every minute
                 readyE.currentUser = readyE.userQueue.shift();
                 const newUser = await User.findById(readyE.currentUser);
                 newUser.currentEquipment = equipmentId;
+                newUser.queuedEquipment = null;
 
                 const now = new Date();
                 now.setMinutes(now.getMinutes() + 15);

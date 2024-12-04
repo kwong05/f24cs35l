@@ -6,7 +6,7 @@ const User = require('../models/User');
 // get all the inputted equipment from the database to display it in frontend
 router.get('/fetchEquipment', async (req, res) => {
     try {
-        const equipmentList = await Equipment.find({}, 'name'); // only get the names
+        const equipmentList = await Equipment.find({});
         // send names as a json
         res.json(equipmentList);
     } catch (err) {
@@ -54,29 +54,32 @@ router.post('/removeEquipment', async (req, res) => {
 // Join queue for equipment
 router.post('/join', async (req, res) => {
     try {
-        // Parse from req JSON
-        const { equipmentName: desiredEquipmentName, username: currentUsername } = req.body;
+        const { equipmentName, username } = req.body;
 
         // Verify user exists
-        const currentUser = await User.findOne({ username: currentUsername });
+        const currentUser = await User.findOne({ username });
         if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
 
         // Ensure User is not already waiting in queue for equipment
         let isQueued = false;
         if (currentUser.queuedEquipment != null) isQueued = true;
-        // isQueued = await Equipment.findOne({ name: desiredEquipmentName, "userQueue.userID": currentUser });
         if (isQueued) return res.status(403).json({ message: 'User already queued' });
 
-        // Check that the user's current equipment will run out of time before new equipment is ready
-        const desiredEquipment = await Equipment.findOne({ name: desiredEquipmentName });
+        // Check that the user's current equipment is not the same as the desired equipment
+        const desiredEquipment = await Equipment.findOne({ name: equipmentName });
         const currentEquipment = currentUser.currentEquipment;
+        if (currentEquipment && currentEquipment.equals(desiredEquipment._id)) {
+            return res.status(403).json({ message: 'User is already using this equipment' });
+        }
+
+        // Check that the user's current equipment will run out of time before new equipment is ready
         if (currentEquipment && currentEquipment.unlockTime > desiredEquipment.unlockTime && desiredEquipment.userQueue.length === 0) {
             return res.status(403).json({ message: "User's current equipment will unlock after desired equipment" });
         }
 
         // Add user to equipment queue
-        desiredEquipment.userQueue.push(currentUser);
-        currentUser.queuedEquipment = desiredEquipment;
+        desiredEquipment.userQueue.push(currentUser._id);
+        currentUser.queuedEquipment = desiredEquipment._id;
 
         await desiredEquipment.save();
         await currentUser.save();
