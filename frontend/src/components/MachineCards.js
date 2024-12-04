@@ -9,10 +9,10 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
     //get current user's favorites
     //favorites = getFavorites();
     favorites.forEach((favorite) => {
-      const tryToFindMachine = machines.find(m => m.id === favorite);
+      const tryToFindMachine = machines.find(m => m._id === favorite);
       if (tryToFindMachine) {
         cards.push(
-          <Card key={tryToFindMachine.id} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={true} toggleFavorite={toggleFavorite} />
+          <Card key={tryToFindMachine._id} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={true} toggleFavorite={toggleFavorite} />
         )
       }
     })
@@ -21,18 +21,18 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
   let addCardToArray = true;
   machines.forEach((machine) => {
     if (loggedIn) {
-      addCardToArray = !(favorites.includes(machine.id))
+      addCardToArray = !(favorites.includes(machine._id))
     }
     if (addCardToArray) {
       cards.push(
-        <Card key={machine.id} machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={false} toggleFavorite={toggleFavorite} />
+        <Card key={machine._id} machine={machine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={false} toggleFavorite={toggleFavorite} />
       )
     }
   })
 
   //if the URL is not the homepage, only display the machine that is in the url 
-  /*const { machineId } = useParams();
-  const tryToFindMachine = machines.find(m => m.id === machineId);
+  const { machineId } = useParams();
+  const tryToFindMachine = machines.find(m => m._id === machineId);
 
   if (!tryToFindMachine) {
     return (
@@ -44,14 +44,9 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
 
   return (
     <div className="machine-cards">
-      <Card key={machineId} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={loggedIn && favorites.includes(tryToFindMachine.id)} toggleFavorite={toggleFavorite} />
+      <Card key={machineId} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={loggedIn && favorites.includes(tryToFindMachine._id)} toggleFavorite={toggleFavorite} />
     </div>
-  )*/
-  return (
-      <div className="machine-cards">
-        {cards}
-      </div>
-    );
+  )
 }
 
 export default MachineCards;
