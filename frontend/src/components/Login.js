@@ -33,7 +33,7 @@ function Login({ toggle, setMessage, setIsLoggedIn, setUsername }) {
         <div className="popup">
             <div className="popup-inner">
                 <h3>Login</h3>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleLogin}>
                     <input
                         type="text"
                         placeholder="Username"

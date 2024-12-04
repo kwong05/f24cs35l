@@ -39,7 +39,7 @@ function App() {
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
   };
-  
+
   const toggleMachinePopup = () => {
     setAddMachineSeen(!addMachineSeen);
   };
@@ -95,14 +95,14 @@ function App() {
       )}
       <Routes>
         <Route path="/kwong05/f24cs35l/:machineId?" element={<MachineCards
-            machines = {MACHINES}
-            joinSeen={joinSeen}
-            toggleJoinPopup={toggleJoinPopup}
-            currentPopupId={currentPopupId}
-            setMessage={toggleErrorPopup}
-            isLoggedIn={isLoggedIn}
-            toggleFavorite={toggleFavorite}
-          />} />
+          machines={machines}
+          joinSeen={joinSeen}
+          toggleJoinPopup={toggleJoinPopup}
+          currentPopupId={currentPopupId}
+          setMessage={toggleErrorPopup}
+          isLoggedIn={isLoggedIn}
+        // toggleFavorite={toggleFavorite}
+        />} />
       </Routes>
     </div>
   );
