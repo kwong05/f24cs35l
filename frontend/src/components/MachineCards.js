@@ -16,8 +16,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
         
     if (!response.ok) {
       throw new Error('Error retrieving favorites list data') }
-      const data = await response.json();
-      favorites = data;
+      favorites = await response.json();
     } catch (error) {
         console.error('Error fetching favorites list:', error);
       }
