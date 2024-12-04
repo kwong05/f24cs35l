@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import Login from './Login';
 import SignUp from './SignUp';
 import Error from './Error';
+import AddMachine from './AddMachine';
 
-function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, toggleErrorPopup, errorSeen, currentErrorMessage, isLoggedIn, username, handleLogout, toggleMachinePopup }) {
+function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, toggleErrorPopup, errorSeen, currentErrorMessage, isLoggedIn, username, handleLogout, addMachineSeen, toggleMachinePopup }) {
     return (
         <div className="header">
             <div className="topnav">
@@ -20,6 +21,7 @@ function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, to
                         <div className="topnav-buttons" onClick={toggleMachinePopup}>
                             Add machine
                         </div>
+                        {addMachineSeen ? <AddMachine toggle={toggleMachinePopup} setMessage={toggleErrorPopup} /> : null}
                     </>
                 ) : (
                     <>
