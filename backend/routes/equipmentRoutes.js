@@ -58,3 +58,52 @@ app.post('/removeEquipment', async (req, res) => {
         res.status(500).json({ message: 'Error removing equipment' });
     }
 });
+
+// Join queue for equipment
+app.post('/join', async (req, res) => {
+
+    const desiredEquipmentName = req.body.equipmentName;
+    const currentUser = req.body.username;
+
+    // ensure User is not already waiting in queue for equipment
+    isQueued = false;
+    if (currentUser.queuedEquipment != null)
+        isQueued = true;
+    //isQueued = await Equipment.findOne({"name": desiredEquipmentName, "userQueue.userID": currentUser});
+    if (isQueued) return res.status(403).json({ message: 'User already queued' });
+
+    //check that the user's current equipment will run out of time before new equiupment is ready
+    const desiredEquipment = await Equipment.findOne({ "name": desiredEquipmentName });
+    const currentEquipment = currentUser.currentEquipment;
+    if ((currentEquipment.unlockTime > desiredEquipment.unlockTime) && (desiredEquipment.userQueue == []))
+        return res.status(403).json({ message: "User's current equipment will unlock after desired equipment" });
+
+    // add user to equipment queue
+    desiredEquipment.userQueue.push(currentUser);
+    currentUser.equipmentQueue.push(desiredEquipment);
+    await desiredEquipment.save();
+    await currentUser.save();
+    return res.status(200);
+});
+
+// Leave queue for equipment
+app.post('/renege', async (req, res) => {
+
+    const undesiredEquipmentName = req.body.equipmentName;
+    const currentUser = req.body.username;
+
+    // ensure User is already waiting in queue for equipment
+    const undesiredEquipment = await Equipment.findOne({ "name": undesiredEquipmentName, "userQueue.userID": currentUser });
+    if (!undesiredEquipment) return res.status(403).json({ message: 'User does not exist in queue' });
+
+    // remove user from equipment queue
+    userIdx = undesiredEquipment.userQueue.indexOf(currentUser);
+    undesiredEquipment.userQueue.splice(userIdx, 1);
+    await undesiredEquipment.save();
+
+    // remove equipment from user queue
+    equipmentIdx = currentUser.queuedEquipment.indexOf(undesiredEquipment);
+    currentUser.queuedEquipment = null;
+    await currentUser.save();
+    return res.status(200);
+});
