@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from './Card';
+import { BrowserRouter as Router, useParams } from 'react-router-dom';
 
 function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, loggedIn, toggleFavorite }) {
       const cards = []
