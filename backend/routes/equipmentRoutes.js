@@ -79,7 +79,7 @@ router.post('/join', async (req, res) => {
 
     // add user to equipment queue
     desiredEquipment.userQueue.push(currentUser);
-    currentUser.equipmentQueue.push(desiredEquipment);
+    currentUser.queuedEquipment = desiredEquipment;
 
     await desiredEquipment.save();
     await currentUser.save();
