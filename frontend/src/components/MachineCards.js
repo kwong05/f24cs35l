@@ -4,9 +4,10 @@ import { BrowserRouter as Router, useParams } from 'react-router-dom';
 
 function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, loggedIn, toggleFavorite }) {
   const cards = []
+  let favorites = [];
   if (loggedIn) {
     //get current user's favorites
-    favorites = getFavorites();
+    //favorites = getFavorites();
     favorites.forEach((favorite) => {
       const tryToFindMachine = machines.find(m => m.id === favorite);
       if (tryToFindMachine) {
@@ -30,7 +31,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
   })
 
   //if the URL is not the homepage, only display the machine that is in the url 
-  const { machineId } = useParams();
+  /*const { machineId } = useParams();
   const tryToFindMachine = machines.find(m => m.id === machineId);
 
   if (!tryToFindMachine) {
@@ -45,7 +46,12 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
     <div className="machine-cards">
       <Card key={machineId} machine={tryToFindMachine} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} machines={machines} setMessage={setMessage} loggedIn={loggedIn} favorite={loggedIn && favorites.includes(tryToFindMachine.id)} toggleFavorite={toggleFavorite} />
     </div>
-  )
+  )*/
+  return (
+      <div className="machine-cards">
+        {cards}
+      </div>
+    );
 }
 
 export default MachineCards;
