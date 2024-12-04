@@ -36,10 +36,8 @@ function App() {
       }
     };
 
-    fetchEquipment();
-  }, []); // Empty dependency array means this effect runs once when the component mounts
-
-  const fetchFavorites = async () => {
+    //get the user's favorite list
+    const fetchFavorites = async () => {
       try {
         const url = `http://localhost:10000/api/users/fetchFavorites?username=${encodeURIComponent(username)}`;
         const response = await fetch(url, {
@@ -58,6 +56,12 @@ function App() {
         console.error('Error fetching favorites list:', error);
       }
     };
+
+    fetchEquipment();
+    fetchFavorites();
+  }, []); // Empty dependency array means this effect runs once when the component mounts
+
+
   
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
