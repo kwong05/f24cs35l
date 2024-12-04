@@ -9,8 +9,7 @@ const root = createRoot(document.getElementById("root"));
 root.render(
   <StrictMode>
     <BrowserRouter>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <App />
+      <App />
     </BrowserRouter>
   </StrictMode>
 );

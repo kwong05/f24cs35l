@@ -49,8 +49,9 @@ mongoose.connect(uri, {
 // get the equipment from the database
 app.get('/api/equipment', async (req, res) => {
     try {
+        console.log("DEBUG");
         const equipmentList = await Equipment.find({}, 'name'); // Only fetch 'name' field
-
+        console.log(equimentList);
         // send names as a json
         res.json(equipmentList);
     } catch (err) {
@@ -184,12 +185,12 @@ app.post('/addEquipment', authenticateToken, isAdmin, async (req, res) => {
 
 app.post('/removeEquipment', authenticateToken, isAdmin, doesEquipmentExist, async (req, res) => {
     try {
-        const equipmentName = req.body;
+        const { name: equipmentName } = req.body;
 
         console.log('Removing equipment from database:', equipmentName);
         await Equipment.deleteOne({ name: equipmentName });
 
-        res.status(201).json({ message: 'Equipment removed successfully' });
+        res.status(200).json({ message: 'Equipment removed successfully' });
     } catch (error) {
         console.error('Equipment Remove Error:', error);  // Log the exact error
         res.status(500).json({ message: 'Error removing equipment' });
@@ -294,4 +295,8 @@ cron.schedule('* * * * *', async () => { // activates every minute
             await readyE.save();
         }
     }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
