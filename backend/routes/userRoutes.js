@@ -8,10 +8,9 @@ const User = require('../models/User');
 const secretKey = process.env.JWT_SECRET || 'secretkey';  // Replace with a secure key
 
 // get user's favorite list
-router.get('/fetchFavorites', [body('username').notEmpty().withMessage('Username is required')], 
-    async (req, res) => {
+router.get('/fetchFavorites', async (req, res) => {
     try {
-        const { username } = req.body;  
+        const { username } = req.query;  
         const user = await User.findOne({ username }); //get the user object from their name
        
         // get the users favorite list
