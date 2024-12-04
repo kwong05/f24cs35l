@@ -30,25 +30,25 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
         )}
         {loggedIn ?
           (favorite ? (
-            <button class="favorites-button" onClick={() => toggleFavorite(machine.id)}>
-              <span class="material-symbols-outlined active-favorite">favorite</span>
+            <button className="favorites-button" onClick={() => toggleFavorite(machine.id)}>
+              <span className="material-symbols-outlined active-favorite">favorite</span>
             </button>
           ) : (
-            <button class="favorites-button" onClick={() => toggleFavorite(machine.id)}>
-              <span class="material-symbols-outlined inactive-favorite">favorite</span>
+            <button className="favorites-button" onClick={() => toggleFavorite(machine.id)}>
+              <span className="material-symbols-outlined inactive-favorite">favorite</span>
             </button>
           )) : null}
       </div>
-      <div class="collapsible">
-        <button type="button" class="collapsible-button" onClick={() => toggleListOpen()}>
-          <div class="collapsible-description">
+      <div className="collapsible">
+        <button type="button" className="collapsible-button" onClick={() => toggleListOpen()}>
+          <div className="collapsible-description">
             {machine.userQueue && machine.userQueue.length != 0 ? (
-              listOpen ? <span class="material-symbols-outlined arrow">keyboard_arrow_down</span> : <span class="material-symbols-outlined arrow">chevron_right</span>
+              listOpen ? <span className="material-symbols-outlined arrow">keyboard_arrow_down</span> : <span class="material-symbols-outlined arrow">chevron_right</span>
             ) : null
             }
             {collapsible_text}
           </div>
-          <div class="collapsible-est-time">
+          <div className="collapsible-est-time">
             {estimated_time}
           </div>
         </button>
