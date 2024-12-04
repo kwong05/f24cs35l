@@ -16,6 +16,7 @@ function App() {
   const [joinSeen, setJoinSeen] = useState(false);
   const [currentPopupId, setCurrentPopupId] = useState(null);
   const [machines, setMachines] = useState([]); // State to hold machines data
+  const [addMachineSeen, setAddMachineSeen] = useState(false);
 
   useEffect(() => {
     // Fetch equipment data from the backend
@@ -37,6 +38,10 @@ function App() {
 
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
+  };
+  
+  const toggleMachinePopup = () => {
+    setAddMachineSeen(!addMachineSeen);
   };
 
   const toggleSignUpPopup = () => {
@@ -89,8 +94,15 @@ function App() {
         />
       )}
       <Routes>
-        <Route path="/kwong05/f24cs35l/" element={<MachineCards machines={machines} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup} />} />
-        <Route path="/kwong05/f24cs35l/:machineId" element={<MachineCards machines={machines} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup} />} />
+        <Route path="/kwong05/f24cs35l/:machineId?" element={<MachineCards
+            machines = {MACHINES}
+            joinSeen={joinSeen}
+            toggleJoinPopup={toggleJoinPopup}
+            currentPopupId={currentPopupId}
+            setMessage={toggleErrorPopup}
+            isLoggedIn={isLoggedIn}
+            toggleFavorite={toggleFavorite}
+          />} />
       </Routes>
     </div>
   );
