@@ -132,6 +132,12 @@ app.post('/join', authenticateToken, doesEquipmentExist, async (req, res) => {
     // get the current username
     const currentUser = req.user.id;
 
+    // Consider using this if requests will be JSON, and delete the 2 previous const lines
+    /*
+    const desiredEquipmentName = req.body.equipmentName;
+    const currentUser = req.body.username
+    */
+
     // ensure User is not already waiting in queue for equipment
     isQueued = false;
     if (currentUser.queuedEquipment != null)
@@ -159,6 +165,12 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
 
     // get the current user
     const currentUser = req.user.id;
+
+    // Consider using this if requests will be JSON, and delete the 2 previous const lines
+    /*
+    const undesiredEquipmentName = req.body.equipmentName;
+    const currentUser = req.body.username
+    */
 
     // ensure User is already waiting in queue for equipment
     const undesiredEquipment = await Equipment.findOne({ "name": undesiredEquipmentName, "userQueue.userID": currentUser });
