@@ -90,7 +90,7 @@ router.post('/join', async (req, res) => {
 router.post('/renege', async (req, res) => {
 
     // parse from req JSON
-    const desiredEquipmentName = req.body.equipmentName;
+    const undesiredEquipmentName = req.body.equipmentName;
     const currentUsername = req.body.username;
 
     // verify user exists
