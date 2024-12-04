@@ -71,7 +71,7 @@ button {
 	float: right;
 	text-align: center;
 	padding: 14px 16px;
-	margin: 5px 0px;
+	margin: 5px 0;
 	text-decoration: none;
 	font-size: 17px;
 	color: inherit;
@@ -79,7 +79,28 @@ button {
 	cursor: pointer;
 	background: none;
 	border: none;
+	position: relative;
 }
+
+.topnav-user::after {
+	content: attr(data-username);
+	position: absolute;
+	left: 0;
+	right: 0;
+	text-align: center;
+	opacity: 0;
+}
+
+.topnav-user:hover span {
+	opacity: 0;
+}
+
+.topnav-user:hover::after {
+	content: 'Logout';
+	opacity: 1;
+}
+
+
 
 .machine-cards {
 	margin: auto;
@@ -116,7 +137,7 @@ button {
 }
 
 .inactive-favorite {
-	padding:10px 10px;
+	padding: 10px 10px;
 	float: right;
 	color: #aaaaaa;
 	font-variation-settings:
@@ -130,7 +151,7 @@ button {
 }
 
 .active-favorite {
-	padding:10px 10px;
+	padding: 10px 10px;
 	float: right;
 	color: #2f89db;
 	font-variation-settings:
