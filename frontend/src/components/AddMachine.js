@@ -4,28 +4,26 @@ function AddMachine({ toggle, setMessage }) {
     const [localMachineName, setLocalMachineName] = useState('');
 
     const handleAddMachine = async (e) => {
-        //add machine to server
+        // Add machine to server
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:10000/api/users/login', {
+            const response = await fetch('http://localhost:10000/addEquipment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ machine_name: localMachineName }),
+                body: JSON.stringify({ name: localMachineName }), // Correct field name
             });
             if (!response.ok) {
                 throw new Error('Add machine failed');
             }
             const data = await response.json();
             console.log('Successfully added a new machine:', data);
-            setMachineName(localMachineName);
             toggle();
         } catch (error) {
             toggle();
             setMessage(error.message);
         }
-        
     };
 
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
 
 function CardList({ waitlist }) {
-    if (waitlist.length === 0) {
+    if (!waitlist) {
         return <div></div>;
     }
 
