@@ -101,7 +101,7 @@ function App() {
           currentPopupId={currentPopupId}
           setMessage={toggleErrorPopup}
           isLoggedIn={isLoggedIn}
-        // toggleFavorite={toggleFavorite}
+          toggleFavorite={toggleFavorite}
         />} />
       </Routes>
     </div>
