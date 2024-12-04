@@ -37,7 +37,7 @@ Start the client-facing server by running
 ```npm start```.
 
 ## Backend Server
-Replace the MongoDB URL and JWT secret key with values applicable to you and a random new one, respectively.
+Replace the MongoDB URL with a value applicable to you.
 
 Change into the ```backend``` directory and run ```npm install```.
 
