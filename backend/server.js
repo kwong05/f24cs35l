@@ -1,13 +1,14 @@
 // backend/server.js
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const Equipment = require('./models/Equipment');
 const cron = require('node-cron');
 
-const userRoutes = require('./routes/userRoutes'); // Import userRoutes
-const equipmentRoutes = require('./routes/equipmentRoutes'); // Import equipmentRoutes
+const Equipment = require('./models/Equipment');
+const User = require('./models/User');
+
+const userRoutes = require('./routes/userRoutes');
+const equipmentRoutes = require('./routes/equipmentRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -43,41 +44,75 @@ mongoose.connect(uri, {
 app.use('/api/users', userRoutes);
 app.use('/api/equipment', equipmentRoutes);
 
+// HI KESHIV I REFORMATTED WITH CHATGPT TO UNDERSTAND BETTER SORRY
 // Check for lapsed equipment and transfer to next user
 cron.schedule('* * * * *', async () => { // activates every minute
-    const readyEquipment = await Equipment.find((Date.now() - unlockTime) <= 0);
-    for (const readyE of readyEquipment) {
-        if ((readyE.currentUser != null) && (readyE.userQueue != [])) {
-            user = readyE.currentUser;
-            user.currentEquipment = null;
-            await user.save();
-            readyE.currentUser = readyE.userQueue.shift(); // new currentUser is first index of userQueue array
-            newUser = readyE.currentUser;
-            newUser.currentEquipment = newUser.queuedEquipment; // newUser's current equipment set to first in queue
-            const now = new Date();
-            now.setMinutes(now.getMinutes() + 15);
-            readyE.unlockTime = now; // set new unlockTime for 15 minutes from now
-            await readyE.save();
-            await newUser.save();
-        } else if ((readyE.currentUser == null) && (readyE.userQueue != [])) {
-            readyE.currentUser = readyE.userQueue.shift(); // new currentUser is first index of userQueue array
-            newUser = readyE.currentUser;
-            newUser.currentEquipment = newUser.queuedEquipment; // newUser's current equipment set to first in queue
-            const now = new Date();
-            now.setMinutes(now.getMinutes() + 15);
-            readyE.unlockTime = now; // set new unlockTime for 15 minutes from now
-            await readyE.save();
-            await newUser.save();
-        } else if ((readyE.userQueue == []) && (readyE.currentUser != null)) {
-            user = readyE.currentUser;
-            user.currentEquipment = null;
-            await user.save();
-            readyE.unlockTime = Date.now();
-            await readyE.save();
-        } else {
-            readyE.unlockTime = Date.now();
-            await readyE.save();
+    try {
+        const currentTime = new Date().toISOString();
+        console.log(`[${currentTime}] Cron job started`);
+
+        // Find equipment whose unlock time has lapsed
+        const readyEquipment = await Equipment.find({ unlockTime: { $lte: new Date() } });
+        console.log(`[${currentTime}] Found ${readyEquipment.length} equipment(s) ready for update`);
+
+        for (const readyE of readyEquipment) {
+            const equipmentId = readyE._id;
+            const equipmentName = readyE.name;
+
+            // Case 1: Equipment has a current user and a non-empty queue
+            if (readyE.currentUser && readyE.userQueue.length > 0) {
+                const user = await User.findById(readyE.currentUser);
+                user.currentEquipment = null;
+                await user.save();
+
+                readyE.currentUser = readyE.userQueue.shift();
+                const newUser = await User.findById(readyE.currentUser);
+                newUser.currentEquipment = equipmentId;
+
+                const now = new Date();
+                now.setMinutes(now.getMinutes() + 15);
+                readyE.unlockTime = now;
+
+                await readyE.save();
+                await newUser.save();
+                console.log(`[${currentTime}] Equipment ${equipmentId}: User ${user._id} removed, User ${newUser._id} assigned, unlock time set to ${readyE.unlockTime}`);
+            }
+            // Case 2: Equipment has no current user but a non-empty queue
+            else if (!readyE.currentUser && readyE.userQueue.length > 0) {
+                readyE.currentUser = readyE.userQueue.shift();
+                const newUser = await User.findById(readyE.currentUser);
+                newUser.currentEquipment = equipmentId;
+
+                const now = new Date();
+                now.setMinutes(now.getMinutes() + 15);
+                readyE.unlockTime = now;
+
+                await readyE.save();
+                await newUser.save();
+                console.log(`[${currentTime}] Equipment ${equipmentId}: User ${newUser._id} assigned, unlock time set to ${readyE.unlockTime}`);
+            }
+            // Case 3: Equipment has a current user but an empty queue
+            else if (readyE.currentUser && readyE.userQueue.length === 0) {
+                const user = await User.findById(readyE.currentUser);
+                user.currentEquipment = null;
+                await user.save();
+
+                readyE.currentUser = null;
+                readyE.unlockTime = new Date();
+                await readyE.save();
+                console.log(`[${currentTime}] Equipment ${equipmentId}: User ${user._id} removed, unlock time reset`);
+            }
+            // Case 4: Equipment has no current user and an empty queue
+            else {
+                readyE.unlockTime = new Date();
+                await readyE.save();
+                console.log(`[${currentTime}] Equipment ${equipmentId}: No current user, unlock time reset`);
+            }
         }
+
+        console.log(`[${currentTime}] Cron job completed`);
+    } catch (error) {
+        console.error('Error in cron job:', error);
     }
 });
 
