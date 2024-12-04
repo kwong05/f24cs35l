@@ -175,6 +175,19 @@ app.post('/renege', authenticateToken, doesEquipmentExist, async (req, res) => {
     return res.status(200);
 });
 
+// get all the inputted equipment from the database to display it in frontend
+app.get('/getEquipment', async (req, res) => {
+    try {
+        //console.log("DEBUG");
+        const equipmentList = await Equipment.find({}, 'name'); // only get the names
+        //console.log(equimentList);
+        // send names as a json
+        res.json(equipmentList);
+    } catch (err) {
+        res.status(500).json({ message: 'Error retrieving equipment data' });
+    }
+});
+
 // Check for lapsed equipment and transfer to next user
 cron.schedule('* * * * *', async () => { // activates every minute
     const readyEquipment = await Equipment.find((Date.now() - unlockTime) <= 0);
