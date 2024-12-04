@@ -21,7 +21,7 @@ function App() {
     // Fetch equipment data from the backend
     const fetchEquipment = async () => {
       try {
-        const response = await fetch('http://localhost:10000/api/equipment');
+        const response = await fetch('http://localhost:10000/getEquipment');
         if (!response.ok) {
           throw new Error('Error retrieving equipment data');
         }
