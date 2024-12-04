@@ -17,6 +17,17 @@ function App() {
   const [currentPopupId, setCurrentPopupId] = useState(null);
   const MACHINES = []; // Replace with actual machines data
 
+  const toggleFavorite = (machineId) => {
+    favorites = getFavorites() //TODO get favorites list for current user from server
+    if (favorites.includes(machineId)) {
+      //remove machine from favorites list
+      //setFavorites(favorites.filter(id => id !== machineId));
+    } else {
+      //add machine to favorites list 
+      //setFavorites([...favorites, machineId]);
+    }
+  };
+  
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
   };
@@ -71,8 +82,7 @@ function App() {
         />
       )}
       <Routes>
-        <Route path="/kwong05/f24cs35l/" element={<MachineCards machines={MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup} />} />
-        <Route path="/kwong05/f24cs35l/:machineId" element={<MachineCards machines={MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup} />} />
+        <Route path="/kwong05/f24cs35l/:machineId?" element={<MachineCards machines = {MACHINES} joinSeen={joinSeen} toggleJoinPopup={toggleJoinPopup} currentPopupId={currentPopupId} setMessage={toggleErrorPopup} isLoggedIn={isLoggedIn} toggleFavorite={toggleFavorite} />} />
       </Routes>
     </div>
   );
