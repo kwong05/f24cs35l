@@ -2,12 +2,29 @@ import React from 'react';
 import Card from './Card';
 import { BrowserRouter as Router, useParams } from 'react-router-dom';
 
-function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite }) {
+async function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username }) {
   const cards = []
   let favorites = [];
+  
   if (isLoggedIn) {
     //get current user's favorites
     //favorites = getFavorites();
+    try {
+    const url = `http://localhost:10000/api/users/fetchFavorites?username=${encodeURIComponent(username)}`;
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          },
+        });
+        
+    if (!response.ok) {
+      throw new Error('Error retrieving favorites list data') }
+      favorites = await response.json();
+    } catch (error) {
+        console.error('Error fetching favorites list:', error);
+    }
+    
     favorites.forEach((favorite) => {
       const tryToFindMachine = machines.find(m => m._id === favorite);
       if (tryToFindMachine) {

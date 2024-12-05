@@ -21,6 +21,7 @@ function App() {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
+<<<<<<< HEAD
     fetchEquipment();
   }, []); // Empty dependency array means this effect runs once when the component mounts
 
@@ -51,6 +52,49 @@ function App() {
     }
   };
 
+=======
+    // Fetch equipment data from the backend
+    const fetchEquipment = async () => {
+      try {
+        const response = await fetch('http://localhost:10000/api/equipment/fetchEquipment');
+        if (!response.ok) {
+          throw new Error('Error retrieving equipment data');
+        }
+        const data = await response.json();
+        setMachines(data);
+      } catch (error) {
+        console.error('Error fetching equipment:', error);
+      }
+    };
+
+    //get the user's favorite list
+    const fetchFavorites = async () => {
+      try {
+        const url = `http://localhost:10000/api/users/fetchFavorites?username=${encodeURIComponent(username)}`;
+        const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+        
+        if (!response.ok) {
+          throw new Error('Error retrieving favorites list data');
+        }
+        const data = await response.json();
+        setFavorites(data);
+      } catch (error) {
+        console.error('Error fetching favorites list:', error);
+      }
+    };
+
+    fetchEquipment();
+    fetchFavorites();
+  }, []); // Empty dependency array means this effect runs once when the component mounts
+
+
+  
+>>>>>>> 62cbfcf511c1518699e747646605ccb217d57047
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
   };
@@ -137,6 +181,7 @@ function App() {
           setMessage={toggleErrorPopup}
           isLoggedIn={isLoggedIn}
           toggleFavorite={toggleFavorite}
+          username={username}
         />} />
       </Routes>
     </div>
