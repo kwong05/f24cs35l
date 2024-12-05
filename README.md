@@ -41,5 +41,5 @@ Replace the MongoDB URL with a value applicable to you.
 
 Change into the ```backend``` directory and run ```npm install```.
 
-Start the server by running
+Start the backend server by running
 ```npm start```.
