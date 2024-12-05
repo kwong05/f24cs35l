@@ -9,11 +9,13 @@ function JoinWaitlist({toggle, id, setMessage}) {
 
       //handle joining waitlist
        try {
-      // Validate user input <- I don't think we need this 
+      // Validate user input <- I don't think we need this
+      /* 
         if (!userId || !selectedEquipment) {
           setMessage("Please provide a valid user ID and equipment name");
           return;
         }
+      */
 
       // Send the POST request to the backend
       const response = await fetch('/join', {
@@ -45,7 +47,7 @@ function JoinWaitlist({toggle, id, setMessage}) {
               <h2>Join the Waitlist</h2>
               <label>When it is your turn on the waitlist, you will have 15 minutes.</label>
               <button className="close-button-top-right" onClick={toggle}>
-              <span class="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined">close</span>
               </button>
               <form onSubmit={handleJoinWaitlist}>
                   <button type="submit">Join</button>
