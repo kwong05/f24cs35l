@@ -12,9 +12,13 @@ function CardList({ waitlist }) {
     ));
 
     return (
-        <table>
-            <tbody>{tableRows}</tbody>
-        </table>
+        <div className="card-list">
+            {waitlist.map((username, index) => (
+                <div key={index} className="card-list-item">
+                    {username}
+                </div>
+            ))}
+        </div>
     );
 }
 
