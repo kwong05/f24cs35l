@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { QRCodeCanvas } from 'qrcode.react';
+
 import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 import LeaveWaitlist from './LeaveWaitlist';
@@ -9,6 +11,9 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
   const [isInQueue, setIsInQueue] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
+  const qrCodeRef = useRef();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +51,24 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   function toggleListOpen() {
     setListOpen(!listOpen);
   }
+
+  function toggleQRCode() {
+    setShowQRCode(!showQRCode);
+  }
+
+  function downloadQRCode() {
+    const canvas = qrCodeRef.current.querySelector('canvas');
+    const pngUrl = canvas
+      .toDataURL('image/png')
+      .replace('image/png', 'image/octet-stream');
+    let downloadLink = document.createElement('a');
+    downloadLink.href = pngUrl;
+    downloadLink.download = `${machine.name}-qrcode.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
 
   let inUse = machine.currentUser;
   let collapsible_text = "Waitlist is empty";
@@ -90,7 +113,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const statusText = machine.currentUser ? 'In Use' : 'Available';
 
   return (
-    <div className="card">
+    <div className="card" style={{ position: 'relative' }}>
       <div className="card-title" onClick={() => navigate(`/kwong05/f24cs35l/${machine._id}`)}>
         {machine.name}
         <span className={`outcome ${machineStatus}`}>{statusText}</span>
@@ -121,6 +144,9 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
             username={username}
           />
         ) : null}
+        <button className="info-button" onClick={(e) => { e.stopPropagation(); toggleQRCode(); }}>
+          <span className="material-symbols-outlined">info</span>
+        </button>
         {isLoggedIn ? (
           favorite ? (
             <button className="favorites-button" onClick={() => toggleFavorite(machine._id)}>
@@ -133,6 +159,17 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
           )
         ) : null}
       </div>
+      {showQRCode && (
+        <div id="qrCodeModal" className="modal" style={{ display: 'block' }}>
+          <div className="modal-content">
+            <span className="close" onClick={toggleQRCode}>&times;</span>
+            <div ref={qrCodeRef}>
+              <QRCodeCanvas value={`http://localhost:3000/kwong05/f24cs35l/${machine._id}`} />
+            </div>
+            <button className="download-button" onClick={downloadQRCode}>Download</button>
+          </div>
+        </div>
+      )}
       <div className="collapsible">
         <button type="button" className="collapsible-button" onClick={inUse ? toggleListOpen : null}>
           <div className="collapsible-description">
