@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, useParams } from 'react-router-dom';
 import Card from './Card';
 
 function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username, favorites }) {
@@ -9,6 +10,30 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
   }, [favorites]);
 
   const cards = [];
+
+  const {machineId} = useParams();
+  if(machineId)
+  {
+    const tryToFindMachine = machines.find(m => m._id === machineId);
+    if(tryToFindMachine) {
+      return (
+        <div class="machine-cards">
+          <Card
+            key={machineId}
+            machine={tryToFindMachine}
+            joinSeen={joinSeen}
+            toggleJoinPopup={toggleJoinPopup}
+            currentPopupId={currentPopupId}
+            setMessage={setMessage}
+            isLoggedIn={isLoggedIn}
+            favorite={(isLoggedIn && favorites.includes(tryToFindMachine._id))}
+            toggleFavorite={toggleFavorite}
+            username={username}
+          />
+        </div>
+      )
+    }
+  }
 
   if (isLoggedIn) {
     // Get current user's favorites

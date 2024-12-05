@@ -10,6 +10,7 @@ function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue}) {
     try {
       // Validate user input
       if (!username || !selectedEquipment) {
+        toggle();
         setMessage("Please provide a valid username and equipment name");
         return;
       }

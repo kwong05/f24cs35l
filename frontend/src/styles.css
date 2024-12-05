@@ -323,6 +323,11 @@ table {
 	margin-top: 20px;
 }
 
+.error-message {
+	color: black;
+	font-weight: normal;
+}
+
 .close-button-top-right {
 	border: none;
 	display: inline-block;

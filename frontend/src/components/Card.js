@@ -5,29 +5,38 @@ import JoinWaitlist from './JoinWaitlist';
 function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, isInQueue }) {
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
+  const [currentUsername, setCurrentUsername] = useState("");
 
   useEffect(() => {
-    const fetchUsernames = async () => {
+    const fetchUsernames = async (userIds, isCurrentUsername) => { //if isCurrentUsername is true, will put userId in currentUsername instead of usernames 
       try {
         const response = await fetch('http://localhost:10000/api/users/fetchUserDetails', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userIds: machine.userQueue }),
+          body: JSON.stringify({ userIds: userIds }),
         });
         if (!response.ok) {
           throw new Error('Error retrieving user details');
         }
         const data = await response.json();
-        setUsernames(data.map(user => user.username));
+        if(isCurrentUsername) {
+          setCurrentUsername(data[0].username);
+        }
+        else {
+          setUsernames(data.map(user => user.username));
+        }
       } catch (error) {
         console.error('Error fetching usernames:', error);
       }
     };
-
+    
     if (machine.userQueue && machine.userQueue.length > 0) {
-      fetchUsernames();
+      fetchUsernames(machine.userQueue, false);
+    }
+    if (machine.currentUser) {
+      fetchUsernames([machine.currentUser], true);
     }
   }, [machine.userQueue]);
 
@@ -35,11 +44,23 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
     setListOpen(!listOpen);
   }
 
+  let inUse = machine.currentUser; 
   let collapsible_text = "Waitlist is empty";
+  if(inUse)
+  {
+    collapsible_text = "Current user: " + currentUsername;
+  }
   let unlock_time = "";
 
   if (machine.userQueue && machine.userQueue.length != 0) {
-    collapsible_text = machine.userQueue.length + " people waiting..."
+    /*
+    if(machine.userQueue.length == 1) {
+      collapsible_text = machine.userQueue.length + " person waiting..."  
+    }
+    else {
+      collapsible_text = machine.userQueue.length + " people waiting..."
+    }*/
+    
     const date = new Date(machine.unlockTime);
     const time = date.toLocaleTimeString('en-US', {
       hour: '2-digit',
