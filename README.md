@@ -8,7 +8,8 @@ This is a Fall 2024 CS35L project by Nico Franz ([n-franz](https://github.com/n-
 
 ## Current Features
 **Home Screen Features:**
-- Displays the current machine in use, available machines, the waitlisted machine status, and time remaining before the queue is empty,
+- Signup and login, with unique usernames and encrypted passwords
+- Displays the current machine in use, available machines, the waitlisted machine status, and time remaining before the queue is empty.
 
 **Waitlist Management:**
 - Unlimited users can join the waitlist, but each can only have one machine in use and one on the waitlist at a time.
@@ -17,6 +18,10 @@ This is a Fall 2024 CS35L project by Nico Franz ([n-franz](https://github.com/n-
 **Favorites List:** 
 - Users can create a list of favorite machines 
 - These machines are displayed at the top of the avaliable machines page for them, allowing for easy acces and a personalized experience
+
+**Administrative Features:**
+- Add new equipment
+- Info card with downloadable QR Code
 
 ## Potential Features to Add in the Future
 **User Features**
