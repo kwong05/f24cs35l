@@ -39,7 +39,12 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
   let unlock_time = "";
 
   if (machine.userQueue && machine.userQueue.length != 0) {
-    collapsible_text = machine.userQueue.length + " people waiting..."
+    if(machine.userQueue.length == 1) {
+      collapsible_text = machine.userQueue.length + " person waiting..."  
+    }
+    else {
+      collapsible_text = machine.userQueue.length + " people waiting..."
+    }
     const date = new Date(machine.unlockTime);
     const time = date.toLocaleTimeString('en-US', {
       hour: '2-digit',
