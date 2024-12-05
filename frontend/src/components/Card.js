@@ -9,11 +9,17 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
   }
 
   let collapsible_text = "Waitlist is empty";
-  let estimated_time = "";
+  let unlock_time = "";
 
   if (machine.userQueue && machine.userQueue.length != 0) {
     collapsible_text = machine.userQueue.length + " people waiting..."
-    estimated_time = machine.unlockTime + " minutes";
+    const date = new Date(machine.unlockTime);
+    const time = date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    unlock_time = "free at " + time;
   }
 
   return (
@@ -45,7 +51,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
             {collapsible_text}
           </div>
           <div className="collapsible-est-time">
-            {estimated_time}
+            {unlock_time}
           </div>
         </button>
         <div>
