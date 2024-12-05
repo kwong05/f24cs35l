@@ -20,50 +20,43 @@ function App() {
   const [addMachineSeen, setAddMachineSeen] = useState(false);
   const [favorites, setFavorites] = useState([]);
 
+  const fetchEquipment = async () => {
+    try {
+      const response = await fetch('http://localhost:10000/api/equipment/fetchEquipment');
+      if (!response.ok) {
+        throw new Error('Error retrieving equipment data');
+      }
+      const data = await response.json();
+      setMachines(data);
+    } catch (error) {
+      console.error('Error fetching equipment:', error);
+    }
+  };
   useEffect(() => {
-    // Fetch equipment data from the backend
-    const fetchEquipment = async () => {
-      try {
-        const response = await fetch('http://localhost:10000/api/equipment/fetchEquipment');
-        if (!response.ok) {
-          throw new Error('Error retrieving equipment data');
-        }
-        const data = await response.json();
-        setMachines(data);
-      } catch (error) {
-        console.error('Error fetching equipment:', error);
-      }
-    };
-
-    //get the user's favorite list
-    const fetchFavorites = async () => {
-      try {
-        const url = `http://localhost:10000/api/users/fetchFavorites?username=${encodeURIComponent(username)}`;
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Error retrieving favorites list data');
-        }
-        const data = await response.json();
-        setFavorites(data);
-      } catch (error) {
-        console.error('Error fetching favorites list:', error);
-      }
-    };
-
     fetchEquipment();
-    fetchFavorites();
-  }, []); // Empty dependency array means this effect runs once when the component mounts
+  }, []);
 
-
-
+  // POPUPS
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
+  };
+
+  const toggleSignUpPopup = () => {
+    setSignUpSeen(!signUpSeen);
+  };
+
+  const toggleMachinePopup = () => {
+    setAddMachineSeen(!addMachineSeen);
+  };
+
+  const toggleErrorPopup = (message) => {
+    setCurrentErrorMessage(message);
+    setErrorSeen(!errorSeen);
+  };
+
+  const toggleJoinPopup = (id) => {
+    setCurrentPopupId(id);
+    setJoinSeen(!joinSeen);
   };
 
   const toggleFavorite = (machineId) => {
@@ -75,24 +68,6 @@ function App() {
     } else {
       //setFavorites([...favorites, machineId]);
     }
-  };
-
-  const toggleMachinePopup = () => {
-    setAddMachineSeen(!addMachineSeen);
-  };
-
-  const toggleSignUpPopup = () => {
-    setSignUpSeen(!signUpSeen);
-  };
-
-  const toggleErrorPopup = (message) => {
-    setCurrentErrorMessage(message);
-    setErrorSeen(!errorSeen);
-  };
-
-  const toggleJoinPopup = (id) => {
-    setCurrentPopupId(id);
-    setJoinSeen(!joinSeen);
   };
 
   const handleLogout = () => {
