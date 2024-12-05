@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { broadcast } = require('../utils/websocket');
 const Equipment = require('../models/Equipment');
 const User = require('../models/User');
 
@@ -54,8 +55,8 @@ router.post('/removeEquipment', async (req, res) => {
 // Join queue for equipment
 router.post('/join', async (req, res) => {
     try {
-        const { equipmentName, username } = req.body;
-
+        const { user: username, id: equipmentId } = req.body;
+        console.log(username, equipmentId);
         // Verify user exists
         const currentUser = await User.findOne({ username });
         if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
@@ -66,7 +67,7 @@ router.post('/join', async (req, res) => {
         if (isQueued) return res.status(403).json({ message: 'User already queued' });
 
         // Check that the user's current equipment is not the same as the desired equipment
-        const desiredEquipment = await Equipment.findOne({ name: equipmentName });
+        const desiredEquipment = await Equipment.findOne({ _id: equipmentId });
         const currentEquipment = currentUser.currentEquipment;
         if (currentEquipment && currentEquipment.equals(desiredEquipment._id)) {
             return res.status(403).json({ message: 'User is already using this equipment' });
@@ -83,6 +84,8 @@ router.post('/join', async (req, res) => {
 
         await desiredEquipment.save();
         await currentUser.save();
+
+        broadcast({ type: 'update', equipment: desiredEquipment });
 
         return res.status(200).json({ message: 'User added to queue successfully' });
     } catch (error) {

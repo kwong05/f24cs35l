@@ -20,6 +20,28 @@ function App() {
   const [addMachineSeen, setAddMachineSeen] = useState(false);
   const [favorites, setFavorites] = useState([]);
 
+  useEffect(() => {
+    fetchEquipment();
+    const ws = new WebSocket('ws://localhost:10000');
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      //console.log('Received update:', data);
+      if (data.type === 'update') {
+        setMachines((prevMachines) => {
+          return prevMachines.map((machine) => {
+            if (machine._id === data.equipment._id) {
+              return data.equipment;
+            }
+            return machine;
+          });
+        });
+      }
+    };
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   const fetchEquipment = async () => {
     try {
       const response = await fetch('http://localhost:10000/api/equipment/fetchEquipment');
@@ -32,9 +54,7 @@ function App() {
       console.error('Error fetching equipment:', error);
     }
   };
-  useEffect(() => {
-    fetchEquipment();
-  }, []);
+
 
   const fetchFavorites = async () => {
     try {
@@ -74,7 +94,6 @@ function App() {
       }
       setFavorites(updatedFavorites);
 
-      // Optionally, update the favorites on the server
       const response = await fetch('http://localhost:10000/api/users/updateFavorites', {
         method: 'POST',
         headers: {
@@ -155,7 +174,6 @@ function App() {
         <AddMachine
           toggle={toggleAddMachinePopup}
           setMessage={toggleErrorPopup}
-          refreshMachines={fetchEquipment}
         />
       )}
       <Routes>

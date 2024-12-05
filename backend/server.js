@@ -3,9 +3,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cron = require('node-cron');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
+
+// const bcrypt = require('bcryptjs');
+// const jwt = require('jsonwebtoken');
+// const { body, validationResult } = require('express-validator');
+
+const { setupWebSocket, broadcast } = require('./utils/websocket');
 
 const Equipment = require('./models/Equipment');
 const User = require('./models/User');
@@ -34,8 +37,6 @@ const uri = process.env.MONGO_URI || "mongodb+srv://gymadmin:adminpass@main.6rs8
 
 // Set up default mongoose connection with increased timeout and logging
 mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 30000,  // Increase the timeout to 30 seconds
 }).then(() => {
     console.log('Connected to MongoDB Atlas');
@@ -43,22 +44,23 @@ mongoose.connect(uri, {
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
+
+// WebSocket server setup
+const server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+setupWebSocket(server); // Set up WebSocket
+
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/equipment', equipmentRoutes);
 
 
-// HI KESHIV I REFORMATTED WITH CHATGPT TO UNDERSTAND BETTER SORRY
 // Check for lapsed equipment and transfer to next user
-cron.schedule('* * * * *', async () => { // activates every minute
+cron.schedule('*/10 * * * * *', async () => {
     try {
-        const currentTime = new Date().toISOString();
-        console.log(`[${currentTime}] Cron job started`);
-
-        // Find equipment whose unlock time has lapsed
         const readyEquipment = await Equipment.find({ unlockTime: { $lte: new Date() } });
-        console.log(`[${currentTime}] Found ${readyEquipment.length} equipment(s) ready for update`);
-
         for (const readyE of readyEquipment) {
             const equipmentId = readyE._id;
 
@@ -73,13 +75,14 @@ cron.schedule('* * * * *', async () => { // activates every minute
                 newUser.currentEquipment = equipmentId;
                 newUser.queuedEquipment = null;
 
-                const now = new Date();
+                const now = new Date(readyE.unlockTime);
                 now.setMinutes(now.getMinutes() + 15);
                 readyE.unlockTime = now;
 
                 await readyE.save();
                 await newUser.save();
-                console.log(`[${currentTime}] Equipment ${equipmentId}: User ${user._id} removed, User ${newUser._id} assigned, unlock time set to ${readyE.unlockTime}`);
+                broadcast({ type: 'update', equipment: readyE });
+                // console.log(`[${currentTime}] Equipment ${equipmentId}: User ${user._id} removed, User ${newUser._id} assigned, unlock time set to ${readyE.unlockTime}`);
             }
             // Case 2: Equipment has no current user but a non-empty queue
             else if (!readyE.currentUser && readyE.userQueue.length > 0) {
@@ -88,13 +91,14 @@ cron.schedule('* * * * *', async () => { // activates every minute
                 newUser.currentEquipment = equipmentId;
                 newUser.queuedEquipment = null;
 
-                const now = new Date();
+                const now = new Date(readyE.unlockTime);
                 now.setMinutes(now.getMinutes() + 15);
                 readyE.unlockTime = now;
 
                 await readyE.save();
                 await newUser.save();
-                console.log(`[${currentTime}] Equipment ${equipmentId}: User ${newUser._id} assigned, unlock time set to ${readyE.unlockTime}`);
+                broadcast({ type: 'update', equipment: readyE });
+                // console.log(`[${currentTime}] Equipment ${equipmentId}: User ${newUser._id} assigned, unlock time set to ${readyE.unlockTime}`);
             }
             // Case 3: Equipment has a current user but an empty queue
             else if (readyE.currentUser && readyE.userQueue.length === 0) {
@@ -105,25 +109,22 @@ cron.schedule('* * * * *', async () => { // activates every minute
                 readyE.currentUser = null;
                 readyE.unlockTime = new Date();
                 await readyE.save();
-                console.log(`[${currentTime}] Equipment ${equipmentId}: User ${user._id} removed, unlock time reset`);
+                broadcast({ type: 'update', equipment: readyE });
+                // console.log(`[${currentTime}] Equipment ${equipmentId}: User ${user._id} removed, no new user assigned`);
             }
             // Case 4: Equipment has no current user and an empty queue
             else {
                 readyE.unlockTime = new Date();
                 await readyE.save();
-                console.log(`[${currentTime}] Equipment ${equipmentId}: No current user, unlock time reset`);
+                broadcast({ type: 'update', equipment: readyE });
+                // console.log(`[${currentTime}] Equipment ${equipmentId}: No current user, no new user assigned`);
             }
         }
-
-        console.log(`[${currentTime}] Cron job completed`);
     } catch (error) {
         console.error('Error in cron job:', error);
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
 
 
 // Protection

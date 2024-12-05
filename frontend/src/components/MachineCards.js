@@ -17,15 +17,16 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
       if (tryToFindMachine) {
         cards.push(
           <Card
-            key={tryToFindMachine._id}
-            machine={tryToFindMachine}
+            key={machine._id}
+            machine={machine}
             joinSeen={joinSeen}
             toggleJoinPopup={toggleJoinPopup}
             currentPopupId={currentPopupId}
             setMessage={setMessage}
             isLoggedIn={isLoggedIn}
-            favorite={true}
+            favorite={false}
             toggleFavorite={toggleFavorite}
+            username={username}
           />
         );
       }
@@ -50,6 +51,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
           isLoggedIn={isLoggedIn}
           favorite={false}
           toggleFavorite={toggleFavorite}
+          username={username}
         />
       );
     }

@@ -7,6 +7,18 @@ const User = require('../models/User');
 
 const secretKey = process.env.JWT_SECRET || 'secretkey';  // Replace with a secure key
 
+// Fetch user details by user IDs
+router.post('/fetchUserDetails', async (req, res) => {
+    try {
+        const { userIds } = req.body;
+        const users = await User.find({ _id: { $in: userIds } }, 'username');
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ message: 'Error retrieving user details' });
+    }
+});
+
+
 // get user's favorite list
 router.get('/fetchFavorites', async (req, res) => {
     try {
