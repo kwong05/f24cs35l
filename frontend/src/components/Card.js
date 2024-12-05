@@ -100,7 +100,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
           </div>
         </button>
         <div>
-          {listOpen ? <CardList waitlist={usernames} /> : null}
+          {listOpen ? <CardList waitlist={usernames} machine={machine} /> : null}
         </div>
       </div>
     </div>
