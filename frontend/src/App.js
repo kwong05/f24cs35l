@@ -178,8 +178,9 @@ function App() {
       )}
       {addMachineSeen && (
         <AddMachine
-          toggle={toggleAddMachinePopup}
+          toggle={toggleMachinePopup}
           setMessage={toggleErrorPopup}
+          refreshMachines={fetchEquipment}
         />
       )}
       <Routes>

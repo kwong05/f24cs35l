@@ -25,8 +25,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
         const data = await response.json();
         if (isCurrentUsername) {
           setCurrentUsername(data[0].username);
-        }
-        else {
+        } else {
           setUsernames(data.map(user => user.username));
         }
       } catch (error) {
@@ -40,7 +39,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
     if (machine.currentUser) {
       fetchUsernames([machine.currentUser], true);
     }
-  }, [machine.userQueue]);
+  }, [machine.userQueue, machine.currentUser]);
 
   function toggleListOpen() {
     setListOpen(!listOpen);
@@ -54,24 +53,36 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   let unlock_time = "";
 
   if (machine.userQueue && machine.userQueue.length != 0) {
-    /*
-    if(machine.userQueue.length == 1) {
-      collapsible_text = machine.userQueue.length + " person waiting..."  
-    }
-    else {
-      collapsible_text = machine.userQueue.length + " people waiting..."
-    }*/
 
+    collapsible_text += ` (${machine.userQueue.length} waiting...)`;
     const date = new Date(machine.unlockTime);
-    const time = date.toLocaleTimeString('en-US', {
+    const now = new Date();
+    const additionalMinutes = machine.userQueue.length * 15;
+    const totalMinutesRemaining = Math.ceil((date - now) / 60000) + additionalMinutes;
+
+    // Calculate the new unlock time
+    const newUnlockTime = new Date(date);
+    newUnlockTime.setMinutes(newUnlockTime.getMinutes() + additionalMinutes);
+    const formattedNewUnlockTime = newUnlockTime.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false
     });
+
+    console.log(`${machine.name} Unlock time: ${date}`);
+    unlock_time = `Free at ${formattedNewUnlockTime} (${totalMinutesRemaining} minutes)`;
+  } else if (machine.currentUser) {
+    const unlockTime = new Date(machine.unlockTime);
     const now = new Date();
-    const minutesRemaining = Math.ceil((date - now) / 60000);
-    unlock_time = `Free at ${time} (${minutesRemaining} minutes)`;
+    const totalMinutesRemaining = Math.ceil((unlockTime - now) / 60000);
+    const formattedUnlockTime = unlockTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    unlock_time = `Free at ${formattedUnlockTime} (${totalMinutesRemaining} minutes)`;
   }
+
 
   const machineStatus = machine.currentUser ? 'in-use' : 'available';
   const statusText = machine.currentUser ? 'In Use' : 'Available';

@@ -64,11 +64,35 @@ router.post('/join', async (req, res) => {
         // Ensure User is not already waiting in queue for equipment
         let isQueued = false;
         if (currentUser.queuedEquipment != null) isQueued = true;
+        const desiredEquipment = await Equipment.findOne({ _id: equipmentId });
+        const currentEquipment = currentUser.currentEquipment;
+
+        // Check if the user is in queue for another equipment but currentEquipment is not set
+        if (isQueued && !currentEquipment) {
+            const queuedEquipment = await Equipment.findOne({ _id: currentUser.queuedEquipment });
+            const unlockTime = new Date(queuedEquipment.unlockTime);
+            const now = new Date();
+            const minutesRemaining = Math.ceil((unlockTime - now) / 60000);
+
+            console.log(minutesRemaining, desiredEquipment.currentUser);
+            if (minutesRemaining > 15 && !desiredEquipment.currentUser) {
+                // Allow the user to use the desired equipment
+                currentUser.currentEquipment = desiredEquipment._id;
+                currentUser.queuedEquipment = null;
+                desiredEquipment.currentUser = currentUser._id;
+
+                await desiredEquipment.save();
+                await currentUser.save();
+
+                broadcast({ type: 'update', equipment: desiredEquipment });
+
+                return res.status(200).json({ message: 'User assigned to equipment successfully' });
+            }
+        }
+
         if (isQueued) return res.status(403).json({ message: 'User already queued' });
 
         // Check that the user's current equipment is not the same as the desired equipment
-        const desiredEquipment = await Equipment.findOne({ _id: equipmentId });
-        const currentEquipment = currentUser.currentEquipment;
         if (currentEquipment && currentEquipment.equals(desiredEquipment._id)) {
             return res.status(403).json({ message: 'User is already using this equipment' });
         }
@@ -133,7 +157,7 @@ router.post('/renege', async (req, res) => {
             await undesiredEquipment.save();
             await currentUser.save();
         }
-        
+
         broadcast({ type: 'update', equipment: undesiredEquipment });
 
         return res.status(200).json({ message: 'User removed from queue successfully' });
