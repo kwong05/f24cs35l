@@ -23,6 +23,7 @@ function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
             // Automatically log in the user after successful registration
             handleLogin({ username: localUsername, password, setUsername, setIsLoggedIn, toggle, setMessage });
         } catch (error) {
+            toggle();
             setMessage(error.message);
         }
     };

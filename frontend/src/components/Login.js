@@ -18,6 +18,7 @@ const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, tog
         setIsLoggedIn(true);
         toggle();
     } catch (error) {
+        toggle();
         setMessage(error.message);
     }
 };

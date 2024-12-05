@@ -5,8 +5,7 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Error from './components/Error';
 import MachineCards from './components/MachineCards';
-
-const PORT = 3001;
+import AddMachine from './components/AddMachine';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,22 +21,22 @@ function App() {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    // Fetch equipment data from the backend
-    const fetchEquipment = async () => {
-      try {
-        const response = await fetch('http://localhost:10000/api/equipment/fetchEquipment');
-        if (!response.ok) {
-          throw new Error('Error retrieving equipment data');
-        }
-        const data = await response.json();
-        setMachines(data);
-      } catch (error) {
-        console.error('Error fetching equipment:', error);
-      }
-    };
-
     fetchEquipment();
   }, []); // Empty dependency array means this effect runs once when the component mounts
+
+  // Fetch equipment data from the backend
+  const fetchEquipment = async () => {
+    try {
+      const response = await fetch('http://localhost:10000/api/equipment/fetchEquipment');
+      if (!response.ok) {
+        throw new Error('Error retrieving equipment data');
+      }
+      const data = await response.json();
+      setMachines(data);
+    } catch (error) {
+      console.error('Error fetching equipment:', error);
+    }
+  };
 
   const fetchFavorites = async () => {
     try {
@@ -120,6 +119,13 @@ function App() {
           setMessage={toggleErrorPopup}
           setIsLoggedIn={setIsLoggedIn}
           setUsername={setUsername}
+        />
+      )}
+      {addMachineSeen && (
+        <AddMachine
+          toggle={toggleAddMachinePopup}
+          setMessage={toggleErrorPopup}
+          refreshMachines={fetchEquipment}
         />
       )}
       <Routes>

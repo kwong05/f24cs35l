@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-function AddMachine({ toggle, setMessage }) {
+function AddMachine({ toggle, setMessage, refreshMachines }) {
     const [localMachineName, setLocalMachineName] = useState('');
 
     const handleAddMachine = async (e) => {
         // Add machine to server
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:10000/addEquipment', {
+            const response = await fetch('http://localhost:10000/api/equipment/addEquipment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -19,6 +19,7 @@ function AddMachine({ toggle, setMessage }) {
             }
             const data = await response.json();
             console.log('Successfully added a new machine:', data);
+            refreshMachines(); // Refresh the list of machines
             toggle();
         } catch (error) {
             toggle();
