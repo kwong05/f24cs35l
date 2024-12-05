@@ -3,7 +3,7 @@ import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 import LeaveWaitlist from './LeaveWaitlist';
 
-function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username}) {
+function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username }) {
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
@@ -23,7 +23,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
           throw new Error('Error retrieving user details');
         }
         const data = await response.json();
-        if(isCurrentUsername) {
+        if (isCurrentUsername) {
           setCurrentUsername(data[0].username);
         }
         else {
@@ -33,7 +33,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
         console.error('Error fetching usernames:', error);
       }
     };
-    
+
     if (machine.userQueue && machine.userQueue.length > 0) {
       fetchUsernames(machine.userQueue, false);
     }
@@ -46,10 +46,9 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
     setListOpen(!listOpen);
   }
 
-  let inUse = machine.currentUser; 
+  let inUse = machine.currentUser;
   let collapsible_text = "Waitlist is empty";
-  if(inUse)
-  {
+  if (inUse) {
     collapsible_text = "Current user: " + currentUsername;
   }
   let unlock_time = "";
@@ -62,7 +61,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
     else {
       collapsible_text = machine.userQueue.length + " people waiting..."
     }*/
-    
+
     const date = new Date(machine.unlockTime);
     const time = date.toLocaleTimeString('en-US', {
       hour: '2-digit',
@@ -82,12 +81,12 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
       <div className="card-title">
         {machine.name}
         <span className={`outcome ${machineStatus}`}>{statusText}</span>
-        {!isInQueue ? (
+        {!isInQueue && isLoggedIn ? (
           <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine._id)}>
             Join
           </button>
         ) : null}
-        
+
         {joinSeen && currentPopupId === machine._id ? (
           <JoinWaitlist
             toggle={toggleJoinPopup}
@@ -101,14 +100,14 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
             Leave
           </button>
         ) : null}
-          {leaveSeen && currentPopupId === machine._id ? (
-            <LeaveWaitlist
-              toggle={toggleLeavePopup}
-              setMessage={setMessage}
-              id={currentPopupId}
-              username={username}
-            />
-          ) : null}
+        {leaveSeen && currentPopupId === machine._id ? (
+          <LeaveWaitlist
+            toggle={toggleLeavePopup}
+            setMessage={setMessage}
+            id={currentPopupId}
+            username={username}
+          />
+        ) : null}
         {isLoggedIn ? (
           favorite ? (
             <button className="favorites-button" onClick={() => toggleFavorite(machine._id)}>
