@@ -184,13 +184,13 @@ button {
 
 .collapsible {
 	font-family: inherit;
-  	color: #686868;
+	color: #686868;
 	border: none;
 	text-align: left;
 	float: center;
 	outline: none;
 	border-radius: 5px;
-    padding: 0px 0px 10px 0px;
+	padding: 0px 0px 10px 0px;
 	margin: 10px 10px 10px 10px;
 	font-size: 15px;
 }
@@ -212,14 +212,14 @@ button {
 
 .collapsible-button {
 	border: 2px solid #F0F0F0;
-    text-align: left;
-    width: 100%;
-    background-color: #FCFCFC;
-    color: inherit;
+	text-align: left;
+	width: 100%;
+	background-color: #FCFCFC;
+	color: inherit;
 	cursor: pointer;
 	font-size: inherit;
-    padding: 10px 0px 10px 10px;
-    border-radius: inherit;
+	padding: 10px 0px 10px 10px;
+	border-radius: inherit;
 	display: table;
 }
 
@@ -337,4 +337,28 @@ table {
 	top: 0;
 	border-radius: inherit;
 	color: #555555;
+}
+
+.outcome {
+	font-weight: bold;
+	font-size: 12px;
+	width: 60px;
+	padding: 5px 5px;
+	margin: 10px 10px;
+	vertical-align: middle;
+	background-color: inherit;
+	border-radius: 10px;
+	display: inline-block;
+	text-align: center;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.outcome.available {
+	background-color: #4caf50;
+	color: white;
+}
+
+.outcome.in-use {
+	background-color: #f44336;
+	color: white;
 }

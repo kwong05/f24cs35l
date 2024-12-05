@@ -48,13 +48,17 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
     });
     const now = new Date();
     const minutesRemaining = Math.ceil((date - now) / 60000);
-    unlock_time = `Free at ${time}, (${minutesRemaining} minutes)`;
+    unlock_time = `Free at ${time} (${minutesRemaining} minutes)`;
   }
+
+  const machineStatus = machine.currentUser ? 'in-use' : 'available';
+  const statusText = machine.currentUser ? 'In Use' : 'Available';
 
   return (
     <div className="card">
       <div className="card-title">
         {machine.name}
+        <span className={`outcome ${machineStatus}`}>{statusText}</span>
         <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine._id)}>
           Join
         </button>
