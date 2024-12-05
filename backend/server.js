@@ -57,17 +57,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/equipment', equipmentRoutes);
 
 
-// HI KESHIV I REFORMATTED WITH CHATGPT TO UNDERSTAND BETTER SORRY
 // Check for lapsed equipment and transfer to next user
 cron.schedule('*/10 * * * * *', async () => {
     try {
-        const currentTime = new Date().toISOString();
-        //console.log(`[${currentTime}] Cron job started`);
-
-        // Find equipment whose unlock time has lapsed
         const readyEquipment = await Equipment.find({ unlockTime: { $lte: new Date() } });
-        //console.log(`[${currentTime}] Found ${readyEquipment.length} equipment(s) ready for update`);
-
         for (const readyE of readyEquipment) {
             const equipmentId = readyE._id;
 
@@ -82,7 +75,7 @@ cron.schedule('*/10 * * * * *', async () => {
                 newUser.currentEquipment = equipmentId;
                 newUser.queuedEquipment = null;
 
-                const now = new Date();
+                const now = new Date(readyE.unlockTime);
                 now.setMinutes(now.getMinutes() + 15);
                 readyE.unlockTime = now;
 
@@ -98,7 +91,7 @@ cron.schedule('*/10 * * * * *', async () => {
                 newUser.currentEquipment = equipmentId;
                 newUser.queuedEquipment = null;
 
-                const now = new Date();
+                const now = new Date(readyE.unlockTime);
                 now.setMinutes(now.getMinutes() + 15);
                 readyE.unlockTime = now;
 
@@ -117,17 +110,16 @@ cron.schedule('*/10 * * * * *', async () => {
                 readyE.unlockTime = new Date();
                 await readyE.save();
                 broadcast({ type: 'update', equipment: readyE });
-                // console.log(`[${currentTime}] Equipment ${equipmentId}: User ${user._id} removed, unlock time reset`);;
+                // console.log(`[${currentTime}] Equipment ${equipmentId}: User ${user._id} removed, no new user assigned`);
             }
             // Case 4: Equipment has no current user and an empty queue
             else {
                 readyE.unlockTime = new Date();
                 await readyE.save();
-                // console.log(`[${currentTime}] Equipment ${equipmentId}: No current user, unlock time reset`);
+                broadcast({ type: 'update', equipment: readyE });
+                // console.log(`[${currentTime}] Equipment ${equipmentId}: No current user, no new user assigned`);
             }
         }
-
-        // console.log(`[${currentTime}] Cron job completed`);
     } catch (error) {
         console.error('Error in cron job:', error);
     }

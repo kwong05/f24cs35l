@@ -46,7 +46,9 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
       minute: '2-digit',
       hour12: false
     });
-    unlock_time = "free at " + time;
+    const now = new Date();
+    const minutesRemaining = Math.ceil((date - now) / 60000);
+    unlock_time = `Free at ${time}, (${minutesRemaining} minutes)`;
   }
 
   return (
