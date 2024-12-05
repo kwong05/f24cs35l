@@ -70,7 +70,27 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   }
 
 
-  let inUse = machine.currentUser;
+  function toggleQRCode() {
+    setShowQRCode(!showQRCode);
+  }
+
+  function downloadQRCode() {
+    const canvas = qrCodeRef.current.querySelector('canvas');
+    const pngUrl = canvas
+      .toDataURL('image/png')
+      .replace('image/png', 'image/octet-stream');
+    let downloadLink = document.createElement('a');
+    downloadLink.href = pngUrl;
+    downloadLink.download = `${machine.name}-qrcode.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
+
+  const inUse = machine.currentUser;
+  const listIsNotEmpty = (machine.userQueue && machine.userQueue.length != 0);
+
   let collapsible_text = "Waitlist is empty";
   if (inUse) {
     collapsible_text = "Current user: " + currentUsername;
@@ -171,7 +191,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
         </div>
       )}
       <div className="collapsible">
-        <button type="button" className="collapsible-button" onClick={inUse ? toggleListOpen : null}>
+        <button type="button" className="collapsible-button" onClick={(inUse && listIsNotEmpty ? toggleListOpen : null)}>
           <div className="collapsible-description">
             {machine.userQueue && machine.userQueue.length !== 0 ? (
               listOpen ? <span className="material-symbols-outlined arrow">keyboard_arrow_down</span> : <span className="material-symbols-outlined arrow">chevron_right</span>
