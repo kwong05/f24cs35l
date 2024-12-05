@@ -7,7 +7,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
-  const [isInQueue, setIsInQueue] = useState(true);
+  const [isInQueue, setIsInQueue] = useState(false);
 
   useEffect(() => {
     const fetchUsernames = async (userIds, isCurrentUsername) => { //if isCurrentUsername is true, will put userId in currentUsername instead of usernames 
@@ -106,7 +106,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
               toggle={toggleLeavePopup}
               setMessage={setMessage}
               id={currentPopupId}
-              userName={username}
+              username={username}
             />
           ) : null}
         {isLoggedIn ? (

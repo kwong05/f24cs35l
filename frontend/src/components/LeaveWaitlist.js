@@ -4,15 +4,16 @@ function LeaveWaitlist({ toggle, setMessage, id, username, updateMachineQueue })
 
   async function handleLeaveWaitlist(e) {
     e.preventDefault();
-    const selectedEquipment = id; // the id of the machine that the user is trying to join
+    const selectedEquipment = id; // the id of the machine that the user is trying to leave
 
-    // Handle joining waitlist
+    // Handle leaving waitlist
     try {
       // Validate user input
       if (!username || !selectedEquipment) {
-        setMessage("Please provide a valid username and equipment name");
+        setMessage("Please provide a valid username and equipment name.");
         return;
       }
+      
       console.log(username, selectedEquipment);
       // Send the POST request to the backend
       const response = await fetch('http://localhost:10000/api/equipment/renege', {
@@ -60,4 +61,4 @@ function LeaveWaitlist({ toggle, setMessage, id, username, updateMachineQueue })
   );
 }
 
-export default JoinWaitlist;
+export default LeaveWaitlist;
