@@ -15,6 +15,8 @@ function App() {
   const [errorSeen, setErrorSeen] = useState(false);
   const [currentErrorMessage, setCurrentErrorMessage] = useState('');
   const [joinSeen, setJoinSeen] = useState(false);
+  const [leaveSeen, setLeaveSeen] = useState(false);
+  const [isInQueue, setInQueue] = useState(false);
   const [currentPopupId, setCurrentPopupId] = useState(null);
   const [machines, setMachines] = useState([]); // State to hold machines data
   const [addMachineSeen, setAddMachineSeen] = useState(false);
@@ -133,6 +135,11 @@ function App() {
     setJoinSeen(!joinSeen);
   };
 
+  const toggleLeavePopup = (id) => {
+    setCurrentPopupId(id);
+    setLeaveSeen(!leaveSeen);
+  };
+
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUsername('');
@@ -180,7 +187,10 @@ function App() {
         <Route path="/kwong05/f24cs35l/:machineId?" element={<MachineCards
           machines={machines}
           joinSeen={joinSeen}
+          leaveSeen={leaveSeen}
           toggleJoinPopup={toggleJoinPopup}
+          toggleLeavePopup={toggleLeavePopup}
+          isInQueue={isInQueue}
           currentPopupId={currentPopupId}
           setMessage={toggleErrorPopup}
           isLoggedIn={isLoggedIn}

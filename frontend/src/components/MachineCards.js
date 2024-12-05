@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card';
 
-function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username, favorites }) {
+function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username, favorites }) {
   const [localFavorites, setLocalFavorites] = useState(favorites);
 
   useEffect(() => {
@@ -21,6 +21,8 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
             machine={machine}
             joinSeen={joinSeen}
             toggleJoinPopup={toggleJoinPopup}
+            leaveSeen={leaveSeen}
+            toggleLeavePopup={toggleLeavePopup}
             currentPopupId={currentPopupId}
             setMessage={setMessage}
             isLoggedIn={isLoggedIn}
@@ -46,6 +48,8 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, currentPopupId, set
           machine={machine}
           joinSeen={joinSeen}
           toggleJoinPopup={toggleJoinPopup}
+          leaveSeen={leaveSeen}
+          toggleLeavePopup={toggleLeavePopup}
           currentPopupId={currentPopupId}
           setMessage={setMessage}
           isLoggedIn={isLoggedIn}

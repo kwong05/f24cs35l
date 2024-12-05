@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 
-function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username }) {
+function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, isInQueue }) {
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
 
@@ -59,9 +59,12 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
       <div className="card-title">
         {machine.name}
         <span className={`outcome ${machineStatus}`}>{statusText}</span>
-        <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine._id)}>
-          Join
-        </button>
+        {!isInQueue ? (
+          <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine._id)}>
+            Join
+          </button>
+        ) : null}
+        
         {joinSeen && currentPopupId === machine._id ? (
           <JoinWaitlist
             toggle={toggleJoinPopup}
@@ -70,6 +73,19 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
             username={username}
           />
         ) : null}
+        {isInQueue ? (
+          <button className="leave-waitlist-button" onClick={() => toggleLeavePopup(machine._id)}>
+            Leave
+          </button>
+        ) : null}
+          {leaveSeen && currentPopupId === machine._id ? (
+            <LeaveWaitlist
+              toggle={toggleLeavePopup}
+              setMessage={setMessage}
+              id={currentPopupId}
+              userName={username}
+            />
+          ) : null}
         {isLoggedIn ? (
           favorite ? (
             <button className="favorites-button" onClick={() => toggleFavorite(machine._id)}>

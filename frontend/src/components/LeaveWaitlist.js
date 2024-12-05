@@ -1,8 +1,8 @@
 import React from 'react';
 
-function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue}) {
+function LeaveWaitlist({ toggle, setMessage, id, username, updateMachineQueue }) {
 
-  async function handleJoinWaitlist(e) {
+  async function handleLeaveWaitlist(e) {
     e.preventDefault();
     const selectedEquipment = id; // the id of the machine that the user is trying to join
 
@@ -15,7 +15,7 @@ function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue}) {
       }
       console.log(username, selectedEquipment);
       // Send the POST request to the backend
-      const response = await fetch('http://localhost:10000/api/equipment/join', {
+      const response = await fetch('http://localhost:10000/api/equipment/renege', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json', // Tell the backend you're sending JSON data
@@ -28,18 +28,18 @@ function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue}) {
       if (contentType && contentType.indexOf('application/json') !== -1) {
         const data = await response.json();
         if (response.ok) {
-          setIsInQueue(true);
-          setMessage('Successfully joined the waitlist');
+            setIsInQueue(false);
+            setMessage('Successfully left the waitlist');
         } else {
-          setMessage(data.message || 'Something went wrong');
+            setMessage(data.message || 'Something went wrong');
         }
       } else {
         const text = await response.text();
-        console.error('Error joining waitlist:', text);
-        setMessage('Error joining the waitlist');
+        console.error('Error leaving waitlist:', text);
+        setMessage('Error leaving the waitlist');
       }
     } catch (error) {
-      console.error('Error joining waitlist:', error);
+      console.error('Error leaving waitlist:', error);
       setMessage('An error occurred. Please try again later.');
     }
     toggle();
@@ -48,13 +48,13 @@ function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue}) {
   return (
     <div className="popup">
       <div className="popup-inner">
-        <h2>Join the Waitlist</h2>
-        <label>When it is your turn on the waitlist, you will have 15 minutes.</label>
+        <h2>Leave the Waitlist</h2>
+        <label>Are you sure you want to leave the queue?</label>
         <button className="close-button-top-right" onClick={toggle}>
           <span className="material-symbols-outlined">close</span>
         </button>
-        <form onSubmit={handleJoinWaitlist}>
-          <button type="submit">Join</button>
+        <form onSubmit={handleLeaveWaitlist}>
+          <button type="submit">Leave</button>
         </form>
       </div>
     </div>
