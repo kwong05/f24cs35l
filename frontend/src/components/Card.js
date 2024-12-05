@@ -47,7 +47,9 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
     setListOpen(!listOpen);
   }
 
-  let inUse = machine.currentUser;
+  const inUse = machine.currentUser;
+  const listIsNotEmpty = (machine.userQueue && machine.userQueue.length != 0);
+  
   let collapsible_text = "Waitlist is empty";
   if (inUse) {
     collapsible_text = "Current user: " + currentUsername;
@@ -134,7 +136,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
         ) : null}
       </div>
       <div className="collapsible">
-        <button type="button" className="collapsible-button" onClick={inUse ? toggleListOpen : null}>
+        <button type="button" className="collapsible-button" onClick={(inUse && listIsNotEmpty ? toggleListOpen : null)}>
           <div className="collapsible-description">
             {machine.userQueue && machine.userQueue.length !== 0 ? (
               listOpen ? <span className="material-symbols-outlined arrow">keyboard_arrow_down</span> : <span className="material-symbols-outlined arrow">chevron_right</span>
