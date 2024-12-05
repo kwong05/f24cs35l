@@ -133,7 +133,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const statusText = machine.currentUser ? 'In Use' : 'Available';
 
   return (
-    <div className="card" style={{ position: 'relative' }}>
+    <div className="card">
       <div className="card-title" onClick={() => navigate(`/kwong05/f24cs35l/${machine._id}`)}>
         {machine.name}
         <span className={`outcome ${machineStatus}`}>{statusText}</span>
