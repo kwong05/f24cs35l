@@ -10,13 +10,32 @@ const secretKey = process.env.JWT_SECRET || 'secretkey';  // Replace with a secu
 // get user's favorite list
 router.get('/fetchFavorites', async (req, res) => {
     try {
-        const { username } = req.query;  
+        const { username } = req.query;
         const user = await User.findOne({ username }); //get the user object from their name
-       
+
         // get the users favorite list
         res.json(user.favoritesList);
     } catch (err) {
         res.status(500).json({ message: 'Error retrieving favorites list data' });
+    }
+});
+
+// Update user's favorite list
+router.post('/updateFavorites', async (req, res) => {
+    try {
+        const { username, favorites } = req.body;
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.favoritesList = favorites;
+        await user.save();
+
+        res.status(200).json({ message: 'Favorites list updated successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating favorites list' });
     }
 });
 

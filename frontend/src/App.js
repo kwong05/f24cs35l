@@ -36,6 +36,61 @@ function App() {
     fetchEquipment();
   }, []);
 
+  const fetchFavorites = async () => {
+    try {
+      const url = `http://localhost:10000/api/users/fetchFavorites?username=${encodeURIComponent(username)}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error retrieving favorites list data');
+      }
+      const data = await response.json();
+      setFavorites(data);
+    } catch (error) {
+      console.error('Error fetching favorites list:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchFavorites();
+    }
+  }, [isLoggedIn, username]);
+
+
+  const toggleFavorite = async (machineId) => {
+    try {
+      console.log('Toggling favorite:', machineId);
+      let updatedFavorites;
+      if (favorites.includes(machineId)) {
+        updatedFavorites = favorites.filter(id => id !== machineId);
+      } else {
+        updatedFavorites = [...favorites, machineId];
+      }
+      setFavorites(updatedFavorites);
+
+      // Optionally, update the favorites on the server
+      const response = await fetch('http://localhost:10000/api/users/updateFavorites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, favorites: updatedFavorites }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error updating favorites');
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
   // POPUPS
   const toggleLoginPopup = () => {
     setLoginSeen(!loginSeen);
@@ -57,17 +112,6 @@ function App() {
   const toggleJoinPopup = (id) => {
     setCurrentPopupId(id);
     setJoinSeen(!joinSeen);
-  };
-
-  const toggleFavorite = (machineId) => {
-    //todo get favorites
-    //favorites = getFavorites()
-    //favorites = [];
-    if (favorites.includes(machineId)) {
-      //setFavorites(favorites.filter(id => id !== machineId));
-    } else {
-      //setFavorites([...favorites, machineId]);
-    }
   };
 
   const handleLogout = () => {
@@ -124,6 +168,7 @@ function App() {
           isLoggedIn={isLoggedIn}
           toggleFavorite={toggleFavorite}
           username={username}
+          favorites={favorites}
         />} />
       </Routes>
     </div>
