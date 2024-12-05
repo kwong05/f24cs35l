@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 
-function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, isInQueue }) {
+function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username}) {
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
+  const [isInQueue, setIsInQueue] = useState(false);
 
   useEffect(() => {
     const fetchUsernames = async (userIds, isCurrentUsername) => { //if isCurrentUsername is true, will put userId in currentUsername instead of usernames 

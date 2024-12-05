@@ -28,7 +28,6 @@ function LeaveWaitlist({ toggle, setMessage, id, username, updateMachineQueue })
       if (contentType && contentType.indexOf('application/json') !== -1) {
         const data = await response.json();
         if (response.ok) {
-            setIsInQueue(false);
             setMessage('Successfully left the waitlist');
         } else {
             setMessage(data.message || 'Something went wrong');

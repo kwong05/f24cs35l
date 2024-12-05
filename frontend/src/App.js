@@ -16,7 +16,6 @@ function App() {
   const [currentErrorMessage, setCurrentErrorMessage] = useState('');
   const [joinSeen, setJoinSeen] = useState(false);
   const [leaveSeen, setLeaveSeen] = useState(false);
-  const [isInQueue, setInQueue] = useState(false);
   const [currentPopupId, setCurrentPopupId] = useState(null);
   const [machines, setMachines] = useState([]); // State to hold machines data
   const [addMachineSeen, setAddMachineSeen] = useState(false);
@@ -190,7 +189,6 @@ function App() {
           leaveSeen={leaveSeen}
           toggleJoinPopup={toggleJoinPopup}
           toggleLeavePopup={toggleLeavePopup}
-          isInQueue={isInQueue}
           currentPopupId={currentPopupId}
           setMessage={toggleErrorPopup}
           isLoggedIn={isLoggedIn}

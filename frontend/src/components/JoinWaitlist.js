@@ -29,7 +29,6 @@ function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue}) {
       if (contentType && contentType.indexOf('application/json') !== -1) {
         const data = await response.json();
         if (response.ok) {
-          setIsInQueue(true);
           setMessage('Successfully joined the waitlist');
         } else {
           setMessage(data.message || 'Something went wrong');
