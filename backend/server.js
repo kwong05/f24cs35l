@@ -3,6 +3,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cron = require('node-cron');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { body, validationResult } = require('express-validator');
 
 const Equipment = require('./models/Equipment');
 const User = require('./models/User');
@@ -43,6 +46,7 @@ mongoose.connect(uri, {
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/equipment', equipmentRoutes);
+
 
 // HI KESHIV I REFORMATTED WITH CHATGPT TO UNDERSTAND BETTER SORRY
 // Check for lapsed equipment and transfer to next user
