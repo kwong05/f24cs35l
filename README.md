@@ -37,10 +37,10 @@ Start the client-facing server by running
 ```npm start```.
 
 ## Backend Server
-Replace the MongoDB URL with a value applicable to you.
-
 Change into the ```backend``` directory.
+
 Edit the ```uri``` variable in the ```server.js``` file (located around line 36), setting it to your MongoDB URL.
+
 Install dependencies with ```npm install```.
 
 Start the backend server by running
