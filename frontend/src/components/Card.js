@@ -135,15 +135,16 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
 
   return (
     <div className="card">
-      <div className="card-title" onClick={() => navigate(`/kwong05/f24cs35l/${machine._id}`)}>
-        {machine.name}
+      <div className="card-header">
+        <div className="card-title" onClick={() => navigate(`/kwong05/f24cs35l/${machine._id}`)}>
+          {machine.name}
+        </div>
         <span className={`outcome ${machineStatus}`}>{statusText}</span>
         {!isInQueue && isLoggedIn ? (
           <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine._id)}>
             Join
           </button>
         ) : null}
-
         {joinSeen && currentPopupId === machine._id ? (
           <JoinWaitlist
             toggle={toggleJoinPopup}

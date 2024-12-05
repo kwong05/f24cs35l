@@ -11,11 +11,10 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
 
   const cards = [];
 
-  const {machineId} = useParams();
-  if(machineId)
-  {
+  const { machineId } = useParams();
+  if (machineId) {
     const tryToFindMachine = machines.find(m => m._id === machineId);
-    if(tryToFindMachine) {
+    if (tryToFindMachine) {
       return (
         <div class="machine-cards">
           <Card
@@ -51,7 +50,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
             currentPopupId={currentPopupId}
             setMessage={setMessage}
             isLoggedIn={isLoggedIn}
-            favorite={false}
+            favorite={true}
             toggleFavorite={toggleFavorite}
             username={username}
           />
