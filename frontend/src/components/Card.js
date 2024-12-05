@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
+import config from '../utils/config';
 
 import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
@@ -19,7 +20,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   useEffect(() => {
     const fetchUsernames = async (userIds, isCurrentUsername) => { //if isCurrentUsername is true, will put userId in currentUsername instead of usernames 
       try {
-        const response = await fetch('http://localhost:10000/api/users/fetchUserDetails', {
+        const response = await fetch(`${config.apiUrl}/api/users/fetchUserDetails`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -184,7 +185,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
           <div className="modal-content">
             <span className="close" onClick={toggleQRCode}>&times;</span>
             <div ref={qrCodeRef}>
-              <QRCodeCanvas value={`http://localhost:3000/kwong05/f24cs35l/${machine._id}`} />
+              <QRCodeCanvas value={`${config.apiUrl}/kwong05/f24cs35l/${machine._id}`} />
             </div>
             <button className="download-button" onClick={downloadQRCode}>Download</button>
           </div>

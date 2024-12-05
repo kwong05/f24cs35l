@@ -1,4 +1,5 @@
 import React from 'react';
+import config from '../utils/config';
 
 function LeaveWaitlist({ toggle, setMessage, id, username, updateMachineQueue }) {
 
@@ -13,10 +14,10 @@ function LeaveWaitlist({ toggle, setMessage, id, username, updateMachineQueue })
         setMessage("Please provide a valid username and equipment name.");
         return;
       }
-      
+
       console.log(username, selectedEquipment);
       // Send the POST request to the backend
-      const response = await fetch('http://localhost:10000/api/equipment/renege', {
+      const response = await fetch(`${config.apiUrl}/api/equipment/renege`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json', // Tell the backend you're sending JSON data
@@ -29,9 +30,9 @@ function LeaveWaitlist({ toggle, setMessage, id, username, updateMachineQueue })
       if (contentType && contentType.indexOf('application/json') !== -1) {
         const data = await response.json();
         if (response.ok) {
-            setMessage('Successfully left the waitlist');
+          setMessage('Successfully left the waitlist');
         } else {
-            setMessage(data.message || 'Something went wrong');
+          setMessage(data.message || 'Something went wrong');
         }
       } else {
         const text = await response.text();

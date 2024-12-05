@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { handleLogin } from './Login';
+import config from '../utils/config';
 
 function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
     const [localUsername, setLocalUsername] = useState('');
@@ -8,7 +9,7 @@ function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:10000/api/users/signup', {
+            const response = await fetch(`${config.apiUrl}/api/users/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import config from './utils/config';
+
 import Header from './components/Header';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
@@ -23,7 +25,7 @@ function App() {
 
   useEffect(() => {
     fetchEquipment();
-    const ws = new WebSocket('ws://localhost:10000');
+    const ws = new WebSocket(config.wsUrl);
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       //console.log('Received update:', data);
@@ -45,7 +47,7 @@ function App() {
 
   const fetchEquipment = async () => {
     try {
-      const response = await fetch('http://localhost:10000/api/equipment/fetchEquipment');
+      const response = await fetch(`${config.apiUrl}/api/equipment/fetchEquipment`);
       if (!response.ok) {
         throw new Error('Error retrieving equipment data');
       }
@@ -59,7 +61,7 @@ function App() {
 
   const fetchFavorites = async () => {
     try {
-      const url = `http://localhost:10000/api/users/fetchFavorites?username=${encodeURIComponent(username)}`;
+      const url = `${config.apiUrl}/api/users/fetchFavorites?username=${encodeURIComponent(username)}`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -95,7 +97,7 @@ function App() {
       }
       setFavorites(updatedFavorites);
 
-      const response = await fetch('http://localhost:10000/api/users/updateFavorites', {
+      const response = await fetch(`${config.apiUrl}/api/users/updateFavorites`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

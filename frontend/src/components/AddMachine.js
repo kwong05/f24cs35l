@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import config from '../utils/config';
 
 function AddMachine({ toggle, setMessage, refreshMachines }) {
     const [localMachineName, setLocalMachineName] = useState('');
@@ -7,7 +8,7 @@ function AddMachine({ toggle, setMessage, refreshMachines }) {
         // Add machine to server
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:10000/api/equipment/addEquipment', {
+            const response = await fetch(`${config.apiUrl}/api/equipment/addEquipment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

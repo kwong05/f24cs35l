@@ -8,8 +8,9 @@ const cron = require('node-cron');
 // const jwt = require('jsonwebtoken');
 // const { body, validationResult } = require('express-validator');
 
-const { setupWebSocket, broadcast } = require('./utils/websocket');
 
+const config = require('./utils/config');
+const { setupWebSocket, broadcast } = require('./utils/websocket');
 const Equipment = require('./models/Equipment');
 const User = require('./models/User');
 
@@ -20,7 +21,7 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.use(cors({
-    origin: ['http://localhost:3001'],
+    origin: [config.frontendUrl],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -33,7 +34,7 @@ app.use((req, res, next) => {
     next();
 });
 
-const uri = process.env.MONGO_URI || "mongodb+srv://gymadmin:adminpass@main.6rs8v.mongodb.net/?"; //add mongodb url
+const uri = config.mongoUri; //add mongodb url
 
 // Set up default mongoose connection with increased timeout and logging
 mongoose.connect(uri, {

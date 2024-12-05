@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import config from '../utils/config';
 
 const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, toggle, setMessage }) => {
     try {
-        const response = await fetch('http://localhost:10000/api/users/login', {
+        const response = await fetch(`${config.apiUrl}/api/users/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import React from 'react';
+import config from '../utils/config';
 
-function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue}) {
+function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue }) {
 
   async function handleJoinWaitlist(e) {
     e.preventDefault();
@@ -16,7 +17,7 @@ function JoinWaitlist({ toggle, setMessage, id, username, updateMachineQueue}) {
       }
       console.log(username, selectedEquipment);
       // Send the POST request to the backend
-      const response = await fetch('http://localhost:10000/api/equipment/join', {
+      const response = await fetch(`${config.apiUrl}/api/equipment/join`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json', // Tell the backend you're sending JSON data
