@@ -42,8 +42,8 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
       if (tryToFindMachine) {
         cards.push(
           <Card
-            key={machine._id}
-            machine={machine}
+            key={machineId}
+            machine={tryToFindMachine}
             joinSeen={joinSeen}
             toggleJoinPopup={toggleJoinPopup}
             leaveSeen={leaveSeen}
