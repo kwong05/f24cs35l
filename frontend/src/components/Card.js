@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 import LeaveWaitlist from './LeaveWaitlist';
@@ -8,6 +9,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
   const [isInQueue, setIsInQueue] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsernames = async (userIds, isCurrentUsername) => { //if isCurrentUsername is true, will put userId in currentUsername instead of usernames 
@@ -89,7 +91,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
 
   return (
     <div className="card">
-      <div className="card-title">
+      <div className="card-title" onClick={() => navigate(`/kwong05/f24cs35l/${machine._id}`)}>
         {machine.name}
         <span className={`outcome ${machineStatus}`}>{statusText}</span>
         {!isInQueue && isLoggedIn ? (

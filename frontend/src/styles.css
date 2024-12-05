@@ -121,9 +121,11 @@ button {
 	padding-bottom: 10px;
 	margin-right: 10px;
 	margin-bottom: 10px;
+	cursor: pointer;
 }
 
-.join-waitlist-button, .leave-waitlist-button {
+.join-waitlist-button,
+.leave-waitlist-button {
 	float: right;
 	text-align: center;
 	padding: 10px 10px 10px 10px;
