@@ -88,7 +88,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, currentPopupId, setMessage, 
         ) : null}
       </div>
       <div className="collapsible">
-        <button type="button" className="collapsible-button" onClick={toggleListOpen}>
+        <button type="button" className="collapsible-button" onClick={() => toggleListOpen}>
           <div className="collapsible-description">
             {machine.userQueue && machine.userQueue.length !== 0 ? (
               listOpen ? <span className="material-symbols-outlined arrow">keyboard_arrow_down</span> : <span className="material-symbols-outlined arrow">chevron_right</span>
