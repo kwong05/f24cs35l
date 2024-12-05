@@ -13,9 +13,9 @@ function CardList({ waitlist }) {
 
     return (
         <div className="card-list">
-            {waitlist.map((username, index) => (
+            {waitlist.toReversed().map((username, index) => (
                 <div key={index} className="card-list-item">
-                    {username}
+                    {index+1}. {username}
                 </div>
             ))}
         </div>
