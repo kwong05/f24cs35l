@@ -56,7 +56,7 @@ router.post('/removeEquipment', async (req, res) => {
 router.post('/join', async (req, res) => {
     try {
         const { user: username, id: equipmentId } = req.body;
-        console.log(username, equipmentId);
+        // console.log(username, equipmentId);
         // Verify user exists
         const currentUser = await User.findOne({ username });
         if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
