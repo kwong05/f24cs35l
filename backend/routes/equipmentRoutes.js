@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { broadcast } = require('../utils/websocket');
 const { authenticateToken, checkAdmin } = require('../utils/auth');
+const { checkAndUpdateEquipmentStatus } = require('../utils/cronJob');
 const Equipment = require('../models/Equipment');
 const User = require('../models/User');
 
@@ -33,6 +34,7 @@ router.post('/addEquipment', authenticateToken, checkAdmin, async (req, res) => 
         const newEquipment = new Equipment({ name: equipmentName });
         await newEquipment.save();
         broadcast({ type: 'add', equipment: newEquipment });
+        await checkAndUpdateEquipmentStatus();
         res.status(201).json({ message: 'Equipment created successfully' });
     } catch (error) {
         console.error('Equipment Add Error:', error);  // Log the exact error
@@ -48,6 +50,7 @@ router.delete('/deleteEquipment', authenticateToken, checkAdmin, async (req, res
         // console.log('Removing equipment from database:', equipmentId);
         await Equipment.deleteOne({ _id: equipmentId });
         broadcast({ type: 'delete', equipment: equipmentId });
+        await checkAndUpdateEquipmentStatus();
         res.status(200).json({ message: 'Equipment removed successfully' });
     } catch (error) {
         console.error('Equipment Remove Error:', error);  // Log the exact error
@@ -74,6 +77,7 @@ router.put('/toggleStatus', authenticateToken, checkAdmin, async (req, res) => {
 
         // Broadcast the change
         broadcast({ type: 'update', equipment });
+        await checkAndUpdateEquipmentStatus();
 
         res.status(200).json({ message: 'Equipment status toggled successfully', equipment });
     } catch (error) {
@@ -82,6 +86,33 @@ router.put('/toggleStatus', authenticateToken, checkAdmin, async (req, res) => {
     }
 });
 
+// Toggle equipment status (admin only)
+router.put('/removeCurrentUser', authenticateToken, checkAdmin, async (req, res) => {
+    try {
+        const { _id: equipmentId } = req.body;
+
+        // Find the equipment by its ID
+        const equipment = await Equipment.findById(equipmentId);
+        if (!equipment) {
+            return res.status(404).json({ message: 'Equipment not found' });
+        }
+
+        // Set unlock time to now
+        equipment.unlockTime = new Date();
+
+        // Save the updated equipment
+        await equipment.save();
+
+        // Broadcast the change
+        broadcast({ type: 'update', equipment });
+        await checkAndUpdateEquipmentStatus();
+
+        res.status(200).json({ message: 'Current user removed successfully', equipment });
+    } catch (error) {
+        console.error('Equipment Toggle Status Error:', error);  // Log the exact error
+        res.status(500).json({ message: 'Error toggling equipment status' });
+    }
+});
 
 // Join queue for equipment
 router.post('/join', async (req, res) => {
@@ -92,11 +123,16 @@ router.post('/join', async (req, res) => {
         const currentUser = await User.findOne({ username });
         if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
 
+
         // Ensure User is not already waiting in queue for equipment
         let isQueued = false;
         if (currentUser.queuedEquipment != null) isQueued = true;
         const desiredEquipment = await Equipment.findOne({ _id: equipmentId });
         const currentEquipment = currentUser.currentEquipment;
+
+        if (desiredEquipment.status === false) {
+            return res.status(403).json({ message: 'Equipment is disabled' });
+        }
 
         // Check if the user is in queue for another equipment but currentEquipment is not set
         if (isQueued && !currentEquipment) {
@@ -141,7 +177,7 @@ router.post('/join', async (req, res) => {
         await currentUser.save();
 
         broadcast({ type: 'update', equipment: desiredEquipment });
-
+        await checkAndUpdateEquipmentStatus();
         return res.status(200).json({ message: 'User added to queue successfully' });
     } catch (error) {
         console.error('Join Queue Error:', error);  // Log the exact error
@@ -190,7 +226,7 @@ router.post('/renege', async (req, res) => {
         }
 
         broadcast({ type: 'update', equipment: undesiredEquipment });
-
+        await checkAndUpdateEquipmentStatus();
         return res.status(200).json({ message: 'User removed from queue successfully' });
         /*
         const { equipmentName: undesiredEquipmentName, username: currentUsername } = req.body;
