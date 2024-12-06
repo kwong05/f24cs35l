@@ -39,7 +39,7 @@ router.get('/fetchCurrentEquipment', async (req, res) => {
         const user = await User.findOne({ username }); //get the user object from their name
 
         // get the user's current machine
-        res.json(user.currentEquipment);
+        res.json({currentEquipment: user.currentEquipment});
     } catch (err) {
         res.status(500).json({ message: 'Error retrieving current equipment data' });
     }
@@ -52,7 +52,7 @@ router.get('/fetchQueuedEquipment', async (req, res) => {
         const user = await User.findOne({ username }); //get the user object from their name
 
         // get the user's current machine
-        res.json(user.queuedEquipment);
+        res.json({queuedEquipment: user.queuedEquipment});
     } catch (err) {
         res.status(500).json({ message: 'Error retrieving equipment queue data' });
     }
