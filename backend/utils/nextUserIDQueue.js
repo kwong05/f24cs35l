@@ -4,29 +4,25 @@ const User = require('../models/User');
 
 // imagine a User that is actively using equipment A and wants to use equipment B
 
-// Find the next available User in an Equipment queue and splice the queue, based on whether or not they are already using some Equipment
+// Return an array of IDs of eligible Users, based on whether or not they are already using some Equipment
 // Otherwise, return undefined
-async function nextAvailableUser(eqQueue) {
-    console.log("called.")
-    // find the next user that is available to use equipment
-    let currentUserID = undefined;
-    for (let i = 0; i < eqQueue.length; i++) {
-        let nextUserID = eqQueue[i];
+async function nextAvailableUsers(equipmentQueue) {    
+    let eligibleQueue = equipmentQueue;
+    for (let i = 0; i < eligibleQueue.length; i++) {
+        let nextUserID = eligibleQueue[i];
         let nextUser = User.findById(nextUserID);
 
         // eligible user found; modify queue, return ID
         if (nextUser.currentEquipment = null) {
             console.log("user " + nextUser.username + " is eligible");
-            currentUserID = nextUserID;
-            eqQueue.splice(i, 1);
             break;
         }
         else {
             console.log("user " + nextUser.username + " is ineligible");
+            eligibleQueue.splice(i, 1);
         };
     }
-    console.log("end.");
-    return currentUserID;
+    return eligibleQueue;
 }
 
-module.exports = { nextAvailableUser };
+module.exports = { nextAvailableUsers };
