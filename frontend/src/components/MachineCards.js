@@ -12,28 +12,6 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
   const { machineId } = useParams(); // Use useParams to get machineId
 
   useEffect(() => {
-    // // Fetch current equipment and queued equipment
-    // async function fetchUserData() {
-    //   try {
-    //     const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
-    //     if (!response.ok) {
-    //       throw new Error('Error retrieving current equipment data');
-    //     }
-    //     const data = await response.json();
-    //     setCurrentMachine(data.currentEquipment);
-
-    //     const response2 = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
-    //     if (!response2.ok) {
-    //       throw new Error('Error retrieving queued equipment data');
-    //     }
-    //     const data2 = await response2.json();
-    //     setQueuedMachine(data2.queuedEquipment);
-    //   } catch (error) {
-    //     console.error('Error fetching user data:', error);
-    //   }
-    // }
-
-    // fetchUserData();
     setLocalFavorites(favorites);
   }, [favorites]);
 
@@ -58,6 +36,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
             favorite={(isLoggedIn && favorites.includes(tryToFindMachine._id))}
             toggleFavorite={toggleFavorite}
             username={username}
+            machines={machines}
           />
           <br /><br />
           {isAdmin && <AdminTools
@@ -109,6 +88,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
         favorite={localFavorites.includes(machine._id)}
         toggleFavorite={toggleFavorite}
         username={username}
+        machines={machines}
       />
     );
   });
@@ -129,6 +109,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
         favorite={localFavorites.includes(machine._id)}
         toggleFavorite={toggleFavorite}
         username={username}
+        machines={machines}
       />
     );
   });
@@ -149,6 +130,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
         favorite={localFavorites.includes(machine._id)}
         toggleFavorite={toggleFavorite}
         username={username}
+        machines={machines}
       />
     );
   });
@@ -157,8 +139,6 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
     <div className="machine-cards">
       {isLoggedIn ? <StatusCard
         username={username}
-        // currentMachine={machines.find(m => m._id === currentMachine)}
-        // queuedMachine={machines.find(m => m._id === queuedMachine)}
         machines={machines}
       /> : null}
       {cards}
