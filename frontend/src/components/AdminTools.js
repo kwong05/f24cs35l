@@ -53,21 +53,22 @@ function AdminTools({ equipmentId, setMessage, refreshMachines }) {
 
     const handleRemoveCurrentUser = async () => {
         try {
-            const response = await fetch(`${config.apiUrl}/api/equipment/removeCurrentUser/${equipmentId}`, {
+            const response = await fetch(`${config.apiUrl}/api/equipment/removeCurrentUser`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include the token in the Authorization header
                 },
+                body: JSON.stringify({ _id: equipmentId })
             });
             const data = await response.json();
             if (response.ok) {
-                setMessage('Current user removed from machine');
+                setMessage('Current user removed');
             } else {
                 setMessage(data.message);
             }
         } catch (error) {
-            setMessage('Error removing current user from machine');
+            setMessage('Error removing current user');
         }
     };
 
