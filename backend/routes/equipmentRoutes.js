@@ -163,7 +163,7 @@ router.post('/renege', async (req, res) => {
         const undesiredEquipment = await Equipment.findOne({ _id: equipmentId });
         const currentEquipment = currentUser.currentEquipment;
         const queuedEquipment = currentUser.queuedEquipment;
-        if ((!currentEquipment || currentEquipment != undesiredEquipment._id) && (!queuedEquipment || (queuedEquipment && !(queuedEquipment.includes(undesiredEquipment._id))))) {
+        if ((!currentEquipment || currentEquipment != undesiredEquipment._id) && (!queuedEquipment || !(queuedEquipment.includes(undesiredEquipment._id)))) {
             return res.status(403).json({ message: 'User is not using or queued for this equipment' });
         }
 
