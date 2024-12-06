@@ -23,7 +23,9 @@ function App() {
   const [addMachineSeen, setAddMachineSeen] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [currentEquipment, setCurrentEquipment] = useState([]);
+  const [queuedEquipment, setQueuedEquipment] = useState([]);
 
+  
   useEffect(() => {
     fetchEquipment();
     const ws = new WebSocket(config.wsUrl);
@@ -90,12 +92,32 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error('Error retrieving current Equipment data');
+        throw new Error('Error retrieving current equipment data');
       }
       const data = await response.json();
       setCurrentEquipment(data);
     } catch (error) {
       console.error('Error fetching current equipment:', error);
+    }
+  };
+
+  const fetchQueuedEquipment = async () => {
+    try {
+      const url = `${config.apiUrl}/api/users/fetchQueuedEquipment?username=${encodeURIComponent(username)}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error retrieving queued equipment data');
+      }
+      const data = await response.json();
+      setQueuedEquipment(data);
+    } catch (error) {
+      console.error('Error fetching queued equipment:', error);
     }
   };
 
