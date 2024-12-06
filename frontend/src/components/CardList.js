@@ -9,7 +9,7 @@ function CardList({ waitlist }) {
     return (
         <table>
         <tbody>
-        {waitlist.map((username, index) => (
+        {waitlist.toReversed().map((username, index) => (
                 <div key={index} className="card-list-item">
                     {index+1}. {username}
                 </div>

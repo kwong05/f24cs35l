@@ -191,7 +191,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
           <div className="modal-content">
             <span className="close" onClick={toggleQRCode}>&times;</span>
             <div ref={qrCodeRef}>
-              <QRCodeCanvas value={`${config.apiUrl}/kwong05/f24cs35l/${machine._id}`} />
+              <QRCodeCanvas value={`${config.frontUrl}/kwong05/f24cs35l/${machine._id}`} />
             </div>
             <button className="download-button" onClick={downloadQRCode}>Download</button>
           </div>
