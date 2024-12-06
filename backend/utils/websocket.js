@@ -14,7 +14,7 @@ const setupWebSocket = (server) => {
 };
 
 const broadcast = (data) => {
-    console.log('[WebSocket]: Broadcasting: ', data.type);
+    // console.log('[WebSocket]: Broadcasting: ', data.type);
     if (wss) {
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
