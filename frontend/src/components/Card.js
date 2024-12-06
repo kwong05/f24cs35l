@@ -18,7 +18,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUsernames = async (userIds, isCurrentUsername) => { //if isCurrentUsername is true, will put userId in currentUsername instead of usernames 
+    const fetchUserData = async (userIds, isCurrentUsername) => { //if isCurrentUsername is true, will put userId in currentUsername instead of usernames 
       try {
         const response = await fetch(`${config.apiUrl}/api/users/fetchUserDetails`, {
           method: 'POST',
@@ -42,10 +42,10 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
     };
 
     if (machine.userQueue && machine.userQueue.length > 0) {
-      fetchUsernames(machine.userQueue, false);
+      fetchUserData(machine.userQueue, false);
     }
     if (machine.currentUser) {
-      fetchUsernames([machine.currentUser], true);
+      fetchUserData([machine.currentUser], true);
     }
   }, [machine.userQueue, machine.currentUser]);
 

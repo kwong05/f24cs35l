@@ -15,7 +15,7 @@ const secretKey = process.env.JWT_SECRET;  // Replace with a secure key
 router.post('/fetchUserDetails', async (req, res) => {
     try {
         const { userIds } = req.body;
-        const users = await User.find({ _id: { $in: userIds } }, 'username');
+        const users = await User.find({ _id: { $in: userIds } });
         res.json(users);
     } catch (err) {
         res.status(500).json({ message: 'Error retrieving user details' });

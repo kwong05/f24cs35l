@@ -5,8 +5,30 @@ import StatusCard from './StatusCard';
 
 function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username, favorites }) {
   const [localFavorites, setLocalFavorites] = useState(favorites);
-
+  const currentMachine = null;
+  const queuedMachine = null;
   useEffect(() => {
+    // Fetch current equipment and queued equipment
+    async function fetchUserData() {
+      try {
+        const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
+        if (!response.ok) {
+          throw new Error('Error retrieving current equipment data');
+        }
+        const data = await response.json();
+        currentMachine = data.currentEquipment;
+
+        const response2 = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
+        if (!response2.ok) {
+          throw new Error('Error retrieving queued equipment data');
+        }
+        const data2 = await response2.json();
+        queuedMachine = data2.queuedEquipment;
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+
     setLocalFavorites(favorites);
   }, [favorites]);
 
@@ -86,13 +108,14 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
     }
   });
 
+  console.log(username);
   return (
     <div className="machine-cards">
-      {isLoggedIn ? <StatusCard 
+      {isLoggedIn ? <StatusCard
         username={username}
         currentMachine={machines.find(m => m._id === currentMachine)}
         queuedMachine={machines.find(m => m._id === queuedMachine)}
-        /> : null}
+      /> : null}
       {cards}
     </div>
   );
