@@ -142,7 +142,7 @@ router.post('/join', async (req, res) => {
             const minutesRemaining = Math.ceil((unlockTime - now) / 60000);
 
             console.log(minutesRemaining, desiredEquipment.currentUser);
-            if (minutesRemaining > 15 && !desiredEquipment.currentUser) {
+            if ((queuedEquipment.userQueue.length > 1) && !desiredEquipment.currentUser) {
                 // Allow the user to use the desired equipment
                 currentUser.currentEquipment = desiredEquipment._id;
                 currentUser.queuedEquipment = null;
