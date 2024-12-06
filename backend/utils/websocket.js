@@ -6,9 +6,9 @@ const setupWebSocket = (server) => {
     wss = new WebSocket.Server({ server });
 
     wss.on('connection', (ws) => {
-        console.log('[WebSocket] Client connected');
+        //console.log('[WebSocket] Client connected');
         ws.on('close', () => {
-            console.log('[WebSocket] Client disconnected');
+            //console.log('[WebSocket] Client disconnected');
         });
     });
 };
