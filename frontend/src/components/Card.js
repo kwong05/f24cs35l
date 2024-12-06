@@ -7,16 +7,35 @@ import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 import LeaveWaitlist from './LeaveWaitlist';
 
-function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username }) {
+function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, machines }) {
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
-  const [isInQueue, setIsInQueue] = useState(false);
+  const [queuedMachine, setQueuedMachine] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
   const qrCodeRef = useRef();
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Fetch queued equipment
+    async function fetchQueuedMachine() {
+      try {
+        const response = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
+        if (!response.ok) {
+          throw new Error('Error retrieving queued equipment data');
+        }
+        const data = await response.json();
+        setQueuedMachine(machines.find(m => m._id === data.queuedEquipment));
+      } catch (error) {
+        console.error('Error fetching queued equipment data:', error);
+      }
+    }
+    if(isLoggedIn) {
+      fetchQueuedMachine();
+    }
+  }, [username, machines]);
+  
   useEffect(() => {
     const fetchUserData = async (userIds, isCurrentUsername) => {
       try {
@@ -145,10 +164,16 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
           {machine.name}
         </div>
         <span className={`outcome ${machineStatus}`}>{statusText}</span>
-        {!isInQueue && isLoggedIn ? (
-          <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine._id)}>
+        {isLoggedIn ? (
+          queuedMachine&&queuedMachine._id==machine._id ? (
+            <button className="leave-waitlist-button" onClick={() => toggleLeavePopup(machine._id)}>
+            Leave
+          </button>
+          ) : (
+            <button className="join-waitlist-button" onClick={() => toggleJoinPopup(machine._id)}>
             Join
           </button>
+          )
         ) : null}
         {joinSeen && currentPopupId === machine._id ? (
           <JoinWaitlist
@@ -157,11 +182,6 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
             id={currentPopupId}
             username={username}
           />
-        ) : null}
-        {isInQueue ? (
-          <button className="leave-waitlist-button" onClick={() => toggleLeavePopup(machine._id)}>
-            Leave
-          </button>
         ) : null}
         {leaveSeen && currentPopupId === machine._id ? (
           <LeaveWaitlist
