@@ -38,6 +38,8 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
   }, [favorites]);
 
   const cards = [];
+  const availableMachines = [];
+  const unavailableMachines = [];
 
   if (machineId) {
     const tryToFindMachine = machines.find(m => m._id === machineId);
@@ -72,50 +74,60 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
     localFavorites.forEach((favorite) => {
       const tryToFindMachine = machines.find(m => m._id === favorite);
       if (tryToFindMachine) {
-        cards.push(
-          <Card
-            key={machineId}
-            machine={tryToFindMachine}
-            joinSeen={joinSeen}
-            toggleJoinPopup={toggleJoinPopup}
-            leaveSeen={leaveSeen}
-            toggleLeavePopup={toggleLeavePopup}
-            currentPopupId={currentPopupId}
-            setMessage={setMessage}
-            isLoggedIn={isLoggedIn}
-            favorite={true}
-            toggleFavorite={toggleFavorite}
-            username={username}
-          />
-        );
+        availableMachines.push(tryToFindMachine);
       }
     });
   }
 
-  // Add rest of machines to the array
-  let addCardToArray = true;
   machines.forEach((machine) => {
-    if (isLoggedIn) {
-      addCardToArray = !(localFavorites.includes(machine._id));
+    if (isLoggedIn && localFavorites.includes(machine._id)) {
+      return; // Skip already added favorite machines
     }
-    if (addCardToArray) {
-      cards.push(
-        <Card
-          key={machine._id}
-          machine={machine}
-          joinSeen={joinSeen}
-          toggleJoinPopup={toggleJoinPopup}
-          leaveSeen={leaveSeen}
-          toggleLeavePopup={toggleLeavePopup}
-          currentPopupId={currentPopupId}
-          setMessage={setMessage}
-          isLoggedIn={isLoggedIn}
-          favorite={false}
-          toggleFavorite={toggleFavorite}
-          username={username}
-        />
-      );
+    if (!machine.currentUser) {
+      availableMachines.push(machine);
+    } else {
+      unavailableMachines.push(machine);
     }
+  });
+
+  // Render available machines first
+  availableMachines.forEach((machine) => {
+    cards.push(
+      <Card
+        key={machine._id}
+        machine={machine}
+        joinSeen={joinSeen}
+        toggleJoinPopup={toggleJoinPopup}
+        leaveSeen={leaveSeen}
+        toggleLeavePopup={toggleLeavePopup}
+        currentPopupId={currentPopupId}
+        setMessage={setMessage}
+        isLoggedIn={isLoggedIn}
+        favorite={localFavorites.includes(machine._id)}
+        toggleFavorite={toggleFavorite}
+        username={username}
+      />
+    );
+  });
+
+  // Render unavailable machines next
+  unavailableMachines.forEach((machine) => {
+    cards.push(
+      <Card
+        key={machine._id}
+        machine={machine}
+        joinSeen={joinSeen}
+        toggleJoinPopup={toggleJoinPopup}
+        leaveSeen={leaveSeen}
+        toggleLeavePopup={toggleLeavePopup}
+        currentPopupId={currentPopupId}
+        setMessage={setMessage}
+        isLoggedIn={isLoggedIn}
+        favorite={localFavorites.includes(machine._id)}
+        toggleFavorite={toggleFavorite}
+        username={username}
+      />
+    );
   });
 
   return (
