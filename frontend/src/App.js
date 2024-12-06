@@ -22,6 +22,7 @@ function App() {
   const [machines, setMachines] = useState([]); // State to hold machines data
   const [addMachineSeen, setAddMachineSeen] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  const [currentEquipment, setCurrentEquipment] = useState([]);
 
   useEffect(() => {
     fetchEquipment();
@@ -58,7 +59,6 @@ function App() {
     }
   };
 
-
   const fetchFavorites = async () => {
     try {
       const url = `${config.apiUrl}/api/users/fetchFavorites?username=${encodeURIComponent(username)}`;
@@ -76,6 +76,26 @@ function App() {
       setFavorites(data);
     } catch (error) {
       console.error('Error fetching favorites list:', error);
+    }
+  };
+
+  const fetchCurrentEquipment = async () => {
+    try {
+      const url = `${config.apiUrl}/api/users/fetchCurrentEquipment?username=${encodeURIComponent(username)}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error retrieving current Equipment data');
+      }
+      const data = await response.json();
+      setCurrentEquipment(data);
+    } catch (error) {
+      console.error('Error fetching current equipment:', error);
     }
   };
 
