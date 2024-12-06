@@ -22,8 +22,8 @@ function App() {
   const [machines, setMachines] = useState([]); // State to hold machines data
   const [addMachineSeen, setAddMachineSeen] = useState(false);
   const [favorites, setFavorites] = useState([]);
-  const [currentEquipment, setCurrentEquipment] = useState([]);
-  const [queuedEquipment, setQueuedEquipment] = useState([]);
+  const [currentMachine, setCurrentMachine] = useState([]);
+  const [queuedMachine, setQueuedMachine] = useState([]);
 
   
   useEffect(() => {
@@ -95,7 +95,7 @@ function App() {
         throw new Error('Error retrieving current equipment data');
       }
       const data = await response.json();
-      setCurrentEquipment(data);
+      setCurrentMachine(data);
     } catch (error) {
       console.error('Error fetching current equipment:', error);
     }
@@ -115,7 +115,7 @@ function App() {
         throw new Error('Error retrieving queued equipment data');
       }
       const data = await response.json();
-      setQueuedEquipment(data);
+      setQueuedMachine(data);
     } catch (error) {
       console.error('Error fetching queued equipment:', error);
     }
@@ -124,6 +124,8 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
       fetchFavorites();
+      fetchCurrentEquipment();
+      fetchQueuedEquipment();
     }
   }, [isLoggedIn, username]);
 
@@ -240,6 +242,8 @@ function App() {
           toggleFavorite={toggleFavorite}
           username={username}
           favorites={favorites}
+          currentMachine={currentMachine}
+          queuedMachine={queuedMachine}
         />} />
       </Routes>
     </div>
