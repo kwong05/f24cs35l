@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, useParams } from 'react-router-dom';
 import Card from './Card';
+import StatusCard from './StatusCard';
 
 function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username, favorites }) {
   const [localFavorites, setLocalFavorites] = useState(favorites);
@@ -87,6 +88,11 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
 
   return (
     <div className="machine-cards">
+      {isLoggedIn ? <StatusCard 
+        username={username}
+        currentMachine={machines.find(m => m._id === currentMachine)}
+        queuedMachine={machines.find(m => m._id === queuedMachine)}
+        /> : null}
       {cards}
     </div>
   );

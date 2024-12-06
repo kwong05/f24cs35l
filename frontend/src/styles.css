@@ -441,3 +441,81 @@ table {
 .download-button:hover {
 	background-color: #52a6f3;
 }
+
+.status-card-body {
+	padding: 5px 0px 5px 0px;
+	text-align: left;
+	width: 100%;
+	color: #555;
+	font-size: 17px;
+}
+
+.progress-bar-container {
+	font-size: inherit;
+	margin-top: 10px;
+	display: flex;
+	align-items: center;
+	text-align: center;
+	height: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	background-color: inherit;
+	border-style: solid;
+	border-color: #ddd;
+}
+
+.progress-bar {
+	font-size: inherit;
+	text-align: right;
+	float: left;
+	padding: 1px 10px 1px 0px;
+	height: inherit;
+	border-radius: inherit;
+	border-style: none;
+	border-color: #2f89db;
+	background-color: #2f89db;
+}
+
+.progress-bar-description-left {
+	color: #555;
+	font-size: 17px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 50%;
+	float: left;
+}
+
+.progress-bar-description-right {
+	font-size: 17px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 50%;
+	float: right;
+	text-align: right;
+	height: auto;
+}
+
+.account-circle {
+	color: #bbb;
+	padding: 5px 5px 0px 0px;
+	border: none;
+	background-color: inherit;
+	float: left;
+	font-size: 70px;
+	font-variation-settings:
+		'FILL' 1,
+		'wght' 100;
+}
+
+.status-card-title {
+	margin-top: 20px;
+	font-size: 30px;
+	font-weight: bold;
+	padding-bottom: 10px;
+	margin-right: 10px;
+	margin-bottom: 5px;
+	cursor: pointer;
+	color: #222;
+}
