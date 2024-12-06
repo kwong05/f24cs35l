@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { broadcast } = require('../utils/websocket');
+const { authenticateToken, checkAdmin } = require('../utils/auth');
 const Equipment = require('../models/Equipment');
 const User = require('../models/User');
 
@@ -15,7 +16,8 @@ router.get('/fetchEquipment', async (req, res) => {
     }
 });
 
-router.post('/addEquipment', async (req, res) => {
+// Add equipment (admin only)
+router.post('/addEquipment', authenticateToken, checkAdmin, async (req, res) => {
     try {
         const { name: equipmentName } = req.body;
 
@@ -38,7 +40,8 @@ router.post('/addEquipment', async (req, res) => {
     }
 });
 
-router.post('/removeEquipment', async (req, res) => {
+// Delete equipment (admin only)
+router.delete('/deleteEquipment/', authenticateToken, checkAdmin, async (req, res) => {
     try {
         const { name: equipmentName } = req.body;
 

@@ -115,7 +115,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
       hour12: false
     });
 
-    console.log(`${machine.name} Unlock time: ${date}`);
+    //(`${machine.name} Unlock time: ${date}`);
     unlock_time = `Free at ${formattedNewUnlockTime} (${totalMinutesRemaining} minutes)`;
   } else if (machine.currentUser) {
     const unlockTime = new Date(machine.unlockTime);

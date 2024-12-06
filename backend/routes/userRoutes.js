@@ -3,7 +3,11 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
+const { authenticateToken, checkAdmin } = require('../utils/auth');
+const config = require('../utils/config');
+
 const User = require('../models/User');
+
 
 const secretKey = process.env.JWT_SECRET || 'secretkey';  // Replace with a secure key
 
@@ -32,6 +36,21 @@ router.get('/fetchFavorites', async (req, res) => {
     }
 });
 
+router.post('/grantAdmin', authenticateToken, checkAdmin, async (req, res) => {
+    try {
+        const { username } = req.body;
+        const user = await User.findOne({ username });
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        user.isAdmin = true;
+        await user.save();
+        res.status(200).json({ message: 'Admin status granted' });
+    } catch (error) {
+        console.error('Grant Admin Error:', error);
+        res.status(500).json({ message: 'Error granting admin status' });
+    }
+});
+
 // get user's current machine 
 router.get('/fetchCurrentEquipment', async (req, res) => {
     try {
@@ -39,7 +58,7 @@ router.get('/fetchCurrentEquipment', async (req, res) => {
         const user = await User.findOne({ username }); //get the user object from their name
 
         // get the user's current machine
-        res.json({currentEquipment: user.currentEquipment});
+        res.json({ currentEquipment: user.currentEquipment });
     } catch (err) {
         res.status(500).json({ message: 'Error retrieving current equipment data' });
     }
@@ -52,7 +71,7 @@ router.get('/fetchQueuedEquipment', async (req, res) => {
         const user = await User.findOne({ username }); //get the user object from their name
 
         // get the user's current machine
-        res.json({queuedEquipment: user.queuedEquipment});
+        res.json({ queuedEquipment: user.queuedEquipment });
     } catch (err) {
         res.status(500).json({ message: 'Error retrieving equipment queue data' });
     }
@@ -96,10 +115,13 @@ router.post('/signup', [
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, password: hashedPassword });
-        await newUser.save();
 
-        res.status(201).json({ message: 'User registered successfully' });
+        // Check if this is the first user
+        const isFirstUser = (await User.countDocuments({})) === 0;
+        const newUser = new User({ username, password: hashedPassword, isAdmin: isFirstUser });
+
+        await newUser.save();
+        res.status(201).json({ message: 'User registered successfully', isAdmin: isFirstUser });
     } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).json({ message: 'Error registering user' });

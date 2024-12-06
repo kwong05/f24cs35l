@@ -15,6 +15,7 @@ const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, tog
         }
         const data = await response.json();
         console.log('Login successful:', data);
+        localStorage.setItem('token', data.token);
         setUsername(username);
         setIsLoggedIn(true);
         toggle();

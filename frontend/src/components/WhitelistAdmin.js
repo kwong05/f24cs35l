@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
 import config from '../utils/config';
 
-function AddMachine({ toggle, setMessage, refreshMachines }) {
-    const [localMachineName, setLocalMachineName] = useState('');
+function GrantAdmin({ toggle, setMessage, refreshUsers }) {
+    const [localUsername, setLocalUsername] = useState('');
 
-    const handleAddMachine = async (e) => {
-        // Add machine to server
+    const handleGrantAdmin = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
         try {
-            const response = await fetch(`${config.apiUrl}/api/equipment/addEquipment`, {
+            const response = await fetch(`${config.apiUrl}/api/users/grantAdmin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ name: localMachineName }), // Correct field name
+                body: JSON.stringify({ username: localUsername }),
             });
             if (!response.ok) {
-                throw new Error('Add machine failed');
+                throw new Error('Grant admin failed');
             }
             const data = await response.json();
-            console.log('Successfully added a new machine:', data);
-            refreshMachines(); // Refresh the list of machines
+            console.log('Successfully granted admin rights:', data);
             toggle();
         } catch (error) {
             toggle();
@@ -33,15 +31,15 @@ function AddMachine({ toggle, setMessage, refreshMachines }) {
     return (
         <div className="popup">
             <div className="popup-inner">
-                <h2>Add Machine</h2>
-                <form onSubmit={handleAddMachine}>
+                <h2>Grant Admin</h2>
+                <form onSubmit={handleGrantAdmin}>
                     <input
                         type="text"
-                        placeholder="Machine Name"
-                        value={localMachineName}
-                        onChange={(e) => setLocalMachineName(e.target.value)}
+                        placeholder="Username"
+                        value={localUsername}
+                        onChange={(e) => setLocalUsername(e.target.value)}
                     />
-                    <button type="submit">Add</button>
+                    <button type="submit">Grant</button>
                 </form>
                 <button className="close-button-top-right" onClick={toggle}>
                     <span className="material-symbols-outlined">close</span>
@@ -51,4 +49,4 @@ function AddMachine({ toggle, setMessage, refreshMachines }) {
     );
 }
 
-export default AddMachine;
+export default GrantAdmin;

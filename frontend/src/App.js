@@ -8,6 +8,7 @@ import SignUp from './components/SignUp';
 import Error from './components/Error';
 import MachineCards from './components/MachineCards';
 import AddMachine from './components/AddMachine';
+import GrantAdmin from './components/WhitelistAdmin';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -19,13 +20,14 @@ function App() {
   const [joinSeen, setJoinSeen] = useState(false);
   const [leaveSeen, setLeaveSeen] = useState(false);
   const [currentPopupId, setCurrentPopupId] = useState(null);
-  const [machines, setMachines] = useState([]); // State to hold machines data
+  const [machines, setMachines] = useState([]);
   const [addMachineSeen, setAddMachineSeen] = useState(false);
+  const [grantAdminSeen, setGrantAdminSeen] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [currentMachine, setCurrentMachine] = useState([]);
   const [queuedMachine, setQueuedMachine] = useState([]);
 
-  
+
   useEffect(() => {
     fetchEquipment();
     const ws = new WebSocket(config.wsUrl);
@@ -170,6 +172,10 @@ function App() {
     setAddMachineSeen(!addMachineSeen);
   };
 
+  const toggleAdminPopup = () => {
+    setGrantAdminSeen(!grantAdminSeen);
+  };
+
   const toggleErrorPopup = (message) => {
     setCurrentErrorMessage(message);
     setErrorSeen(!errorSeen);
@@ -205,6 +211,7 @@ function App() {
         handleLogout={handleLogout}
         addMachineSeen={addMachineSeen}
         toggleMachinePopup={toggleMachinePopup}
+        toggleAdminPopup={toggleAdminPopup}
       />
       {loginSeen && (
         <Login
@@ -227,6 +234,12 @@ function App() {
           toggle={toggleMachinePopup}
           setMessage={toggleErrorPopup}
           refreshMachines={fetchEquipment}
+        />
+      )}
+      {grantAdminSeen && (
+        <GrantAdmin
+          toggle={toggleAdminPopup}
+          setMessage={toggleErrorPopup}
         />
       )}
       <Routes>
