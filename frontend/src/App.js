@@ -28,9 +28,28 @@ function App() {
   const [currentMachine, setCurrentMachine] = useState([]);
   const [queuedMachine, setQueuedMachine] = useState([]);
 
+  // Function to check if user is logged in
+  const checkLoginStatus = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decode the token to get user information
+      const user = JSON.parse(atob(token.split('.')[1]));
+      setIsLoggedIn(true);
+      setUsername(user.username);
+      setIsAdmin(user.isAdmin);
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    setUsername('');
+    localStorage.removeItem('token');
+  };
 
   useEffect(() => {
     fetchEquipment();
+    checkLoginStatus();
     const ws = new WebSocket(config.wsUrl);
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -197,15 +216,6 @@ function App() {
     setCurrentPopupId(id);
     setLeaveSeen(!leaveSeen);
   };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setIsAdmin(false);
-    setUsername('');
-  };
-
-  // Use useParams to get machineId
-  const { machineId } = useParams();
 
   return (
     <div className="App">
