@@ -1,13 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import ProgressBar from './ProgressBar';
+import config from '../utils/config';
 
-function StatusCard({ username, currentMachine, queuedMachine }) {
+function StatusCard({ username, machines }) {
   const [queuedUsernames, setQueuedUsernames] = useState([]);
+  const [currentMachine, setCurrentMachine] = useState(null);
+  const [queuedMachine, setQueuedMachine] = useState(null);
+
+  useEffect(() => {
+    // Fetch current equipment and queued equipment
+    async function fetchUserData() {
+      try {
+        const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
+        if (!response.ok) {
+          throw new Error('Error retrieving current equipment data');
+        }
+        const data = await response.json();
+        setCurrentMachine(machines.find(m => m._id === data.currentEquipment));
+
+        const response2 = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
+        if (!response2.ok) {
+          throw new Error('Error retrieving queued equipment data');
+        }
+        const data2 = await response2.json();
+        setQueuedMachine(machines.find(m => m._id === data2.queuedEquipment));
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+
+    fetchUserData();
+
+  }, [username, machines]);
+
+  const [waitlistPosition, setWaitlistPosition] = useState("");
+  const [timeLeftToWait, setTimeLeftToWait] = useState(0);
+  const [totalTime, setTotalTime] = useState(15);
+  const [minutesRemainingOnCurrent, setMinutesRemainingOnCurrent] = useState("");
 
   useEffect(() => {
     const fetchUsernames = async (userIds) => {
       try {
-        const response = await fetch('http://localhost:10000/api/users/fetchUserDetails', {
+        const response = await fetch(`${config.apiUrl}/api/users/fetchUserDetails`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -18,47 +52,51 @@ function StatusCard({ username, currentMachine, queuedMachine }) {
           throw new Error('Error retrieving user details');
         }
         const data = await response.json();
-        setQueuedUsernames(data.map(user => user.username));
+
+        const orderedUsernames = userIds.map(id => {
+          const user = data.find(user => user._id === id);
+          return user ? user.username : null;
+        });
+
+        return orderedUsernames;
       } catch (error) {
         console.error('Error fetching usernames:', error);
       }
     };
+
     if (queuedMachine) {
-      fetchUsernames(queuedMachine.userQueue);
+      console.log(queuedMachine.userQueue);
+      fetchUsernames(queuedMachine.userQueue).then((orderedUsernames) => {
+        setQueuedUsernames(orderedUsernames);
+        const position = orderedUsernames.indexOf(username);
+        setWaitlistPosition(position);
+        if (position !== -1) {
+          const now = new Date();
+          const minutesRemaining = Math.ceil((new Date(queuedMachine.unlockTime) - now) / 60000);
+          setTimeLeftToWait(minutesRemaining + (position * 15));
+          setTotalTime(15 + (position * 15));
+        }
+      });
     }
-  });
 
-  let waitlistPosition = "";
-  let timeLeftToWait = 0;
-  let totalTime = 15;
-  if(queuedMachine) {
-    waitlistPosition = queuedUsernames.indexOf(username);
-    if(waitlistPosition != -1) {
+    if (currentMachine) {
       const now = new Date();
-      const minutesRemaining = Math.ceil((new Date(queuedMachine.unlockTime) - now) / 60000);
-      timeLeftToWait = minutesRemaining + (waitlistPosition*15);
-      totalTime = 15 + (waitlistPosition*15);
+      const minutesRemaining = Math.ceil((new Date(currentMachine.unlockTime) - now) / 60000);
+      setMinutesRemainingOnCurrent(minutesRemaining);
     }
-  }
-
-  let minutesRemainingOnCurrent = "";
-  if(currentMachine) {
-    const now = new Date();
-    minutesRemainingOnCurrent = Math.ceil((new Date(currentMachine.unlockTime) - now) / 60000);
-  }
-
+  }, [queuedMachine, currentMachine]);
 
   return (
     <div className="card">
       <span className="material-symbols-outlined account-circle">account_circle</span>
       <div className="status-card-title">
-      {username}
+        {username}
       </div>
       <p></p>
       {currentMachine ?
         (<div className="status-card-body">
           <div className="progress-bar-description-left">
-          Currently using: <b>{currentMachine.name}</b>
+            Currently using: <b>{currentMachine.name}</b>
           </div>
           <div className="progress-bar-description-right">
             {minutesRemainingOnCurrent} minutes left
@@ -67,20 +105,20 @@ function StatusCard({ username, currentMachine, queuedMachine }) {
         (<div className="status-card-body">
           Currently not using a machine
         </div>)}
-        {queuedMachine ? 
-          (<div className="status-card-body">
-            <div className="progress-bar-description-left">
+      {queuedMachine ?
+        (<div className="status-card-body">
+          <div className="progress-bar-description-left">
             You are <b>{getOrdinal(waitlistPosition)}</b> in line for <b>{queuedMachine.name}</b>
-            </div>
-            <div className="progress-bar-description-right">
-              {timeLeftToWait} minutes remaining
-            </div>
-            <ProgressBar progress={1-(timeLeftToWait/totalTime)} />
           </div>
-          )
-          : (<div className="status-card-body">
-            Currently not queued
-          </div>)}
+          <div className="progress-bar-description-right">
+            {timeLeftToWait} minutes remaining
+          </div>
+          <ProgressBar progress={1 - (timeLeftToWait / totalTime)} />
+        </div>
+        )
+        : (<div className="status-card-body">
+          Currently not queued
+        </div>)}
     </div>
   );
 }
@@ -89,8 +127,7 @@ function getOrdinal(number) {
   const suffixes = ['th', 'st', 'nd', 'rd'];
   const mod100 = number % 100;
   const mod10 = number % 10;
-  if(number == 0)
-  {
+  if (number == 0) {
     return "next";
   }
   if (mod100 >= 11 && mod100 <= 13) {

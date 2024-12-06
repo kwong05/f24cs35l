@@ -352,8 +352,9 @@ table {
 	font-size: 12px;
 	width: 60px;
 	padding: 5px 5px;
-	margin: 10px 10px;
-	vertical-align: middle;
+	margin: 7px 0px;
+
+	vertical-align: top;
 	background-color: inherit;
 	border-radius: 10px;
 	display: inline-block;
@@ -363,6 +364,11 @@ table {
 
 .outcome.available {
 	background-color: #4caf50;
+	color: white;
+}
+
+.outcome.out-of-order {
+	background-color: #f44336;
 	color: white;
 }
 

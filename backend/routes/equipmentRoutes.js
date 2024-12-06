@@ -32,7 +32,7 @@ router.post('/addEquipment', authenticateToken, checkAdmin, async (req, res) => 
         console.log('Saving new equipment to database:', equipmentName);
         const newEquipment = new Equipment({ name: equipmentName });
         await newEquipment.save();
-
+        broadcast({ type: 'add', equipment: newEquipment });
         res.status(201).json({ message: 'Equipment created successfully' });
     } catch (error) {
         console.error('Equipment Add Error:', error);  // Log the exact error
@@ -41,13 +41,13 @@ router.post('/addEquipment', authenticateToken, checkAdmin, async (req, res) => 
 });
 
 // Delete equipment (admin only)
-router.delete('/deleteEquipment/', authenticateToken, checkAdmin, async (req, res) => {
+router.delete('/deleteEquipment', authenticateToken, checkAdmin, async (req, res) => {
     try {
-        const { name: equipmentName } = req.body;
+        const { _id: equipmentId } = req.body;
 
-        console.log('Removing equipment from database:', equipmentName);
-        await Equipment.deleteOne({ name: equipmentName });
-
+        console.log('Removing equipment from database:', equipmentId);
+        await Equipment.deleteOne({ _id: equipmentId });
+        broadcast({ type: 'delete', equipment: equipmentId });
         res.status(200).json({ message: 'Equipment removed successfully' });
     } catch (error) {
         console.error('Equipment Remove Error:', error);  // Log the exact error

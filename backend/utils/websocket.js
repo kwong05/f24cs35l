@@ -6,15 +6,15 @@ const setupWebSocket = (server) => {
     wss = new WebSocket.Server({ server });
 
     wss.on('connection', (ws) => {
-        //console.log('Client connected');
+        console.log('[WebSocket] Client connected');
         ws.on('close', () => {
-            //console.log('Client disconnected');
+            console.log('[WebSocket] Client disconnected');
         });
     });
 };
 
 const broadcast = (data) => {
-    //console.log('Broadcasting:', data);
+    console.log('[WebSocket]: Broadcasting: ', data.type);
     if (wss) {
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {

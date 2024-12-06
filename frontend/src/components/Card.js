@@ -18,7 +18,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async (userIds, isCurrentUsername) => { //if isCurrentUsername is true, will put userId in currentUsername instead of usernames 
+    const fetchUserData = async (userIds, isCurrentUsername) => {
       try {
         const response = await fetch(`${config.apiUrl}/api/users/fetchUserDetails`, {
           method: 'POST',
@@ -31,10 +31,15 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
           throw new Error('Error retrieving user details');
         }
         const data = await response.json();
+        // Map the fetched user details back to the original order of the user IDs
+        const orderedUsernames = userIds.map(id => {
+          const user = data.find(user => user._id === id);
+          return user ? user.username : null;
+        });
         if (isCurrentUsername) {
-          setCurrentUsername(data[0].username);
+          setCurrentUsername(orderedUsernames[0]);
         } else {
-          setUsernames(data.map(user => user.username));
+          setUsernames(orderedUsernames);
         }
       } catch (error) {
         console.error('Error fetching usernames:', error);

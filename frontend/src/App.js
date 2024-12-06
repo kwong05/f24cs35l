@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useParams } from 'react-router-dom';
 import config from './utils/config';
 
 import Header from './components/Header';
@@ -44,6 +44,12 @@ function App() {
             return machine;
           });
         });
+      }
+      if (data.type === 'add') {
+        setMachines((prevMachines) => [...prevMachines, data.equipment]);
+      }
+      if (data.type === 'delete') {
+        setMachines((prevMachines) => prevMachines.filter((machine) => machine._id !== data.equipment));
       }
     };
     return () => {
@@ -198,6 +204,9 @@ function App() {
     setUsername('');
   };
 
+  // Use useParams to get machineId
+  const { machineId } = useParams();
+
   return (
     <div className="App">
       <Header
@@ -262,6 +271,8 @@ function App() {
           favorites={favorites}
           currentMachine={currentMachine}
           queuedMachine={queuedMachine}
+          isAdmin={isAdmin}
+          refreshMachines={fetchEquipment}
         />} />
       </Routes>
     </div>
