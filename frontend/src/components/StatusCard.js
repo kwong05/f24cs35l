@@ -108,7 +108,7 @@ function StatusCard({ username, machines }) {
       {queuedMachine ?
         (<div className="status-card-body">
           <div className="progress-bar-description-left">
-            You are <b>{getOrdinal(waitlistPosition)}</b> in line for <b>{queuedMachine.name}</b>
+            You are <b>{getOrdinal(waitlistPosition+1)}</b> in line for <b>{queuedMachine.name}</b>
           </div>
           <div className="progress-bar-description-right">
             {timeLeftToWait} minutes remaining
@@ -127,9 +127,6 @@ function getOrdinal(number) {
   const suffixes = ['th', 'st', 'nd', 'rd'];
   const mod100 = number % 100;
   const mod10 = number % 10;
-  if (number == 0) {
-    return "next";
-  }
   if (mod100 >= 11 && mod100 <= 13) {
     return number + 'th';
   }
