@@ -9,7 +9,7 @@ const config = require('../utils/config');
 const User = require('../models/User');
 
 
-const secretKey = process.env.JWT_SECRET || 'secretkey';  // Replace with a secure key
+const secretKey = process.env.JWT_SECRET;  // Replace with a secure key
 
 // Fetch user details by user IDs
 router.post('/fetchUserDetails', async (req, res) => {
@@ -152,7 +152,8 @@ router.post('/login', [
         }
 
         const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
-        res.json({ token });
+        const isAdmin = user.isAdmin;
+        res.json({ token, isAdmin });
     } catch (error) {
         console.error('Error logging in user:', error);
         res.status(500).json({ message: 'Error logging in user' });

@@ -5,7 +5,7 @@ import SignUp from './SignUp';
 import Error from './Error';
 import AddMachine from './AddMachine';
 
-function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, toggleErrorPopup, errorSeen, currentErrorMessage, isLoggedIn, username, handleLogout, addMachineSeen, toggleMachinePopup, toggleAdminPopup }) {
+function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, toggleErrorPopup, errorSeen, currentErrorMessage, isLoggedIn, username, handleLogout, addMachineSeen, toggleMachinePopup, toggleAdminPopup, isAdmin }) {
     return (
         <div className="header">
             <div className="topnav">
@@ -18,14 +18,18 @@ function Header({ toggleLoginPopup, toggleSignUpPopup, loginSeen, signUpSeen, to
                         <div className="topnav-user" data-username={username} onClick={handleLogout}>
                             <span>{username}</span>
                         </div>
-                        <div className="topnav-buttons" onClick={toggleMachinePopup}>
-                            Add machine
-                        </div>
-                        {addMachineSeen ? <AddMachine toggle={toggleMachinePopup} setMessage={toggleErrorPopup} /> : null}
-                        <div className="topnav-buttons" onClick={toggleAdminPopup}>
-                            Grant Admin
-                        </div>
-                        {addMachineSeen ? <AddMachine toggle={toggleAdminPopup} setMessage={toggleErrorPopup} /> : null}
+                        {isAdmin ? (
+                            <>
+                                <div className="topnav-buttons" onClick={toggleMachinePopup}>
+                                    Add machine
+                                </div>
+                                {addMachineSeen ? <AddMachine toggle={toggleMachinePopup} setMessage={toggleErrorPopup} /> : null}
+                                <div className="topnav-buttons" onClick={toggleAdminPopup}>
+                                    Grant Admin
+                                </div>
+                                {addMachineSeen ? <AddMachine toggle={toggleAdminPopup} setMessage={toggleErrorPopup} /> : null}
+                            </>
+                        ) : null}
                     </>
                 ) : (
                     <>

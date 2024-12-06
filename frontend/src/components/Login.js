@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import config from '../utils/config';
 
-const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, toggle, setMessage }) => {
+const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, toggle, setMessage, setIsAdmin }) => {
     try {
         const response = await fetch(`${config.apiUrl}/api/users/login`, {
             method: 'POST',
@@ -18,6 +18,7 @@ const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, tog
         localStorage.setItem('token', data.token);
         setUsername(username);
         setIsLoggedIn(true);
+        setIsAdmin(data.isAdmin);
         toggle();
     } catch (error) {
         toggle();
@@ -25,13 +26,13 @@ const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, tog
     }
 };
 
-function Login({ toggle, setMessage, setIsLoggedIn, setUsername }) {
+function Login({ toggle, setMessage, setIsLoggedIn, setUsername, setIsAdmin }) {
     const [localUsername, setLocalUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        handleLogin({ username: localUsername, password, setUsername, setIsLoggedIn, toggle, setMessage });
+        handleLogin({ username: localUsername, password, setUsername, setIsLoggedIn, toggle, setMessage, setIsAdmin });
     };
 
     return (

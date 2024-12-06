@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import config from '../utils/config';
 
-function GrantAdmin({ toggle, setMessage, refreshUsers }) {
+function GrantAdmin({ toggle, setMessage }) {
     const [localUsername, setLocalUsername] = useState('');
 
     const handleGrantAdmin = async (e) => {

@@ -12,6 +12,7 @@ import GrantAdmin from './components/WhitelistAdmin';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [username, setUsername] = useState('');
   const [loginSeen, setLoginSeen] = useState(false);
   const [signUpSeen, setSignUpSeen] = useState(false);
@@ -193,6 +194,7 @@ function App() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setIsAdmin(false);
     setUsername('');
   };
 
@@ -207,6 +209,7 @@ function App() {
         errorSeen={errorSeen}
         currentErrorMessage={currentErrorMessage}
         isLoggedIn={isLoggedIn}
+        isAdmin={isAdmin}
         username={username}
         handleLogout={handleLogout}
         addMachineSeen={addMachineSeen}
@@ -218,6 +221,7 @@ function App() {
           toggle={toggleLoginPopup}
           setMessage={toggleErrorPopup}
           setIsLoggedIn={setIsLoggedIn}
+          setIsAdmin={setIsAdmin}
           setUsername={setUsername}
         />
       )}
@@ -226,6 +230,7 @@ function App() {
           toggle={toggleSignUpPopup}
           setMessage={toggleErrorPopup}
           setIsLoggedIn={setIsLoggedIn}
+          setIsAdmin={setIsAdmin}
           setUsername={setUsername}
         />
       )}

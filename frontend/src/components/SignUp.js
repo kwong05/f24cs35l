@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { handleLogin } from './Login';
 import config from '../utils/config';
 
-function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
+function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername, setIsAdmin }) {
     const [localUsername, setLocalUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -22,7 +22,7 @@ function SignUp({ toggle, setMessage, setIsLoggedIn, setUsername }) {
             const data = await response.json();
             console.log('Signup successful:', data);
             // Automatically log in the user after successful registration
-            handleLogin({ username: localUsername, password, setUsername, setIsLoggedIn, toggle, setMessage });
+            handleLogin({ username: localUsername, password, setUsername, setIsLoggedIn, toggle, setMessage, setIsAdmin });
         } catch (error) {
             toggle();
             setMessage(error.message);
