@@ -196,16 +196,24 @@ router.post('/renege', async (req, res) => {
         if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
 
         // Check that the user's current/queued equipment is the same as the undesired equipment
+        let isQueued = false;
+        if (currentUser.queuedEquipment != null) isQueued = true;
+        let isUsing = false;
+        if (currentUser.currentEquipment != null) isUsing = true;
         const undesiredEquipment = await Equipment.findOne({ _id: equipmentId });
         const currentEquipment = currentUser.currentEquipment;
+        const undesiredName = undesiredEquipment.name;
+        const currentName = currentEquipment.name;
         const queuedEquipment = currentUser.queuedEquipment;
-        if ((!currentEquipment || currentEquipment != undesiredEquipment._id) && (!queuedEquipment || !(queuedEquipment.includes(undesiredEquipment._id)))) {
-            return res.status(403).json({ message: 'User is not using or queued for this equipment' });
+        /*
+        if ((!isUsing || currentEquipment != undesiredEquipment._id) && (!isQueued || !(queuedEquipment.includes(undesiredEquipment._id)))) {
+            return res.status(403).json({ message: `User is not using or queued for this equipment`});
         }
+        */
 
         const userIdx = 0;
         // Remove user from equipment queue if in queue
-        if (queuedEquipment && queuedEquipment.includes(undesiredEquipment._id)) {
+        if (isQueued && queuedEquipment.includes(undesiredEquipment._id)) {
             userIdx = undesiredEquipment.userQueue.indexOf(currentUser._id);
             if (userIdx > -1) {
                 undesiredEquipment.userQueue.splice(userIdx, 1);
@@ -218,11 +226,15 @@ router.post('/renege', async (req, res) => {
         }
 
         // Remove user from equipment if currently using
-        if (currentEquipment && currentEquipment.equals(undesiredEquipment._id)) {
+        else if (currentEquipment && currentEquipment.equals(undesiredEquipment._id)) {
             undesiredEquipment.currentUser = null;
             currentUser.currentEquipment = null;
             await undesiredEquipment.save();
             await currentUser.save();
+        }
+
+        else {
+            return res.status(403).json({ message: `User is not using or queued for this equipment`});
         }
 
         broadcast({ type: 'update', equipment: undesiredEquipment });
