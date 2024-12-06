@@ -5,15 +5,15 @@ const User = require('../models/User');
 // imagine a User that is actively using equipment A and wants to use equipment B
 
 // Return an array of IDs of eligible Users, based on whether or not they are already using some Equipment
-// Otherwise, return undefined
-async function nextAvailableUsers(equipmentQueue) {    
+function nextAvailableUsers(equipmentQueue) {    
     let eligibleQueue = equipmentQueue;
+
     for (let i = 0; i < eligibleQueue.length; i++) {
         let nextUserID = eligibleQueue[i];
         let nextUser = User.findById(nextUserID);
 
         // eligible user found; modify queue, return ID
-        if (nextUser.currentEquipment = null) {
+        if (!!nextUser.currentEquipment) {
             console.log("user " + nextUser.username + " is eligible");
             break;
         }
