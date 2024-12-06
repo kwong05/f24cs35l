@@ -32,6 +32,19 @@ router.get('/fetchFavorites', async (req, res) => {
     }
 });
 
+// get user's current machine 
+router.get('/fetchCurrentEquipment', async (req, res) => {
+    try {
+        const { username } = req.query;
+        const user = await User.findOne({ username }); //get the user object from their name
+
+        // get the user's current machine
+        res.json(user.currentEquipment);
+    } catch (err) {
+        res.status(500).json({ message: 'Error retrieving current equipment data' });
+    }
+});
+
 // Update user's favorite list
 router.post('/updateFavorites', async (req, res) => {
     try {
