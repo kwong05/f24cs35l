@@ -40,6 +40,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
   const cards = [];
   const availableMachines = [];
   const unavailableMachines = [];
+  const outOfOrderMachines = [];
 
   if (machineId) {
     const tryToFindMachine = machines.find(m => m._id === machineId);
@@ -83,7 +84,9 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
     if (isLoggedIn && localFavorites.includes(machine._id)) {
       return; // Skip already added favorite machines
     }
-    if (!machine.currentUser) {
+    if (!machine.status) {
+      outOfOrderMachines.push(machine);
+    } else if (!machine.currentUser) {
       availableMachines.push(machine);
     } else {
       unavailableMachines.push(machine);
@@ -112,6 +115,26 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
 
   // Render unavailable machines next
   unavailableMachines.forEach((machine) => {
+    cards.push(
+      <Card
+        key={machine._id}
+        machine={machine}
+        joinSeen={joinSeen}
+        toggleJoinPopup={toggleJoinPopup}
+        leaveSeen={leaveSeen}
+        toggleLeavePopup={toggleLeavePopup}
+        currentPopupId={currentPopupId}
+        setMessage={setMessage}
+        isLoggedIn={isLoggedIn}
+        favorite={localFavorites.includes(machine._id)}
+        toggleFavorite={toggleFavorite}
+        username={username}
+      />
+    );
+  });
+
+  // Render out of order machines last
+  outOfOrderMachines.forEach((machine) => {
     cards.push(
       <Card
         key={machine._id}

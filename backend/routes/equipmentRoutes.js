@@ -21,7 +21,7 @@ router.post('/addEquipment', authenticateToken, checkAdmin, async (req, res) => 
     try {
         const { name: equipmentName } = req.body;
 
-        console.log('Checking if equipment exists:', equipmentName);
+        // console.log('Checking if equipment exists:', equipmentName);
         const equipmentExists = await Equipment.findOne({ name: equipmentName });
 
         if (equipmentExists) {
@@ -29,7 +29,7 @@ router.post('/addEquipment', authenticateToken, checkAdmin, async (req, res) => 
             return res.status(400).json({ message: 'Equipment name already taken' });
         }
 
-        console.log('Saving new equipment to database:', equipmentName);
+        // console.log('Saving new equipment to database:', equipmentName);
         const newEquipment = new Equipment({ name: equipmentName });
         await newEquipment.save();
         broadcast({ type: 'add', equipment: newEquipment });
@@ -45,7 +45,7 @@ router.delete('/deleteEquipment', authenticateToken, checkAdmin, async (req, res
     try {
         const { _id: equipmentId } = req.body;
 
-        console.log('Removing equipment from database:', equipmentId);
+        // console.log('Removing equipment from database:', equipmentId);
         await Equipment.deleteOne({ _id: equipmentId });
         broadcast({ type: 'delete', equipment: equipmentId });
         res.status(200).json({ message: 'Equipment removed successfully' });
@@ -54,6 +54,34 @@ router.delete('/deleteEquipment', authenticateToken, checkAdmin, async (req, res
         res.status(500).json({ message: 'Error removing equipment' });
     }
 });
+
+// Toggle equipment status (admin only)
+router.put('/toggleStatus', authenticateToken, checkAdmin, async (req, res) => {
+    try {
+        const { _id: equipmentId } = req.body;
+
+        // Find the equipment by its ID
+        const equipment = await Equipment.findById(equipmentId);
+        if (!equipment) {
+            return res.status(404).json({ message: 'Equipment not found' });
+        }
+
+        // Toggle the status of the equipment
+        equipment.status = !equipment.status;
+
+        // Save the updated equipment
+        await equipment.save();
+
+        // Broadcast the change
+        broadcast({ type: 'update', equipment });
+
+        res.status(200).json({ message: 'Equipment status toggled successfully', equipment });
+    } catch (error) {
+        console.error('Equipment Toggle Status Error:', error);  // Log the exact error
+        res.status(500).json({ message: 'Error toggling equipment status' });
+    }
+});
+
 
 // Join queue for equipment
 router.post('/join', async (req, res) => {

@@ -135,8 +135,8 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   }
 
 
-  const machineStatus = machine.currentUser ? 'in-use' : 'available';
-  const statusText = machine.currentUser ? 'In Use' : 'Available';
+  const machineStatus = machine.status ? (machine.currentUser ? 'in-use' : 'available') : 'out-of-order';
+  const statusText = machine.status ? (machine.currentUser ? 'In Use' : 'Available') : 'Out of Order';
 
   return (
     <div className="card">

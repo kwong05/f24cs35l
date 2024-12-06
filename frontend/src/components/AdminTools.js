@@ -30,23 +30,24 @@ function AdminTools({ equipmentId, setMessage, refreshMachines }) {
         }
     };
 
-    const handleMarkOutOfOrder = async () => {
+    const handleToggleStatus = async () => {
         try {
-            const response = await fetch(`${config.apiUrl}/api/equipment/markOutOfOrder/${equipmentId}`, {
+            const response = await fetch(`${config.apiUrl}/api/equipment/toggleStatus`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include the token in the Authorization header
                 },
+                body: JSON.stringify({ _id: equipmentId })
             });
             const data = await response.json();
             if (response.ok) {
-                setMessage('Equipment marked as out of order');
+                setMessage('Equipment status toggled');
             } else {
                 setMessage(data.message);
             }
         } catch (error) {
-            setMessage('Error marking equipment as out of order');
+            setMessage('Error toggling equipment status');
         }
     };
 
@@ -118,7 +119,7 @@ function AdminTools({ equipmentId, setMessage, refreshMachines }) {
             <div className="admin-tools-form">
                 <h2>Manage equipment</h2>
                 <button onClick={handleDeleteEquipment} className="admin-tools-button">Delete equipment</button>
-                <button onClick={handleMarkOutOfOrder} className="admin-tools-button">Mark out of order</button>
+                <button onClick={handleToggleStatus} className="admin-tools-button">Toggle out-of-order status</button>
                 <br></br>
                 <h2>Manage users</h2>
                 <input
