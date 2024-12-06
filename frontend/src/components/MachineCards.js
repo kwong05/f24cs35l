@@ -108,7 +108,6 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
     }
   });
 
-  console.log(username);
   return (
     <div className="machine-cards">
       {isLoggedIn ? <StatusCard
