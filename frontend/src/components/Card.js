@@ -7,7 +7,7 @@ import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 import LeaveWaitlist from './LeaveWaitlist';
 
-function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, currentMachine, queuedMachine, machines }) {
+function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, currentMachine, queuedMachine }) {
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
@@ -15,30 +15,6 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const qrCodeRef = useRef();
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Fetch current equipment and queued equipment
-    async function fetchUserData() {
-      try {
-        const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
-        if (!response.ok) {
-          throw new Error('Error retrieving current equipment data');
-        }
-        const data = await response.json();
-        setCurrentMachine(machines.find(m => m._id === data.currentEquipment));
-
-        const response2 = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
-        if (!response2.ok) {
-          throw new Error('Error retrieving queued equipment data');
-        }
-        const data2 = await response2.json();
-        setQueuedMachine(machines.find(m => m._id === data2.queuedEquipment));
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    }
-    fetchUserData();
-  }, [username, machines]);
   
   useEffect(() => {
     const fetchUserData = async (userIds, isCurrentUsername) => {
