@@ -16,6 +16,7 @@ const handleLogin = async ({ username, password, setUsername, setIsLoggedIn, tog
         const data = await response.json();
         console.log('Login successful:', data);
         localStorage.setItem('token', data.token);
+        localStorage.setItem('isAdmin', data.isAdmin);
         setUsername(username);
         setIsLoggedIn(true);
         setIsAdmin(data.isAdmin);

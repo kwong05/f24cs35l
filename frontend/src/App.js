@@ -31,12 +31,15 @@ function App() {
   // Function to check if user is logged in
   const checkLoginStatus = () => {
     const token = localStorage.getItem('token');
+    const isAdmin = localStorage.getItem('isAdmin');
+    console.log(token);
     if (token) {
       // Decode the token to get user information
       const user = JSON.parse(atob(token.split('.')[1]));
+      console.log(user);
       setIsLoggedIn(true);
       setUsername(user.username);
-      setIsAdmin(user.isAdmin);
+      setIsAdmin(isAdmin);
     }
   };
 
@@ -110,34 +113,34 @@ function App() {
   };
 
   async function fetchUserData() {
-      try {
-          console.log(username)
-        const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
-        if (!response.ok) {
-          throw new Error('Error retrieving current equipment data');
-        }
-        const data = await response.json();
-         console.log(currentMachine)
-        setCurrentMachine(machines.find(m => m._id === data.currentEquipment));
-
-        const response2 = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
-        if (!response2.ok) {
-          throw new Error('Error retrieving queued equipment data');
-        }
-        const data2 = await response2.json(); 
-         console.log(queuedMachine)
-        setQueuedMachine(machines.find(m => m._id === data2.queuedEquipment));
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+    try {
+      // console.log(username)
+      const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
+      if (!response.ok) {
+        throw new Error('Error retrieving current equipment data');
       }
+      const data = await response.json();
+      // console.log(currentMachine)
+      setCurrentMachine(machines.find(m => m._id === data.currentEquipment));
+
+      const response2 = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
+      if (!response2.ok) {
+        throw new Error('Error retrieving queued equipment data');
+      }
+      const data2 = await response2.json();
+      // console.log(queuedMachine)
+      setQueuedMachine(machines.find(m => m._id === data2.queuedEquipment));
+    } catch (error) {
+      console.error('Error fetching user data:', error);
     }
-  
+  }
+
   useEffect(() => {
     if (isLoggedIn) {
       fetchFavorites();
       fetchUserData();
     }
-  }, [isLoggedIn, username]);
+  }, [isLoggedIn, username, machines]);
 
 
   const toggleFavorite = async (machineId) => {
