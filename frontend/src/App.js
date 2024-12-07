@@ -135,10 +135,10 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
       fetchFavorites();
+      fetchUserData();
     }
   }, [isLoggedIn, username]);
 
-  fetchUserData();
 
   const toggleFavorite = async (machineId) => {
     try {
