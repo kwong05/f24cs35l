@@ -40,6 +40,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
             username={username}
             currentMachine={currentMachine}
             queuedMachine={queuedMachine}
+            machines={machines}
           />
           <br /><br />
           {isAdmin && <AdminTools
@@ -105,6 +106,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
         username={username}
         currentMachine={currentMachine}
         queuedMachine={queuedMachine}
+          machines={machines}
       />
     );
   });
@@ -127,6 +129,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
         username={username}
         currentMachine={currentMachine}
         queuedMachine={queuedMachine}
+          machines={machines}
       />
     );
   });
@@ -149,6 +152,7 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
         username={username}
         currentMachine={currentMachine}
         queuedMachine={queuedMachine}
+          machines={machines}
       />
     );
   });
