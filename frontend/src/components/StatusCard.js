@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ProgressBar from './ProgressBar';
 import config from '../utils/config';
 
-function StatusCard({ username, machines }) {
-  const [queuedUsernames, setQueuedUsernames] = useState([]);
-  const [currentMachine, setCurrentMachine] = useState(null);
-  const [queuedMachine, setQueuedMachine] = useState(null);
-
+function StatusCard({ username, currentMachine, queuedMachine }) {
+  /*
   useEffect(() => {
     // Fetch current equipment and queued equipment
     async function fetchUserData() {
@@ -31,7 +28,7 @@ function StatusCard({ username, machines }) {
 
     fetchUserData();
 
-  }, [username, machines]);
+  }, [username, machines]);*/
 
   const [waitlistPosition, setWaitlistPosition] = useState("");
   const [timeLeftToWait, setTimeLeftToWait] = useState(0);
@@ -67,8 +64,11 @@ function StatusCard({ username, machines }) {
     if (queuedMachine) {
       console.log(queuedMachine.userQueue);
       fetchUsernames(queuedMachine.userQueue).then((orderedUsernames) => {
-        setQueuedUsernames(orderedUsernames);
-        const position = orderedUsernames.indexOf(username);
+        let position = -1;
+        if(orderedUsernames)
+        {
+           position = orderedUsernames.indexOf(username); 
+        }
         setWaitlistPosition(position);
         if (position !== -1) {
           const now = new Date();
