@@ -108,10 +108,8 @@ function App() {
       console.error('Error fetching favorites list:', error);
     }
   };
-  
-  useEffect(() => {
-    // Fetch current equipment and queued equipment
-    async function fetchUserData() {
+
+  async function fetchUserData() {
       try {
           console.log(username)
         const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
@@ -133,12 +131,14 @@ function App() {
         console.error('Error fetching user data:', error);
       }
     }
+  
+  useEffect(() => {
     if (isLoggedIn) {
       fetchFavorites();
-      fetchUserData();
     }
   }, [isLoggedIn, username]);
 
+  fetchUserData();
 
   const toggleFavorite = async (machineId) => {
     try {
