@@ -5,7 +5,7 @@ import StatusCard from './StatusCard';
 import config from '../utils/config';
 import AdminTools from './AdminTools';
 
-function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username, favorites, isAdmin, refreshMachines }) {
+function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username, favorites, currentMachine, queuedMachine, isAdmin, refreshMachines }) {
   const [localFavorites, setLocalFavorites] = useState(favorites);
   const [currentMachine, setCurrentMachine] = useState(null);
   const [queuedMachine, setQueuedMachine] = useState(null);
@@ -76,8 +76,8 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
   }
 
   machines.forEach((machine) => {
-    if (isLoggedIn && localFavorites.includes(machine._id)) {
-      return; // Skip already added favorite machines
+    if (isLoggedIn && (localFavorites.includes(machine._id) || (currentMachine && currentMachine._id === machine._id) || (queuedMachine && queuedMachine._id === machine._id))) {
+      return; // Skip already added favorite/current/queued machines
     }
     if (!machine.status) {
       outOfOrderMachines.push(machine);
