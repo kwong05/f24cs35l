@@ -108,52 +108,34 @@ function App() {
       console.error('Error fetching favorites list:', error);
     }
   };
-
-  const fetchCurrentEquipment = async () => {
-    try {
-      const url = `${config.apiUrl}/api/users/fetchCurrentEquipment?username=${encodeURIComponent(username)}`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error retrieving current equipment data');
-      }
-      const data = await response.json();
-      setCurrentMachine(data);
-    } catch (error) {
-      console.error('Error fetching current equipment:', error);
-    }
-  };
-
-  const fetchQueuedEquipment = async () => {
-    try {
-      const url = `${config.apiUrl}/api/users/fetchQueuedEquipment?username=${encodeURIComponent(username)}`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error retrieving queued equipment data');
-      }
-      const data = await response.json();
-      setQueuedMachine(data);
-    } catch (error) {
-      console.error('Error fetching queued equipment:', error);
-    }
-  };
-
+  
   useEffect(() => {
+    // Fetch current equipment and queued equipment
+    async function fetchUserData() {
+      try {
+          console.log(username)
+        const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
+        if (!response.ok) {
+          throw new Error('Error retrieving current equipment data');
+        }
+        const data = await response.json();
+         console.log(currentMachine)
+        setCurrentMachine(machines.find(m => m._id === data.currentEquipment));
+
+        const response2 = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
+        if (!response2.ok) {
+          throw new Error('Error retrieving queued equipment data');
+        }
+        const data2 = await response2.json(); 
+         console.log(queuedMachine)
+        setQueuedMachine(machines.find(m => m._id === data2.queuedEquipment));
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
     if (isLoggedIn) {
       fetchFavorites();
-      fetchCurrentEquipment();
-      fetchQueuedEquipment();
+      fetchUserData();
     }
   }, [isLoggedIn, username]);
 
