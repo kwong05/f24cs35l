@@ -7,8 +7,6 @@ import AdminTools from './AdminTools';
 
 function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, toggleFavorite, username, favorites, currentMachine, queuedMachine, isAdmin, refreshMachines }) {
   const [localFavorites, setLocalFavorites] = useState(favorites);
-  const [currentMachine, setCurrentMachine] = useState(null);
-  const [queuedMachine, setQueuedMachine] = useState(null);
   const { machineId } = useParams(); // Use useParams to get machineId
 
   useEffect(() => {
