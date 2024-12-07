@@ -200,10 +200,11 @@ router.post('/renege', async (req, res) => {
         if (currentUser.queuedEquipment != null) isQueued = true;
         let isUsing = false;
         if (currentUser.currentEquipment != null) isUsing = true;
+
         const undesiredEquipment = await Equipment.findOne({ _id: equipmentId });
         const currentEquipment = currentUser.currentEquipment;
-        const undesiredName = undesiredEquipment.name;
-        const currentName = currentEquipment.name;
+        //const undesiredName = undesiredEquipment.name;
+        //const currentName = currentEquipment.name;
         const queuedEquipment = currentUser.queuedEquipment;
         /*
         if ((!isUsing || currentEquipment != undesiredEquipment._id) && (!isQueued || !(queuedEquipment.includes(undesiredEquipment._id)))) {
@@ -211,9 +212,10 @@ router.post('/renege', async (req, res) => {
         }
         */
 
-        const userIdx = 0;
+        let userIdx = 0;
         // Remove user from equipment queue if in queue
-        if (isQueued && queuedEquipment.includes(undesiredEquipment._id)) {
+        
+        if (isQueued && queuedEquipment._id.equals(undesiredEquipment._id)) {
             userIdx = undesiredEquipment.userQueue.indexOf(currentUser._id);
             if (userIdx > -1) {
                 undesiredEquipment.userQueue.splice(userIdx, 1);
