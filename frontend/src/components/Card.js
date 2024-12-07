@@ -7,7 +7,7 @@ import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 import LeaveWaitlist from './LeaveWaitlist';
 
-function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, currentMachine, queuedMachine }) {
+function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, currentMachine, queuedMachine, machines }) {
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
