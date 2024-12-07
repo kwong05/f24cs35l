@@ -123,12 +123,14 @@ router.post('/join', async (req, res) => {
         const currentUser = await User.findOne({ username });
         if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
 
-
+        console.log(currentUser);
         // Ensure User is not already waiting in queue for equipment
         let isQueued = false;
         if (currentUser.queuedEquipment != null) isQueued = true;
+
         const desiredEquipment = await Equipment.findOne({ _id: equipmentId });
-        const currentEquipment = currentUser.currentEquipment;
+        const currentEquipment = await Equipment.findOne({ _id: currentUser.currentEquipment });
+        const queuedEquipment = await Equipment.findOne({ _id: currentUser.queuedEquipment });
 
         if (desiredEquipment.status === false) {
             return res.status(403).json({ message: 'Equipment is disabled' });
@@ -136,7 +138,7 @@ router.post('/join', async (req, res) => {
 
         // Check if the user is in queue for another equipment but currentEquipment is not set
         if (isQueued && !currentEquipment) {
-            const queuedEquipment = await Equipment.findOne({ _id: currentUser.queuedEquipment });
+
             const unlockTime = new Date(queuedEquipment.unlockTime);
             const now = new Date();
             const minutesRemaining = Math.ceil((unlockTime - now) / 60000);
@@ -160,14 +162,24 @@ router.post('/join', async (req, res) => {
         if (isQueued) return res.status(403).json({ message: 'User already queued' });
 
         // Check that the user's current equipment is not the same as the desired equipment
-        if (currentEquipment && currentEquipment.equals(desiredEquipment._id)) {
+        if (currentEquipment && currentEquipment.equals(desiredEquipment)) {
             return res.status(403).json({ message: 'User is already using this equipment' });
         }
 
-        // Check that the user's current equipment will run out of time before new equipment is ready
-        if (currentEquipment && currentEquipment.unlockTime > desiredEquipment.unlockTime && desiredEquipment.userQueue.length === 0) {
-            return res.status(403).json({ message: "User's current equipment will unlock after desired equipment" });
+        const now = new Date();
+        if (currentEquipment) {
+            //console.log(currentEquipment, desiredEquipment);
+            const currentUnlockMin = new Date(currentEquipment.unlockTime - now) / 60000;
+            const desiredUnlockMin = new Date(desiredEquipment.unlockTime - now) / 60000 + (15 * desiredEquipment.userQueue.length);
+            //console.log("times generated", currentUnlockMin, desiredUnlockMin);
+
+            // Check that the user's current equipment will run out of time before new equipment is ready
+            if (currentEquipment && (currentUnlockMin > desiredUnlockMin) && desiredEquipment.userQueue.length === 0) {
+                return res.status(403).json({ message: "User's current equipment will unlock after desired equipment" });
+            }
+
         }
+
 
         // Add user to equipment queue
         desiredEquipment.userQueue.push(currentUser._id);
@@ -214,7 +226,7 @@ router.post('/renege', async (req, res) => {
 
         let userIdx = 0;
         // Remove user from equipment queue if in queue
-        
+
         if (isQueued && queuedEquipment._id.equals(undesiredEquipment._id)) {
             userIdx = undesiredEquipment.userQueue.indexOf(currentUser._id);
             if (userIdx > -1) {
@@ -236,7 +248,7 @@ router.post('/renege', async (req, res) => {
         }
 
         else {
-            return res.status(403).json({ message: `User is not using or queued for this equipment`});
+            return res.status(403).json({ message: `User is not using or queued for this equipment` });
         }
 
         broadcast({ type: 'update', equipment: undesiredEquipment });
