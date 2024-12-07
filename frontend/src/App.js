@@ -137,7 +137,7 @@ function App() {
       fetchFavorites();
       fetchUserData();
     }
-  }, [isLoggedIn, username]);
+  }, [isLoggedIn, username, machines]);
 
 
   const toggleFavorite = async (machineId) => {
