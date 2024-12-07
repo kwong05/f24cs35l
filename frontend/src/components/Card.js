@@ -7,12 +7,10 @@ import CardList from './CardList';
 import JoinWaitlist from './JoinWaitlist';
 import LeaveWaitlist from './LeaveWaitlist';
 
-function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, machines }) {
+function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup, currentPopupId, setMessage, isLoggedIn, favorite, toggleFavorite, username, currentMachine, queuedMachine }) {
   const [listOpen, setListOpen] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
-  const [queuedMachine, setQueuedMachine] = useState(null);
-  const [currentMachine, setCurrentMachine] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
   const qrCodeRef = useRef();
 
