@@ -30,6 +30,8 @@ function MachineCards({ machines, joinSeen, toggleJoinPopup, leaveSeen, toggleLe
             machine={tryToFindMachine}
             joinSeen={joinSeen}
             toggleJoinPopup={toggleJoinPopup}
+            leaveSeen={leaveSeen}
+            toggleLeavePopup={toggleLeavePopup}
             currentPopupId={currentPopupId}
             setMessage={setMessage}
             isLoggedIn={isLoggedIn}
