@@ -12,28 +12,34 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
   const [usernames, setUsernames] = useState([]);
   const [currentUsername, setCurrentUsername] = useState("");
   const [queuedMachine, setQueuedMachine] = useState(null);
+  const [currentMachine, setCurrentMachine] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
   const qrCodeRef = useRef();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch queued equipment
-    async function fetchQueuedMachine() {
+    // Fetch current equipment and queued equipment
+    async function fetchUserData() {
       try {
-        const response = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
+        const response = await fetch(`${config.apiUrl}/api/users/fetchCurrentEquipment?username=${username}`);
         if (!response.ok) {
-          throw new Error('Error retrieving queued equipment data');
+          throw new Error('Error retrieving current equipment data');
         }
         const data = await response.json();
-        setQueuedMachine(machines.find(m => m._id === data.queuedEquipment));
+        setCurrentMachine(machines.find(m => m._id === data.currentEquipment));
+
+        const response2 = await fetch(`${config.apiUrl}/api/users/fetchQueuedEquipment?username=${username}`);
+        if (!response2.ok) {
+          throw new Error('Error retrieving queued equipment data');
+        }
+        const data2 = await response2.json();
+        setQueuedMachine(machines.find(m => m._id === data2.queuedEquipment));
       } catch (error) {
-        console.error('Error fetching queued equipment data:', error);
+        console.error('Error fetching user data:', error);
       }
     }
-    if(isLoggedIn) {
-      fetchQueuedMachine();
-    }
+    fetchUserData();
   }, [username, machines]);
   
   useEffect(() => {
@@ -115,6 +121,8 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
 
   const inUse = machine.currentUser;
   const listIsNotEmpty = (machine.userQueue && machine.userQueue.length != 0);
+  const inQueue = queuedMachine && queuedMachine._id === machine._id;
+  const currentlyUsing = currentMachine && currentMachine._id === machine._id;
 
   let collapsible_text = "Waitlist is empty";
   if (inUse) {
@@ -165,7 +173,7 @@ function Card({ machine, joinSeen, toggleJoinPopup, leaveSeen, toggleLeavePopup,
         </div>
         <span className={`outcome ${machineStatus}`}>{statusText}</span>
         {isLoggedIn ? (
-          queuedMachine&&queuedMachine._id==machine._id ? (
+          inQueue || currentlyUsing ? (
             <button className="leave-waitlist-button" onClick={() => toggleLeavePopup(machine._id)}>
             Leave
           </button>
