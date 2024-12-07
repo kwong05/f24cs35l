@@ -284,4 +284,77 @@ router.post('/renege', async (req, res) => {
     }
 });
 
+router.post('/renegeUserFromWaitlist', async (req, res) => {
+    try {
+        // Parse from req JSON
+        const { equipmentId: equipmentId, username: username } = req.body;
+        console.log(username, equipmentId);
+        // Verify user exists
+        const currentUser = await User.findOne({ username });
+        if (!currentUser) return res.status(404).json({ message: 'User does not exist' });
+
+        // Check that the user's current/queued equipment is the same as the undesired equipment
+        let isQueued = false;
+        if (currentUser.queuedEquipment != null) isQueued = true;
+        let isUsing = false;
+        if (currentUser.currentEquipment != null) isUsing = true;
+
+        const undesiredEquipment = await Equipment.findOne({ _id: equipmentId });
+        const currentEquipment = currentUser.currentEquipment;
+        const queuedEquipment = currentUser.queuedEquipment;
+
+        let userIdx = 0;
+        // Remove user from equipment queue if in queue
+
+        if (isQueued && queuedEquipment._id.equals(undesiredEquipment._id)) {
+            userIdx = undesiredEquipment.userQueue.indexOf(currentUser._id);
+            if (userIdx > -1) {
+                undesiredEquipment.userQueue.splice(userIdx, 1);
+            }
+            await undesiredEquipment.save();
+
+            // Remove equipment from user queue
+            currentUser.queuedEquipment = null;
+            await currentUser.save();
+        }
+
+        // Remove user from equipment if currently using
+        else if (currentEquipment && currentEquipment.equals(undesiredEquipment._id)) {
+            undesiredEquipment.currentUser = null;
+            currentUser.currentEquipment = null;
+            await undesiredEquipment.save();
+            await currentUser.save();
+        }
+
+        else {
+            return res.status(403).json({ message: `User is not using or queued for this equipment` });
+        }
+
+        broadcast({ type: 'update', equipment: undesiredEquipment });
+        await checkAndUpdateEquipmentStatus();
+        return res.status(200).json({ message: 'User removed from queue successfully' });
+        
+    } catch (error) {
+        console.error('Renege Queue Error:', error);  // Log the exact error
+        res.status(500).json({ message: 'Error leaving queue' });
+    }
+});
+
+router.post('/renegeAllUsers', async(req, res) => {
+    try {
+        const equipmentList = await Equipment.find({});
+        const equipmentNumber = equipmentList.length;
+        for (var i = 0; i < equipmentNumber; i++) {
+            equipmentList[i].userQueue = null;
+            await equipmentList[i].save();
+        }
+
+        return res.status(200).json({ message: 'Users removed from queues successfully' });
+
+    } catch (error) {
+        console.error('Renege All Error:', error);
+        res.status(500).json({ message: 'Error clearing queue' });
+    }
+});
+
 module.exports = router;
